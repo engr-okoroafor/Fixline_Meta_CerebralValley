@@ -2,6 +2,8 @@
 
 **SAM 3.1 + Muse Spark 1.3 · Push the Frontier · Meta Global AI Developer Hackathon 2026 (Indie)**
 
+**Live demo:** https://fixline-meta-cerebralvalley.vercel.app
+
 A technician wearing Ray-Ban Meta glasses looks at a machine and asks what's wrong. **SAM 3.1** finds and tracks the exact part; **Muse Spark 1.3** reasons over the service manual and repair history, diagnoses the fault with citations, and speaks the fix one step at a time — and **every step must be re-confirmed on camera** before the next unlocks. LOTO and inspection checklists are enforced server-side: the job cannot close until they're recorded and readings are in tolerance. The same agent runs **Line QA**: SAM 3.1 flags surface defects, Muse Spark correlates them with telemetry and writes the supervisor's shift report.
 
 ## Pipeline

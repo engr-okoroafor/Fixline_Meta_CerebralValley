@@ -25,4 +25,4 @@ Making the agent verify instead of assume; handling code-switched speech; keepin
 Pilot on a Lagos bottling line, Wearables Device Access Toolkit streaming, CMMS (SAP PM/Maximo) write-back, per-site procedure upload.
 
 **Repo:** https://github.com/engr-okoroafor/Fixline_Meta_CerebralValley
-**Demo:** (Vercel URL) · **Video:** (YouTube URL)
+**Demo:** https://fixline-meta-cerebralvalley.vercel.app · **Video:** (YouTube URL)
