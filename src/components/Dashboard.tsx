@@ -82,9 +82,10 @@ function Benefits() {
 function Overview({ go }: { go: (m: Mode) => void }) {
   const [t, setT] = useState(0); useEffect(() => { const id = setInterval(() => setT((x) => x + 1), 1200); return () => clearInterval(id); }, []);
   return <><section className="glass relative overflow-hidden"><Particles /><div className="relative grid items-center gap-6 p-6 md:grid-cols-2 md:p-8">
-    <div className="flex flex-col gap-4"><span className="pill" style={{ alignSelf: "flex-start" }}>Mixed reality · hands-first · AI</span><h2 className="m-0 text-3xl font-extrabold md:text-4xl">Fix, tune and keep people safe, <span className="neon">hands-free.</span></h2>
-      <p className="muted m-0">Guided repairs, live machine health, SCADA alarms with an AI agent, and cited safety guidance, in a headset or on any screen.</p>
-      <div className="row"><a className="btn btn-primary" href="/xr" style={{ minHeight: 56, fontSize: "1.1rem", padding: "0 24px" }}>Enter AR</a><Btn tip="Open the SCADA flow station" onClick={() => go("scada")}>SCADA demo</Btn><Btn tip="Ask about any problem" onClick={() => go("ask")}>Ask AI</Btn></div></div>
+    <div className="flex flex-col gap-4"><span className="pill" style={{ alignSelf: "flex-start" }}>Meta Global AI Hackathon 2026 · Push the Frontier</span><h1 className="m-0 text-3xl font-extrabold md:text-4xl">Hands-free AI repair &amp; quality on <span className="neon">Ray-Ban Meta glasses.</span></h1>
+      <p className="muted m-0">FixLine runs a <b className="neon">perceive → reason → confirm → enforce</b> loop on the factory floor: SAM 3.1 segments the part, Muse Spark 1.3 plans the fix, SAM re-checks each step on camera before it counts, and LOTO / quality gates block unsafe or unverified work.</p>
+      <p className="muted m-0 text-sm">Meta models: muse-spark-1.3 · sam-3.1 · muse-voice-transcribe · SeamlessM4T (open weights) · Ray-Ban Meta via Mock Device Kit. Live demo, no login needed.</p>
+      <div className="row"><a className="btn btn-primary" href="/glasses" style={{ minHeight: 56, fontSize: "1.1rem", padding: "0 24px" }}>👓 Glasses HUD</a><Btn tip="Guided repair with SAM confirm-gate" onClick={() => go("repair")}>🔧 Repair</Btn><Btn tip="Hazards, LOTO, permits" onClick={() => go("safety")}>⛑ Safety LOTO</Btn><Btn tip="Autonomous visual inspector" onClick={() => go("quality")}>✔ Quality</Btn><Btn tip="Hands-free voice + translation" onClick={() => go("voice")}>🎙 Voice</Btn><a className="btn" href="/xr">Enter AR</a></div></div>
     <HeroArt /></div></section>
     <Insights />
     <Benefits />
