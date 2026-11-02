@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+const out='/workspace/fixline-demo-v1/shots', B='https://fixline-meta-cerebralvalley.vercel.app';
+const br=await chromium.launch(); const p=await br.newPage({viewport:{width:1600,height:900},deviceScaleFactor:1.2});
+const s=async n=>{await p.waitForTimeout(1200);await p.screenshot({path:`${out}/${n}.png`});console.log(n)};
+const go=async u=>{await p.goto(B+u,{waitUntil:'networkidle'});await p.waitForTimeout(1000)};
+const click=async t=>{await p.getByText(t,{exact:false}).first().click({timeout:5000}).catch(e=>console.log('noclick',t))};
+const scroll=async y=>{await p.mouse.wheel(0,y);await p.waitForTimeout(600)};
+await go('/');await s('landing_01');await scroll(800);await s('landing_02');await scroll(900);await s('landing_03');
+await go('/glasses');await s('glasses_01');await scroll(600);await s('glasses_02');await scroll(-2000);await click('Run code-switch demo');await p.waitForTimeout(4000);await s('lang_01');await scroll(700);await s('lang_02');
+await go('/repair');await s('repair_01');await click('Confirm with camera');await p.waitForTimeout(2500);await s('repair_02');await scroll(700);await s('repair_03');
+await go('/safety');await s('safety_01');await click('Close job');await p.waitForTimeout(1500);await s('safety_02');await scroll(700);await s('safety_03');
+await go('/qa');await s('qa_01');await click('Scan line');await p.waitForTimeout(3500);await s('qa_02');await click('Write shift report');await p.waitForTimeout(5000);await s('qa_03');await scroll(800);await s('qa_04');
+await go('/admin');await s('admin_01');await go('/settings');await s('settings_01');
+await br.close();

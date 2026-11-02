@@ -1,0 +1,11 @@
+import { chromium } from "@playwright/test";
+const U="https://fixline-guardian.vercel.app",S="/workspace/fixline/shots/";
+const b=await chromium.launch();const p=await b.newPage({viewport:{width:1920,height:1080}});
+const w=ms=>p.waitForTimeout(ms);
+await p.goto(U+"/glasses",{waitUntil:"networkidle"});await w(3500);await p.screenshot({path:S+"smart-glass-hud.jpg",quality:92});
+await p.goto(U+"/xr",{waitUntil:"networkidle"});await w(3500);await p.screenshot({path:S+"ar-hud.jpg",quality:92});await p.screenshot({path:S+"nextgen/08-xr-ar.png"});
+await p.goto(U,{waitUntil:"networkidle"});await p.getByRole("tab",{name:"Projects",exact:true}).click();await w(1500);
+await p.evaluate(()=>localStorage.removeItem("fixline.project.v2"));await p.getByTestId("pm-build").click();await p.getByText(/plan built by/).waitFor({timeout:90000});await w(1500);
+await p.getByTestId("gantt-bar").first().scrollIntoViewIfNeeded();await p.mouse.wheel(0,-200);await w(1200);await p.screenshot({path:S+"nextgen/05-projects-gantt.png"});await p.screenshot({path:S+"projects-gantt.jpg",quality:92});
+await p.evaluate(()=>scrollTo(0,0));await p.getByRole("tab",{name:"Engineering",exact:true}).click();await p.getByTestId("eng-lab").waitFor();await p.getByTestId("eng-lab").scrollIntoViewIfNeeded();await w(2000);await p.screenshot({path:S+"nextgen/02b-engineering-lab.png"});
+await b.close();

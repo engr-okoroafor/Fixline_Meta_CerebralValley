@@ -1,0 +1,53 @@
+/** Lightweight i18n: en-US default. UI strings for major languages; anything missing falls back to en-US. */
+export const DEFAULT_LOCALE = "en-US";
+export const UI_LOCALES: [string, string][] = [
+  ["en-US", "🇺🇸 English (US)"], ["en-GB", "🇬🇧 English (UK)"], ["fr", "🇫🇷 Français"], ["es", "🇪🇸 Español"], ["de", "🇩🇪 Deutsch"], ["pt", "🇵🇹 Português"],
+  ["zh", "🇨🇳 中文"], ["ja", "🇯🇵 日本語"], ["ko", "🇰🇷 한국어"], ["ar", "🇸🇦 العربية"], ["hi", "🇮🇳 हिन्दी"], ["ig", "🇳🇬 Igbo"], ["yo", "🇳🇬 Yorùbá"], ["ha", "🇳🇬 Hausa"],
+];
+type Dict = Record<string, string>;
+const en: Dict = {
+  overview: "Overview", repair: "Repair", tuning: "Tuning", ask: "Ask AI", scada: "SCADA", safety: "Safety", quality: "Quality", voice: "Voice & Vision", eng: "Engineering", projects: "Projects", settings: "Settings",
+  enterAr: "Enter AR", signIn: "Sign in", signOut: "Sign out", language: "Language", voiceOn: "Voice on", voiceOff: "Voice off", listen: "Talk", stop: "Stop",
+  skip: "Skip", next: "Next", done: "Got it", howTo: "How to use this page", startHere: "Where to start", answeredBy: "Answered by", region: "Standards region",
+  heroTitle: "Fix, tune and keep people safe,", heroAccent: "hands-free.", heroSub: "Guided repairs, live machine health, SCADA alarms with an AI agent, and cited safety guidance, in a headset or on any screen.",
+  voiceHint: "Voice is off. Turn it on to talk with FixLine in your language.",
+};
+const T: Record<string, Dict> = {
+  "en-US": en, "en-GB": en,
+  fr: { overview: "Aperçu", repair: "Réparation", tuning: "Réglage", ask: "Demander à l'IA", safety: "Sécurité", quality: "Qualité", eng: "Ingénierie", projects: "Projets", settings: "Paramètres", enterAr: "Entrer en RA", signIn: "Connexion", signOut: "Déconnexion", language: "Langue", voiceOn: "Voix activée", voiceOff: "Voix désactivée", listen: "Parler", stop: "Arrêter", skip: "Passer", next: "Suivant", done: "Compris", howTo: "Comment utiliser cette page", startHere: "Par où commencer", answeredBy: "Répondu par", region: "Région des normes", heroTitle: "Réparez, réglez et protégez les équipes,", heroAccent: "mains libres.", heroSub: "Réparations guidées, santé des machines en direct, alarmes SCADA avec agent IA et consignes de sécurité citées.", voiceHint: "La voix est désactivée. Activez-la pour parler avec FixLine." },
+  es: { overview: "Resumen", repair: "Reparación", tuning: "Ajuste", ask: "Preguntar a la IA", safety: "Seguridad", quality: "Calidad", eng: "Ingeniería", projects: "Proyectos", settings: "Ajustes", enterAr: "Entrar en RA", signIn: "Iniciar sesión", signOut: "Cerrar sesión", language: "Idioma", voiceOn: "Voz activada", voiceOff: "Voz desactivada", listen: "Hablar", stop: "Detener", skip: "Omitir", next: "Siguiente", done: "Entendido", howTo: "Cómo usar esta página", startHere: "Por dónde empezar", answeredBy: "Respondido por", region: "Región de normas", heroTitle: "Repara, ajusta y protege a tu gente,", heroAccent: "manos libres.", heroSub: "Reparaciones guiadas, salud de máquinas en vivo, alarmas SCADA con agente IA y seguridad con normas citadas.", voiceHint: "La voz está desactivada. Actívala para hablar con FixLine." },
+  de: { overview: "Übersicht", repair: "Reparatur", tuning: "Einstellung", ask: "KI fragen", safety: "Sicherheit", quality: "Qualität", eng: "Engineering", projects: "Projekte", settings: "Einstellungen", enterAr: "AR starten", signIn: "Anmelden", signOut: "Abmelden", language: "Sprache", voiceOn: "Stimme an", voiceOff: "Stimme aus", listen: "Sprechen", stop: "Stopp", skip: "Überspringen", next: "Weiter", done: "Verstanden", howTo: "So nutzen Sie diese Seite", startHere: "Hier starten", answeredBy: "Beantwortet von", region: "Normenregion", heroTitle: "Reparieren, einstellen und Menschen schützen,", heroAccent: "freihändig.", heroSub: "Geführte Reparaturen, Live-Maschinenzustand, SCADA-Alarme mit KI-Agent und zitierte Sicherheitshinweise.", voiceHint: "Stimme ist aus. Schalten Sie sie ein, um mit FixLine zu sprechen." },
+  pt: { overview: "Visão geral", repair: "Reparo", tuning: "Ajuste", ask: "Perguntar à IA", safety: "Segurança", quality: "Qualidade", eng: "Engenharia", projects: "Projetos", settings: "Configurações", enterAr: "Entrar em RA", language: "Idioma", voiceOn: "Voz ligada", voiceOff: "Voz desligada", listen: "Falar", stop: "Parar", skip: "Pular", next: "Próximo", done: "Entendi", howTo: "Como usar esta página", answeredBy: "Respondido por", region: "Região de normas", heroTitle: "Conserte, ajuste e proteja as pessoas,", heroAccent: "mãos livres." },
+  zh: { overview: "概览", repair: "维修", tuning: "调校", ask: "问 AI", safety: "安全", quality: "质量", eng: "工程", projects: "项目", settings: "设置", enterAr: "进入 AR", language: "语言", voiceOn: "语音开", voiceOff: "语音关", listen: "说话", stop: "停止", skip: "跳过", next: "下一步", done: "知道了", howTo: "如何使用本页", answeredBy: "回答模型", region: "标准地区", heroTitle: "维修、调校、保障安全，", heroAccent: "解放双手。" },
+  ja: { overview: "概要", repair: "修理", tuning: "調整", ask: "AIに質問", safety: "安全", quality: "品質", eng: "エンジニアリング", projects: "プロジェクト", settings: "設定", enterAr: "ARを開始", language: "言語", voiceOn: "音声オン", voiceOff: "音声オフ", listen: "話す", stop: "停止", skip: "スキップ", next: "次へ", done: "了解", howTo: "このページの使い方", answeredBy: "回答モデル", region: "規格地域", heroTitle: "修理・調整・安全を、", heroAccent: "ハンズフリーで。" },
+  ko: { overview: "개요", repair: "수리", tuning: "튜닝", ask: "AI에게 묻기", safety: "안전", quality: "품질", eng: "엔지니어링", projects: "프로젝트", settings: "설정", enterAr: "AR 시작", language: "언어", voiceOn: "음성 켜짐", voiceOff: "음성 꺼짐", listen: "말하기", stop: "중지", skip: "건너뛰기", next: "다음", done: "확인", howTo: "이 페이지 사용법", answeredBy: "응답 모델", region: "표준 지역" },
+  ar: { overview: "نظرة عامة", repair: "إصلاح", tuning: "ضبط", ask: "اسأل الذكاء الاصطناعي", safety: "السلامة", quality: "الجودة", eng: "الهندسة", projects: "المشاريع", settings: "الإعدادات", enterAr: "دخول الواقع المعزز", language: "اللغة", voiceOn: "الصوت مفعّل", voiceOff: "الصوت متوقف", listen: "تحدث", stop: "إيقاف", skip: "تخطي", next: "التالي", done: "فهمت", howTo: "كيفية استخدام هذه الصفحة", answeredBy: "أجاب", region: "منطقة المعايير" },
+  hi: { overview: "अवलोकन", repair: "मरम्मत", tuning: "ट्यूनिंग", ask: "AI से पूछें", safety: "सुरक्षा", quality: "गुणवत्ता", eng: "इंजीनियरिंग", projects: "परियोजनाएँ", settings: "सेटिंग्स", enterAr: "AR शुरू करें", language: "भाषा", voiceOn: "आवाज़ चालू", voiceOff: "आवाज़ बंद", listen: "बोलें", stop: "रोकें", skip: "छोड़ें", next: "आगे", done: "समझ गया", howTo: "इस पेज का उपयोग कैसे करें", answeredBy: "उत्तर दिया", region: "मानक क्षेत्र" },
+  ig: { overview: "Nchịkọta", repair: "Mmezi", safety: "Nchekwa", ask: "Jụọ AI", settings: "Ntọala", language: "Asụsụ", skip: "Wụfee", next: "Ọzọ", done: "Ọ dị mma", listen: "Kwuo okwu", stop: "Kwụsị" },
+  yo: { overview: "Àkópọ̀", repair: "Àtúnṣe", safety: "Ààbò", ask: "Bèèrè lọ́wọ́ AI", settings: "Ètò", language: "Èdè", skip: "Fò ó", next: "Tókàn", done: "Ó yé mi", listen: "Sọ̀rọ̀", stop: "Dúró" },
+  ha: { overview: "Taƙaitawa", repair: "Gyara", safety: "Tsaro", ask: "Tambayi AI", settings: "Saituna", language: "Harshe", skip: "Tsallake", next: "Na gaba", done: "Na gane", listen: "Yi magana", stop: "Tsaya" },
+};
+export function t(locale: string, key: string) { return T[locale]?.[key] ?? T[locale.split("-")[0]]?.[key] ?? en[key] ?? key; }
+export const isRtl = (l: string) => /^(ar|he|fa|ur)/.test(l);
+/** BCP-47 locale for Web Speech TTS/ASR (needs region). */
+export const SPEECH: Record<string, string> = { "en-US": "en-US", "en-GB": "en-GB", en: "en-US", fr: "fr-FR", es: "es-ES", de: "de-DE", pt: "pt-BR", zh: "zh-CN", ja: "ja-JP", ko: "ko-KR", ar: "ar-SA", hi: "hi-IN", ig: "ig-NG", yo: "yo-NG", ha: "ha-NG", ru: "ru-RU", it: "it-IT", sw: "sw-KE" };
+export const speechTag = (l: string) => SPEECH[l] ?? SPEECH[l.split("-")[0]] ?? l;
+/** Edge/Azure neural voices per locale (used by server TTS when configured). */
+export const NEURAL_VOICE: Record<string, string> = { "en-US": "en-US-AndrewNeural", "en-GB": "en-GB-RyanNeural", fr: "fr-FR-HenriNeural", es: "es-ES-AlvaroNeural", de: "de-DE-ConradNeural", pt: "pt-BR-AntonioNeural", zh: "zh-CN-YunxiNeural", ja: "ja-JP-KeitaNeural", ko: "ko-KR-InJoonNeural", ar: "ar-SA-HamedNeural", hi: "hi-IN-MadhurNeural", ig: "en-NG-AbeoNeural", yo: "en-NG-AbeoNeural", ha: "en-NG-AbeoNeural" };
+/** Heuristic typed/spoken language detection (script + stop-words). Returns a UI locale or null when unsure. */
+export function detectLang(s: string): string | null {
+  if (/[\u0600-\u06FF]/.test(s)) return "ar"; if (/[\u0900-\u097F]/.test(s)) return "hi"; if (/[\u3040-\u30FF]/.test(s)) return "ja"; if (/[\uAC00-\uD7AF]/.test(s)) return "ko"; if (/[\u4E00-\u9FFF]/.test(s)) return "zh";
+  const w = ` ${s.toLowerCase()} `; const score = (l: string[]) => l.filter((x) => w.includes(` ${x} `)).length;
+  const c: [string, number][] = [["fr", score(["le", "la", "les", "est", "une", "pourquoi", "comment", "moteur", "je", "et"])], ["es", score(["el", "los", "es", "una", "por", "qué", "cómo", "motor", "bomba", "y"])], ["de", score(["der", "die", "das", "ist", "und", "nicht", "wie", "warum", "pumpe"])], ["pt", score(["o", "os", "não", "uma", "como", "por", "bomba", "está", "é"])], ["ig", score(["kedu", "biko", "nke", "na", "ọ", "dị", "m"])], ["yo", score(["bawo", "jọwọ", "ni", "kí", "ṣe", "mo"])], ["ha", score(["yaya", "don", "allah", "ina", "da", "ba"])], ["en-US", score(["the", "is", "and", "why", "how", "my", "pump", "motor", "what", "to"])]];
+  c.sort((a, b) => b[1] - a[1]); return c[0][1] >= 2 ? c[0][0] : null;
+}
+/** IP country (ISO-3166 alpha-2) → UI locale for first-visit auto language. US/unknown → en-US (product default). */
+export const COUNTRY_LOCALE: Record<string, string> = {
+  US: "en-US", GB: "en-GB", IE: "en-GB", AU: "en-GB", NZ: "en-GB", CA: "en-US", NG: "en-US", GH: "en-US", KE: "en-US", ZA: "en-GB",
+  DE: "de", AT: "de", CH: "de", LI: "de", FR: "fr", BE: "fr", LU: "fr", MC: "fr", SN: "fr", CI: "fr", CM: "fr", DZ: "fr", MA: "fr", TN: "fr",
+  ES: "es", MX: "es", AR: "es", CO: "es", CL: "es", PE: "es", VE: "es", EC: "es", PT: "pt", BR: "pt", AO: "pt", MZ: "pt",
+  CN: "zh", TW: "zh", HK: "zh", SG: "zh", JP: "ja", KR: "ko", IN: "hi",
+  SA: "ar", AE: "ar", QA: "ar", KW: "ar", OM: "ar", BH: "ar", IQ: "ar", JO: "ar", LB: "ar", LY: "ar", EG: "ar", SD: "ar", YE: "ar",
+};
+/** IP country → default safety jurisdiction id (see regions.ts). */
+export const COUNTRY_REGION: Record<string, string> = { US: "US", NG: "NG", GB: "UK", SA: "SA", AE: "AE", QA: "QA", KW: "KW", OM: "OM", IQ: "IQ", AO: "AO", DZ: "DZ", LY: "LY", EG: "EG", GH: "GH", DE: "EU", FR: "EU", ES: "EU", IT: "EU", NL: "EU", BE: "EU", PT: "EU", AT: "EU", IE: "EU", PL: "EU", SE: "EU" };

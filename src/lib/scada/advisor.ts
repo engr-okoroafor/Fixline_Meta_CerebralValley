@@ -1,0 +1,25 @@
+// Autonomous SCADA advisor: alarm → diagnose → next step. It ADVISES and PROPOSES; it never writes. Operators approve.
+import { TAGS, alarmLevel, activeTrips, drift, type TagId, type AlarmLevel } from "./model";
+export type Advice = { tag: TagId; desc: string; value: number; unit: string; level: AlarmLevel | "DRIFT"; priority: "critical" | "high" | "medium"; causes: string[]; checks: string[]; next: string; standards: string[]; proposal?: { tag: TagId; sp: number; why: string } };
+const RULES: Partial<Record<TagId, { hi: [string[], string[], string]; lo: [string[], string[], string] }>> = {
+  SEP1_P: { hi: [["Gas outlet PCV stuck/closed", "Inlet surge / slug", "Blocked flare header"], ["Compare PCV output % vs stem position", "Check inlet flow trend for slugging", "Confirm flare KO drum level"], "Reduce inlet choke; verify PCV-101 strokes. If ≥17 barg, PSHH trips the ESDV — do not bypass."], lo: [["Gas valve open too far", "Low well inflow", "Leak/PSV passing"], ["Check PSV outlet temperature (passing PSV runs warm)", "Gas-detector readings near separator"], "Lower PCV output; walk-down for leaks with gas detector before approaching."] },
+  SEP1_L: { hi: [["LCV / dump valve stuck", "P-101 degraded", "Level transmitter drift"], ["Compare LT vs sight glass", "Check P-101 discharge pressure and amps", "Stroke LCV"], "Verify level with sight glass before acting on the transmitter. LSHH at 90% shuts inlet."], lo: [["LCV passing", "Transmitter drift low", "Low inflow"], ["Sight glass vs LT", "Check LCV seat"], "Protect P-101 from gas blow-by: LSLL at 10% trips pump."] },
+  SEP1_T: { hi: [["Heater overfiring", "Hot well fluids"], ["Check heater TIC and fuel gas"], "Reduce heater duty; check coating/elastomer temperature limits."], lo: [["Hydrate risk", "Heater trip"], ["Check heater status, methanol injection"], "Start hydrate inhibition; check heater."] },
+  TK1_L: { hi: [["Transfer exceeds export"], ["Check export pump status, downstream"], "Reduce transfer; LSHH at 95% stops transfer. Prepare overfill response (API 2350)."], lo: [["Export too high", "Tank leak"], ["Dip tank manually", "Inspect bund"], "Reduce export pump; dip tank to confirm."] },
+  P101_FLOW: { hi: [["Downstream leak/rupture", "Meter error"], ["Check EXPORT_P drop", "Line walk"], "If export pressure drops simultaneously suspect leak: stop pump, isolate, notify."], lo: [["Pump degraded/cavitation", "Suction strainer blocked", "LSLL trip"], ["Suction pressure & NPSH", "Vibration (ISO 10816)", "Strainer ΔP"], "Check strainer ΔP and pump vibration; switch to standby pump if available."] },
+  FLARE_FLOW: { hi: [["Separator over-pressure relief", "PSV lifting", "Blowdown"], ["Check which PSV/BDV is open", "SEP1_P trend"], "Find source; minimise flaring per permit; report per regulator."], lo: [["Flare meter fault"], ["Check meter"], "Verify meter."] },
+  EXPORT_P: { hi: [["Downstream valve closed", "Pig stuck"], ["Check downstream valve line-up"], "Stop P-101 before pipeline MAOP (ASME B31.4); confirm line-up."], lo: [["Pipeline leak", "Pump trip"], ["Pressure-point analysis", "Line walk/patrol"], "Treat as possible leak: isolate & notify (API RP 1130 leak detection)."] },
+};
+export function advise(v: Record<TagId, number>, history: Partial<Record<TagId, number[]>> = {}): { advice: Advice[]; trips: string[]; summary: string } {
+  const advice: Advice[] = [];
+  for (const t of TAGS) {
+    const val = v[t.id]; const lvl = alarmLevel(val, t.limits); const h = history[t.id] ?? []; const d = drift(h, (t.limits.hi - t.limits.lo) * 0.05);
+    if (!lvl && !d.devAlarm && !d.rocAlarm) continue;
+    const r = RULES[t.id]; const side = lvl === "LO" || lvl === "LOLO" || (!lvl && d.roc < 0) ? "lo" : "hi"; const [causes, checks, next] = r?.[side] ?? [["Unknown"], ["Field check"], "Investigate"];
+    const sp = t.sp !== undefined && lvl && (t.id === "SEP1_P" || t.id === "SEP1_L") ? +(side === "hi" ? Math.max(t.limits.lo + 0.5, t.sp - (t.limits.hi - t.limits.lo) * 0.1) : Math.min(t.limits.hi - 0.5, t.sp + (t.limits.hi - t.limits.lo) * 0.1)).toFixed(1) : undefined;
+    advice.push({ tag: t.id, desc: t.desc, value: +val.toFixed(2), unit: t.unit, level: lvl ?? "DRIFT", priority: lvl === "HIHI" || lvl === "LOLO" ? "critical" : lvl ? "high" : "medium", causes, checks: [...checks, ...(d.devAlarm || d.rocAlarm ? [`Drift: z=${d.zscore}, rate=${d.roc}/sample — validate the instrument`] : [])], next, standards: ["ISA-18.2 (alarm response)", "IEC 61511 (SIS stays authority)"], proposal: sp !== undefined ? { tag: t.id, sp, why: `Move ${t.id} setpoint toward safe band to relieve ${lvl}` } : undefined });
+  }
+  advice.sort((a, b) => ["critical", "high", "medium"].indexOf(a.priority) - ["critical", "high", "medium"].indexOf(b.priority));
+  const trips = activeTrips(v).map((t) => `${t.id}: ${t.action}`);
+  return { advice, trips, summary: advice.length ? `${advice.length} abnormal condition(s); top: ${advice[0].tag} ${advice[0].level} → ${advice[0].next}` : "All tags in normal band. Keep monitoring." };
+}

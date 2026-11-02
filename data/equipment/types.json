@@ -1,0 +1,2505 @@
+[
+{
+"id": "pump-pd",
+"name": "Positive-displacement pump (gear/screw/lobe)",
+"category": "pumps",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"PT",
+"FT",
+"TT",
+"VT"
+],
+"failures": [
+"Relief valve chatter",
+"Rotor wear",
+"Seal leak",
+"Dry running"
+],
+"checks": [
+"Check relief valve set point",
+"Measure slip vs. rated flow",
+"Inspect rotors/timing gears"
+],
+"standards": [
+"API 676",
+"ISO 14224"
+],
+"howTo": [
+"Check relief valve set point — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 676).",
+"Measure slip vs. rated flow — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 676).",
+"Inspect rotors/timing gears — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 676)."
+]
+},
+{
+"id": "pump-diaphragm",
+"name": "Diaphragm / metering pump",
+"category": "pumps",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"FT",
+"PT"
+],
+"failures": [
+"Diaphragm rupture",
+"Check-valve fouling",
+"Loss of prime"
+],
+"checks": [
+"Inspect diaphragm & leak-detection",
+"Clean check valves",
+"Calibrate stroke"
+],
+"standards": [
+"API 675"
+],
+"howTo": [
+"Inspect diaphragm & leak-detection — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 675).",
+"Clean check valves — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 675).",
+"Calibrate stroke — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 675)."
+]
+},
+{
+"id": "pump-submersible",
+"name": "Submersible / borehole pump",
+"category": "pumps",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"IT",
+"PT",
+"LT"
+],
+"failures": [
+"Motor insulation failure",
+"Impeller wear",
+"Dry-run trip"
+],
+"checks": [
+"Megger cable+motor",
+"Check level probes",
+"Record current vs. curve"
+],
+"standards": [
+"IEC 60034",
+"ISO 9906"
+],
+"howTo": [
+"Megger cable+motor — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034).",
+"Check level probes — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034).",
+"Record current vs. curve — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034)."
+]
+},
+{
+"id": "pump-booster",
+"name": "Domestic water booster pump",
+"category": "pumps",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"PT"
+],
+"failures": [
+"Pressure-switch fault",
+"Pressure-tank waterlogged",
+"Short cycling"
+],
+"checks": [
+"Check tank pre-charge (≈0.9×cut-in)",
+"Test pressure switch",
+"Inspect non-return valve"
+],
+"standards": [
+"EN 806",
+"IPC"
+],
+"howTo": [
+"Check tank pre-charge (≈0.9×cut-in) — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 806).",
+"Test pressure switch — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 806).",
+"Inspect non-return valve — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 806)."
+]
+},
+{
+"id": "motor-sync",
+"name": "Synchronous motor",
+"category": "motors",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"IT",
+"TT",
+"VT"
+],
+"failures": [
+"Excitation loss",
+"Pole slip",
+"Bearing wear"
+],
+"checks": [
+"Check exciter/brushless diodes",
+"Megger stator & rotor",
+"Vibration trend"
+],
+"standards": [
+"IEC 60034",
+"IEEE 43"
+],
+"howTo": [
+"Check exciter/brushless diodes — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034).",
+"Megger stator & rotor — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034).",
+"Vibration trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034)."
+]
+},
+{
+"id": "motor-dc",
+"name": "DC motor",
+"category": "motors",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"IT",
+"ST"
+],
+"failures": [
+"Commutator wear",
+"Brush sparking",
+"Field loss"
+],
+"checks": [
+"Inspect brushes/commutator",
+"Check field current",
+"Megger armature"
+],
+"standards": [
+"IEC 60034-1"
+],
+"howTo": [
+"Inspect brushes/commutator — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034-1).",
+"Check field current — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034-1).",
+"Megger armature — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60034-1)."
+]
+},
+{
+"id": "motor-servo",
+"name": "Servo motor & drive",
+"category": "motors",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST",
+"IT"
+],
+"failures": [
+"Encoder fault",
+"Overcurrent",
+"Following error"
+],
+"checks": [
+"Check encoder cable/shield",
+"Inspect brake",
+"Review drive fault log"
+],
+"standards": [
+"IEC 61800-5-1"
+],
+"howTo": [
+"Check encoder cable/shield — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800-5-1).",
+"Inspect brake — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800-5-1).",
+"Review drive fault log — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800-5-1)."
+]
+},
+{
+"id": "motor-ec",
+"name": "EC fan motor (building)",
+"category": "motors",
+"domain": "building",
+"criticality": "Low",
+"tags": [
+"ST"
+],
+"failures": [
+"Bearing noise",
+"Electronics failure",
+"Control-signal loss"
+],
+"checks": [
+"Check 0-10 V signal",
+"Spin test",
+"Clean impeller"
+],
+"standards": [
+"EN 50347",
+"ErP 2009/125/EC"
+],
+"howTo": [
+"Check 0-10 V signal — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 50347).",
+"Spin test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 50347).",
+"Clean impeller — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 50347)."
+]
+},
+{
+"id": "comp-screw",
+"name": "Rotary screw air compressor",
+"category": "compressors",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"PT",
+"TT"
+],
+"failures": [
+"High discharge temp",
+"Oil carry-over",
+"Separator ΔP high"
+],
+"checks": [
+"Check oil level & cooler",
+"Measure separator ΔP",
+"Test drain valves"
+],
+"standards": [
+"ISO 1217",
+"ISO 8573-1"
+],
+"howTo": [
+"Check oil level & cooler — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 1217).",
+"Measure separator ΔP — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 1217).",
+"Test drain valves — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 1217)."
+]
+},
+{
+"id": "comp-centrifugal",
+"name": "Centrifugal compressor",
+"category": "compressors",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT",
+"TT",
+"VT",
+"FT"
+],
+"failures": [
+"Surge",
+"Seal-gas failure",
+"Rotor vibration"
+],
+"checks": [
+"Verify anti-surge controller",
+"Check dry-gas-seal panel",
+"Proximity probe trend"
+],
+"standards": [
+"API 617",
+"API 670"
+],
+"howTo": [
+"Verify anti-surge controller — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 617).",
+"Check dry-gas-seal panel — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 617).",
+"Proximity probe trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 617)."
+]
+},
+{
+"id": "comp-refrig",
+"name": "Refrigeration compressor (scroll/recip)",
+"category": "compressors",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"PT",
+"TT"
+],
+"failures": [
+"Low suction pressure",
+"Liquid slugging",
+"Overheating"
+],
+"checks": [
+"Measure superheat/subcooling",
+"Check oil",
+"Leak test"
+],
+"standards": [
+"ASHRAE 15",
+"EN 378"
+],
+"howTo": [
+"Measure superheat/subcooling — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15).",
+"Check oil — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15).",
+"Leak test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15)."
+]
+},
+{
+"id": "turbine-steam",
+"name": "Steam turbine",
+"category": "turbines",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"ST",
+"VT",
+"TT",
+"PT"
+],
+"failures": [
+"Overspeed",
+"Blade erosion",
+"Governor hunting"
+],
+"checks": [
+"Overspeed trip test",
+"Check steam purity",
+"Vibration & axial position"
+],
+"standards": [
+"API 612",
+"API 670",
+"IEC 60045"
+],
+"howTo": [
+"Overspeed trip test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 612).",
+"Check steam purity — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 612).",
+"Vibration & axial position — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 612)."
+]
+},
+{
+"id": "turbine-gas",
+"name": "Gas turbine",
+"category": "turbines",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"TT",
+"VT",
+"ST",
+"PT"
+],
+"failures": [
+"Combustor hot spots",
+"Compressor fouling",
+"Flame-out"
+],
+"checks": [
+"Borescope",
+"Offline water wash",
+"Exhaust spread trend"
+],
+"standards": [
+"API 616",
+"ISO 3977"
+],
+"howTo": [
+"Borescope — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 616).",
+"Offline water wash — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 616).",
+"Exhaust spread trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 616)."
+]
+},
+{
+"id": "turbine-wind",
+"name": "Wind turbine",
+"category": "turbines",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"VT",
+"ST",
+"TT"
+],
+"failures": [
+"Gearbox bearing damage",
+"Pitch fault",
+"Yaw misalignment"
+],
+"checks": [
+"CMS vibration review",
+"Pitch battery test",
+"Torque tower bolts"
+],
+"standards": [
+"IEC 61400"
+],
+"howTo": [
+"CMS vibration review — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61400).",
+"Pitch battery test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61400).",
+"Torque tower bolts — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61400)."
+]
+},
+{
+"id": "turbine-hydro",
+"name": "Hydro turbine (Francis/Kaplan/Pelton)",
+"category": "turbines",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"ST",
+"VT",
+"PT"
+],
+"failures": [
+"Cavitation pitting",
+"Wicket-gate wear",
+"Shaft seal leak"
+],
+"checks": [
+"Inspect runner",
+"Gate clearance",
+"Bearing temp trend"
+],
+"standards": [
+"IEC 60041",
+"IEC 62006"
+],
+"howTo": [
+"Inspect runner — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60041).",
+"Gate clearance — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60041).",
+"Bearing temp trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60041)."
+]
+},
+{
+"id": "conv-belt",
+"name": "Belt conveyor",
+"category": "conveyors",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST",
+"VT"
+],
+"failures": [
+"Belt mistracking",
+"Idler seizure",
+"Splice failure"
+],
+"checks": [
+"Check tracking & skirting",
+"Thermal-scan idlers",
+"Inspect pull-cords"
+],
+"standards": [
+"ISO 5048",
+"CEMA",
+"OSHA 1926.555"
+],
+"howTo": [
+"Check tracking & skirting — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5048).",
+"Thermal-scan idlers — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5048).",
+"Inspect pull-cords — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5048)."
+]
+},
+{
+"id": "conv-roller",
+"name": "Roller / accumulation conveyor",
+"category": "conveyors",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"ST"
+],
+"failures": [
+"Jams",
+"Roller bearing failure",
+"Photo-eye misread"
+],
+"checks": [
+"Clean/align photo-eyes",
+"Check drive belts"
+],
+"standards": [
+"ANSI/ASME B20.1"
+],
+"howTo": [
+"Clean/align photo-eyes — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ANSI/ASME B20.1).",
+"Check drive belts — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ANSI/ASME B20.1)."
+]
+},
+{
+"id": "conv-screw",
+"name": "Screw conveyor",
+"category": "conveyors",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"ST",
+"IT"
+],
+"failures": [
+"Flight wear",
+"Hanger bearing failure",
+"Plugging"
+],
+"checks": [
+"Measure flight thickness",
+"Inspect hangers"
+],
+"standards": [
+"CEMA 350"
+],
+"howTo": [
+"Measure flight thickness — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (CEMA 350).",
+"Inspect hangers — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (CEMA 350)."
+]
+},
+{
+"id": "hvac-ahu",
+"name": "Air-handling unit (AHU)",
+"category": "hvac",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"TT",
+"PT",
+"FT"
+],
+"failures": [
+"Filter ΔP high",
+"Belt slip",
+"Coil fouling",
+"Damper stuck"
+],
+"checks": [
+"Record filter ΔP",
+"Belt tension & alignment",
+"Stroke dampers"
+],
+"standards": [
+"ASHRAE 62.1",
+"ASHRAE 90.1",
+"EN 13053"
+],
+"howTo": [
+"Record filter ΔP — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 62.1).",
+"Belt tension & alignment — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 62.1).",
+"Stroke dampers — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 62.1)."
+]
+},
+{
+"id": "hvac-chiller",
+"name": "Chiller (water-cooled)",
+"category": "hvac",
+"domain": "building",
+"criticality": "Critical",
+"tags": [
+"TT",
+"PT",
+"FT"
+],
+"failures": [
+"High head pressure",
+"Low refrigerant",
+"Tube fouling"
+],
+"checks": [
+"Approach temps",
+"Oil analysis",
+"Eddy-current tubes"
+],
+"standards": [
+"ASHRAE 15",
+"AHRI 550/590"
+],
+"howTo": [
+"Approach temps — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15).",
+"Oil analysis — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15).",
+"Eddy-current tubes — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 15)."
+]
+},
+{
+"id": "hvac-split",
+"name": "Split / mini-split air conditioner",
+"category": "hvac",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"TT"
+],
+"failures": [
+"Low cooling",
+"Ice on coil",
+"Water leak",
+"Noisy outdoor fan"
+],
+"checks": [
+"Clean filters & coil",
+"Check condensate drain",
+"Measure ΔT 8–12 °C"
+],
+"standards": [
+"ISO 5151",
+"EPA 608"
+],
+"howTo": [
+"Clean filters & coil — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5151).",
+"Check condensate drain — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5151).",
+"Measure ΔT 8–12 °C — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5151)."
+]
+},
+{
+"id": "hvac-heatpump",
+"name": "Heat pump",
+"category": "hvac",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"TT",
+"PT"
+],
+"failures": [
+"Defrost failure",
+"Reversing valve stuck",
+"Low COP"
+],
+"checks": [
+"Test defrost cycle",
+"Check refrigerant charge"
+],
+"standards": [
+"EN 14511",
+"AHRI 210/240"
+],
+"howTo": [
+"Test defrost cycle — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 14511).",
+"Check refrigerant charge — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 14511)."
+]
+},
+{
+"id": "hvac-cooling-tower",
+"name": "Cooling tower",
+"category": "hvac",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"TT",
+"LT",
+"VT"
+],
+"failures": [
+"Fill fouling",
+"Legionella risk",
+"Fan gearbox vibration"
+],
+"checks": [
+"Water treatment log",
+"Inspect drift eliminators",
+"Gearbox oil"
+],
+"standards": [
+"CTI ATC-105",
+"ASHRAE 188"
+],
+"howTo": [
+"Water treatment log — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (CTI ATC-105).",
+"Inspect drift eliminators — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (CTI ATC-105).",
+"Gearbox oil — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (CTI ATC-105)."
+]
+},
+{
+"id": "hvac-rtu",
+"name": "Rooftop unit (RTU)",
+"category": "hvac",
+"domain": "building",
+"criticality": "Medium",
+"tags": [
+"TT",
+"PT"
+],
+"failures": [
+"Economizer fault",
+"Compressor short-cycle",
+"Heat-exchanger crack"
+],
+"checks": [
+"Economizer test",
+"CO check on gas section"
+],
+"standards": [
+"ASHRAE 90.1",
+"NFPA 54"
+],
+"howTo": [
+"Economizer test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 90.1).",
+"CO check on gas section — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 90.1)."
+]
+},
+{
+"id": "hvac-fcu",
+"name": "Fan-coil unit",
+"category": "hvac",
+"domain": "building",
+"criticality": "Low",
+"tags": [
+"TT"
+],
+"failures": [
+"Valve stuck",
+"Drain pan overflow",
+"Fan failure"
+],
+"checks": [
+"Clean drain pan",
+"Stroke valve"
+],
+"standards": [
+"EN 1397"
+],
+"howTo": [
+"Clean drain pan — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1397).",
+"Stroke valve — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1397)."
+]
+},
+{
+"id": "boiler-firetube",
+"name": "Fire-tube boiler",
+"category": "boilers",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT",
+"TT",
+"LT"
+],
+"failures": [
+"Low water",
+"Scale",
+"Burner flame failure"
+],
+"checks": [
+"Test low-water cut-off",
+"Blowdown",
+"Combustion analysis"
+],
+"standards": [
+"ASME BPVC I",
+"NFPA 85"
+],
+"howTo": [
+"Test low-water cut-off — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I).",
+"Blowdown — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I).",
+"Combustion analysis — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I)."
+]
+},
+{
+"id": "boiler-watertube",
+"name": "Water-tube boiler",
+"category": "boilers",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT",
+"TT",
+"LT",
+"FT"
+],
+"failures": [
+"Tube leak",
+"Drum level swing",
+"Soot build-up"
+],
+"checks": [
+"Drum level trips",
+"Soot-blow",
+"Water chemistry"
+],
+"standards": [
+"ASME BPVC I",
+"NFPA 85",
+"IBR"
+],
+"howTo": [
+"Drum level trips — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I).",
+"Soot-blow — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I).",
+"Water chemistry — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME BPVC I)."
+]
+},
+{
+"id": "boiler-domestic",
+"name": "Domestic gas boiler / combi",
+"category": "boilers",
+"domain": "home",
+"criticality": "High",
+"tags": [
+"PT",
+"TT"
+],
+"failures": [
+"Low pressure",
+"Ignition lockout",
+"CO leak"
+],
+"checks": [
+"Check pressure 1–1.5 bar",
+"Flue/CO test",
+"Inspect condensate trap"
+],
+"standards": [
+"Gas Safe / NFPA 54",
+"EN 15502"
+],
+"howTo": [
+"Check pressure 1–1.5 bar — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (Gas Safe / NFPA 54).",
+"Flue/CO test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (Gas Safe / NFPA 54).",
+"Inspect condensate trap — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (Gas Safe / NFPA 54)."
+]
+},
+{
+"id": "water-heater",
+"name": "Water heater (tank / tankless)",
+"category": "boilers",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"TT"
+],
+"failures": [
+"No hot water",
+"T&P valve dripping",
+"Sediment"
+],
+"checks": [
+"Test T&P valve",
+"Flush tank",
+"Check anode"
+],
+"standards": [
+"UL 174",
+"ANSI Z21.10"
+],
+"howTo": [
+"Test T&P valve — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 174).",
+"Flush tank — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 174).",
+"Check anode — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 174)."
+]
+},
+{
+"id": "furnace-gas",
+"name": "Gas furnace",
+"category": "hvac",
+"domain": "home",
+"criticality": "High",
+"tags": [
+"TT"
+],
+"failures": [
+"Flame sensor dirty",
+"Cracked heat exchanger",
+"Pressure-switch fault"
+],
+"checks": [
+"Clean flame sensor",
+"CO test",
+"Filter change"
+],
+"standards": [
+"NFPA 54",
+"ANSI Z21.47"
+],
+"howTo": [
+"Clean flame sensor — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 54).",
+"CO test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 54).",
+"Filter change — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 54)."
+]
+},
+{
+"id": "gen-standby",
+"name": "Standby generator (gas/diesel)",
+"category": "generators",
+"domain": "building",
+"criticality": "Critical",
+"tags": [
+"ST",
+"IT",
+"TT"
+],
+"failures": [
+"Fails to start",
+"ATS fault",
+"Wet stacking"
+],
+"checks": [
+"Weekly exercise",
+"Battery load test",
+"Load-bank annually"
+],
+"standards": [
+"NFPA 110",
+"ISO 8528"
+],
+"howTo": [
+"Weekly exercise — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 110).",
+"Battery load test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 110).",
+"Load-bank annually — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 110)."
+]
+},
+{
+"id": "gen-portable",
+"name": "Portable generator",
+"category": "generators",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"IT"
+],
+"failures": [
+"CO hazard",
+"Carburettor varnish",
+"No output"
+],
+"checks": [
+"Run outdoors ≥6 m from openings",
+"Check AVR & breaker",
+"Fresh fuel"
+],
+"standards": [
+"OSHA 1910.269",
+"CPSC"
+],
+"howTo": [
+"Run outdoors ≥6 m from openings — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (OSHA 1910.269).",
+"Check AVR & breaker — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (OSHA 1910.269).",
+"Fresh fuel — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (OSHA 1910.269)."
+]
+},
+{
+"id": "gen-solar-inverter",
+"name": "Solar PV inverter",
+"category": "electrical",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"IT"
+],
+"failures": [
+"Ground fault",
+"Islanding trip",
+"Overtemp"
+],
+"checks": [
+"Check DC insulation",
+"Clean heatsink",
+"Review fault codes"
+],
+"standards": [
+"IEC 62109",
+"UL 1741",
+"NEC 690"
+],
+"howTo": [
+"Check DC insulation — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 62109).",
+"Clean heatsink — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 62109).",
+"Review fault codes — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 62109)."
+]
+},
+{
+"id": "batt-ess",
+"name": "Battery energy storage (BESS)",
+"category": "electrical",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"TT",
+"IT"
+],
+"failures": [
+"Cell imbalance",
+"Thermal runaway risk",
+"BMS fault"
+],
+"checks": [
+"Review BMS cell deltas",
+"IR thermography",
+"Check fire suppression"
+],
+"standards": [
+"NFPA 855",
+"UL 9540",
+"IEC 62619"
+],
+"howTo": [
+"Review BMS cell deltas — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 855).",
+"IR thermography — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 855).",
+"Check fire suppression — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 855)."
+]
+},
+{
+"id": "ups",
+"name": "UPS system",
+"category": "electrical",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"IT",
+"TT"
+],
+"failures": [
+"Battery end-of-life",
+"Bypass transfer",
+"Fan failure"
+],
+"checks": [
+"Battery impedance test",
+"Transfer test"
+],
+"standards": [
+"IEC 62040",
+"IEEE 1188"
+],
+"howTo": [
+"Battery impedance test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 62040).",
+"Transfer test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 62040)."
+]
+},
+{
+"id": "transformer-oil",
+"name": "Oil-filled power transformer",
+"category": "electrical",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"TT",
+"IT",
+"LT"
+],
+"failures": [
+"Dissolved-gas rise",
+"Bushing failure",
+"Oil leak"
+],
+"checks": [
+"DGA sampling",
+"Buchholz test",
+"Thermal scan"
+],
+"standards": [
+"IEC 60076",
+"IEEE C57.104"
+],
+"howTo": [
+"DGA sampling — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076).",
+"Buchholz test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076).",
+"Thermal scan — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076)."
+]
+},
+{
+"id": "transformer-dry",
+"name": "Dry-type transformer",
+"category": "electrical",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"TT",
+"IT"
+],
+"failures": [
+"Hot spots",
+"Insulation tracking"
+],
+"checks": [
+"Thermal scan",
+"Clean & torque",
+"Megger"
+],
+"standards": [
+"IEC 60076-11",
+"IEEE C57.12.01"
+],
+"howTo": [
+"Thermal scan — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076-11).",
+"Clean & torque — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076-11).",
+"Megger — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60076-11)."
+]
+},
+{
+"id": "panel-mcc",
+"name": "Motor control centre (MCC)",
+"category": "switchgear",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"IT",
+"TT"
+],
+"failures": [
+"Loose terminations",
+"Contactor wear",
+"Arc-flash risk"
+],
+"checks": [
+"IR scan",
+"Torque check",
+"Test overloads"
+],
+"standards": [
+"IEC 61439",
+"NFPA 70E"
+],
+"howTo": [
+"IR scan — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61439).",
+"Torque check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61439).",
+"Test overloads — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61439)."
+]
+},
+{
+"id": "panel-db",
+"name": "Distribution board / consumer unit",
+"category": "switchgear",
+"domain": "home",
+"criticality": "High",
+"tags": [
+"IT"
+],
+"failures": [
+"RCD nuisance trip",
+"Overheated breaker",
+"Loose neutral"
+],
+"checks": [
+"RCD test button & trip time",
+"Torque terminals",
+"Label circuits"
+],
+"standards": [
+"BS 7671",
+"NEC 408",
+"IEC 60364"
+],
+"howTo": [
+"RCD test button & trip time — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (BS 7671).",
+"Torque terminals — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (BS 7671).",
+"Label circuits — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (BS 7671)."
+]
+},
+{
+"id": "cnc-mill",
+"name": "CNC machining centre (mill)",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST",
+"VT",
+"TT"
+],
+"failures": [
+"Spindle bearing wear",
+"Ballscrew backlash",
+"Coolant contamination"
+],
+"checks": [
+"Spindle runout",
+"Ballbar test",
+"Coolant concentration"
+],
+"standards": [
+"ISO 230",
+"ISO 10791",
+"ANSI B11.23"
+],
+"howTo": [
+"Spindle runout — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230).",
+"Ballbar test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230).",
+"Coolant concentration — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230)."
+]
+},
+{
+"id": "cnc-lathe",
+"name": "CNC lathe / turning centre",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST",
+"VT"
+],
+"failures": [
+"Chuck pressure loss",
+"Turret indexing fault",
+"Tailstock misalignment"
+],
+"checks": [
+"Chuck grip force",
+"Turret repeatability",
+"Level bed"
+],
+"standards": [
+"ISO 230",
+"ISO 13041",
+"ANSI B11.22"
+],
+"howTo": [
+"Chuck grip force — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230).",
+"Turret repeatability — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230).",
+"Level bed — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 230)."
+]
+},
+{
+"id": "laser-cutter",
+"name": "Laser / plasma cutter",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"ST",
+"TT"
+],
+"failures": [
+"Lens contamination",
+"Gas-pressure fault",
+"Fume extraction loss"
+],
+"checks": [
+"Clean optics",
+"Check assist gas",
+"Test interlocks"
+],
+"standards": [
+"ISO 11553",
+"IEC 60825"
+],
+"howTo": [
+"Clean optics — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 11553).",
+"Check assist gas — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 11553).",
+"Test interlocks — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 11553)."
+]
+},
+{
+"id": "press-hydraulic",
+"name": "Hydraulic press",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"PT",
+"TT"
+],
+"failures": [
+"Seal leak",
+"Pressure drift",
+"Light-curtain fault"
+],
+"checks": [
+"Test light curtains & two-hand control",
+"Hydraulic oil ISO code"
+],
+"standards": [
+"ISO 16092",
+"ANSI B11.2",
+"OSHA 1910.217"
+],
+"howTo": [
+"Test light curtains & two-hand control — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 16092).",
+"Hydraulic oil ISO code — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 16092)."
+]
+},
+{
+"id": "injection-molder",
+"name": "Injection moulding machine",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"TT",
+"PT"
+],
+"failures": [
+"Heater band failure",
+"Screw/barrel wear",
+"Mould flash"
+],
+"checks": [
+"Heater ohm test",
+"Check-ring leak test",
+"Clamp tonnage"
+],
+"standards": [
+"EN 201",
+"ANSI/PLASTICS B151.1"
+],
+"howTo": [
+"Heater ohm test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 201).",
+"Check-ring leak test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 201).",
+"Clamp tonnage — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 201)."
+]
+},
+{
+"id": "robot-industrial",
+"name": "Industrial robot arm",
+"category": "robotics",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST",
+"IT"
+],
+"failures": [
+"Reducer wear",
+"Encoder battery low",
+"Collision"
+],
+"checks": [
+"Replace encoder batteries",
+"Grease reducers",
+"Safety zone test"
+],
+"standards": [
+"ISO 10218",
+"RIA 15.06"
+],
+"howTo": [
+"Replace encoder batteries — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 10218).",
+"Grease reducers — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 10218).",
+"Safety zone test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 10218)."
+]
+},
+{
+"id": "agv",
+"name": "AGV / AMR mobile robot",
+"category": "robotics",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"ST"
+],
+"failures": [
+"Navigation loss",
+"Battery degradation",
+"Bumper sensor fault"
+],
+"checks": [
+"Clean lidar",
+"Battery capacity test",
+"E-stop test"
+],
+"standards": [
+"ISO 3691-4",
+"ANSI/RIA R15.08"
+],
+"howTo": [
+"Clean lidar — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 3691-4).",
+"Battery capacity test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 3691-4).",
+"E-stop test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 3691-4)."
+]
+},
+{
+"id": "elevator-traction",
+"name": "Traction elevator",
+"category": "vertical-transport",
+"domain": "building",
+"criticality": "Critical",
+"tags": [
+"ST"
+],
+"failures": [
+"Door faults",
+"Rope wear",
+"Levelling error"
+],
+"checks": [
+"Inspect ropes & sheave",
+"Test door reopening",
+"Brake test"
+],
+"standards": [
+"ASME A17.1",
+"EN 81-20"
+],
+"howTo": [
+"Inspect ropes & sheave — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1).",
+"Test door reopening — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1).",
+"Brake test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1)."
+]
+},
+{
+"id": "elevator-hydraulic",
+"name": "Hydraulic elevator",
+"category": "vertical-transport",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"PT",
+"ST"
+],
+"failures": [
+"Oil leak",
+"Drift",
+"Valve fault"
+],
+"checks": [
+"Check jack seals",
+"Relief valve test"
+],
+"standards": [
+"ASME A17.1",
+"EN 81-20"
+],
+"howTo": [
+"Check jack seals — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1).",
+"Relief valve test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1)."
+]
+},
+{
+"id": "escalator",
+"name": "Escalator / moving walk",
+"category": "vertical-transport",
+"domain": "building",
+"criticality": "High",
+"tags": [
+"ST",
+"VT"
+],
+"failures": [
+"Step chain wear",
+"Handrail speed mismatch",
+"Comb plate damage"
+],
+"checks": [
+"Handrail speed sync",
+"Step/skirt gap"
+],
+"standards": [
+"ASME A17.1",
+"EN 115"
+],
+"howTo": [
+"Handrail speed sync — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1).",
+"Step/skirt gap — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME A17.1)."
+]
+},
+{
+"id": "crane-overhead",
+"name": "Overhead / gantry crane",
+"category": "lifting",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"ST"
+],
+"failures": [
+"Wire-rope wear",
+"Brake fade",
+"Limit-switch failure"
+],
+"checks": [
+"Pre-use check",
+"Load test",
+"Rope inspection"
+],
+"standards": [
+"ASME B30.2",
+"ISO 4309",
+"LOLER"
+],
+"howTo": [
+"Pre-use check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B30.2).",
+"Load test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B30.2).",
+"Rope inspection — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B30.2)."
+]
+},
+{
+"id": "hoist-chain",
+"name": "Electric chain hoist",
+"category": "lifting",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST"
+],
+"failures": [
+"Chain stretch",
+"Hook deformation",
+"Brake slip"
+],
+"checks": [
+"Gauge chain pitch",
+"Hook throat opening"
+],
+"standards": [
+"ASME B30.16"
+],
+"howTo": [
+"Gauge chain pitch — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B30.16).",
+"Hook throat opening — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B30.16)."
+]
+},
+{
+"id": "forklift",
+"name": "Forklift truck",
+"category": "lifting",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST"
+],
+"failures": [
+"Mast chain wear",
+"Hydraulic leak",
+"Brake fault"
+],
+"checks": [
+"Daily pre-use check",
+"Chain elongation"
+],
+"standards": [
+"OSHA 1910.178",
+"ISO 3691-1"
+],
+"howTo": [
+"Daily pre-use check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (OSHA 1910.178).",
+"Chain elongation — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (OSHA 1910.178)."
+]
+},
+{
+"id": "valve-control",
+"name": "Control valve",
+"category": "valves",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ZT",
+"PT"
+],
+"failures": [
+"Stiction",
+"Positioner drift",
+"Packing leak"
+],
+"checks": [
+"Partial-stroke test",
+"Calibrate positioner"
+],
+"standards": [
+"ISA 75",
+"IEC 60534"
+],
+"howTo": [
+"Partial-stroke test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISA 75).",
+"Calibrate positioner — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISA 75)."
+]
+},
+{
+"id": "valve-psv",
+"name": "Pressure safety valve",
+"category": "valves",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT"
+],
+"failures": [
+"Simmering",
+"Set-pressure drift",
+"Seat leak"
+],
+"checks": [
+"Bench test & recertify",
+"Check isolation lock-open"
+],
+"standards": [
+"API 520/521/527",
+"ASME VIII"
+],
+"howTo": [
+"Bench test & recertify — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 520/521/527).",
+"Check isolation lock-open — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 520/521/527)."
+]
+},
+{
+"id": "valve-esdv",
+"name": "ESD / shutdown valve",
+"category": "valves",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"ZT"
+],
+"failures": [
+"Fails to close",
+"Slow stroke",
+"Solenoid fault"
+],
+"checks": [
+"Full-stroke timing",
+"Proof test SIF"
+],
+"standards": [
+"IEC 61511",
+"API 6D"
+],
+"howTo": [
+"Full-stroke timing — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61511).",
+"Proof test SIF — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61511)."
+]
+},
+{
+"id": "hx-shell",
+"name": "Shell & tube heat exchanger",
+"category": "heat-exchangers",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"TT",
+"PT"
+],
+"failures": [
+"Tube leak",
+"Fouling",
+"Gasket leak"
+],
+"checks": [
+"Hydrotest bundle",
+"ΔT/ΔP trend"
+],
+"standards": [
+"TEMA",
+"ASME VIII"
+],
+"howTo": [
+"Hydrotest bundle — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (TEMA).",
+"ΔT/ΔP trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (TEMA)."
+]
+},
+{
+"id": "hx-plate",
+"name": "Plate heat exchanger",
+"category": "heat-exchangers",
+"domain": "building",
+"criticality": "Medium",
+"tags": [
+"TT",
+"PT"
+],
+"failures": [
+"Gasket leak",
+"Plate fouling"
+],
+"checks": [
+"Measure tightening dimension",
+"Clean plates"
+],
+"standards": [
+"EN 1148",
+"AHRI 400"
+],
+"howTo": [
+"Measure tightening dimension — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1148).",
+"Clean plates — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1148)."
+]
+},
+{
+"id": "tank-storage",
+"name": "Atmospheric storage tank",
+"category": "static",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"LT",
+"TT"
+],
+"failures": [
+"Floor corrosion",
+"Roof seal failure",
+"Overfill"
+],
+"checks": [
+"Level-gauge check",
+"Overfill alarm test",
+"NDT floor scan"
+],
+"standards": [
+"API 650",
+"API 653",
+"API 2350"
+],
+"howTo": [
+"Level-gauge check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 650).",
+"Overfill alarm test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 650).",
+"NDT floor scan — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 650)."
+]
+},
+{
+"id": "vessel-pressure",
+"name": "Pressure vessel / separator",
+"category": "static",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT",
+"LT",
+"TT"
+],
+"failures": [
+"Corrosion under insulation",
+"Level instrument fault"
+],
+"checks": [
+"Thickness survey",
+"PSV check"
+],
+"standards": [
+"ASME VIII",
+"API 510"
+],
+"howTo": [
+"Thickness survey — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME VIII).",
+"PSV check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME VIII)."
+]
+},
+{
+"id": "pipeline",
+"name": "Pipeline & pig launcher",
+"category": "static",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"PT",
+"FT"
+],
+"failures": [
+"Internal corrosion",
+"Third-party damage",
+"Leak"
+],
+"checks": [
+"Intelligent pigging",
+"Cathodic protection survey"
+],
+"standards": [
+"ASME B31.4/B31.8",
+"API 1160"
+],
+"howTo": [
+"Intelligent pigging — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B31.4/B31.8).",
+"Cathodic protection survey — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASME B31.4/B31.8)."
+]
+},
+{
+"id": "fan-industrial",
+"name": "Industrial fan / blower",
+"category": "rotating",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"VT",
+"TT"
+],
+"failures": [
+"Imbalance",
+"Belt wear",
+"Bearing failure"
+],
+"checks": [
+"Balance check",
+"Belt tension",
+"Vibration"
+],
+"standards": [
+"ISO 14694",
+"AMCA 210"
+],
+"howTo": [
+"Balance check — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 14694).",
+"Belt tension — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 14694).",
+"Vibration — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 14694)."
+]
+},
+{
+"id": "gearbox-worm",
+"name": "Worm gearbox",
+"category": "rotating",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"VT",
+"TT"
+],
+"failures": [
+"Overheating",
+"Bronze wheel wear"
+],
+"checks": [
+"Oil analysis",
+"Backlash"
+],
+"standards": [
+"AGMA 6034",
+"ISO 6336"
+],
+"howTo": [
+"Oil analysis — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (AGMA 6034).",
+"Backlash — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (AGMA 6034)."
+]
+},
+{
+"id": "mixer-agitator",
+"name": "Mixer / agitator",
+"category": "rotating",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"VT",
+"ST"
+],
+"failures": [
+"Seal leak",
+"Shaft deflection",
+"Gearbox wear"
+],
+"checks": [
+"Seal inspection",
+"Shaft runout"
+],
+"standards": [
+"API 610 (annex)",
+"ISO 14224"
+],
+"howTo": [
+"Seal inspection — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 610 (annex)).",
+"Shaft runout — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (API 610 (annex))."
+]
+},
+{
+"id": "centrifuge",
+"name": "Industrial centrifuge / decanter",
+"category": "rotating",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"VT",
+"ST"
+],
+"failures": [
+"Imbalance",
+"Scroll wear",
+"Bearing damage"
+],
+"checks": [
+"Vibration trend",
+"Bowl inspection"
+],
+"standards": [
+"EN 12547"
+],
+"howTo": [
+"Vibration trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 12547).",
+"Bowl inspection — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 12547)."
+]
+},
+{
+"id": "extruder",
+"name": "Extruder",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"TT",
+"PT",
+"ST"
+],
+"failures": [
+"Screw wear",
+"Heater failure",
+"Die build-up"
+],
+"checks": [
+"Melt pressure trend",
+"Heater test"
+],
+"standards": [
+"EN 1114"
+],
+"howTo": [
+"Melt pressure trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1114).",
+"Heater test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (EN 1114)."
+]
+},
+{
+"id": "packaging",
+"name": "Packaging / filling line",
+"category": "machine-tools",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"ST"
+],
+"failures": [
+"Jams",
+"Seal-jaw temp drift",
+"Guard interlock fault"
+],
+"checks": [
+"Interlock test",
+"Seal temp calibration"
+],
+"standards": [
+"ISO 12100",
+"EN 415"
+],
+"howTo": [
+"Interlock test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 12100).",
+"Seal temp calibration — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 12100)."
+]
+},
+{
+"id": "dust-collector",
+"name": "Dust collector / baghouse",
+"category": "static",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"PT"
+],
+"failures": [
+"Bag rupture",
+"Pulse valve fault",
+"Explosion risk"
+],
+"checks": [
+"ΔP trend",
+"Pulse valve test",
+"Explosion vent"
+],
+"standards": [
+"NFPA 652/660",
+"ATEX"
+],
+"howTo": [
+"ΔP trend — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 652/660).",
+"Pulse valve test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 652/660).",
+"Explosion vent — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 652/660)."
+]
+},
+{
+"id": "water-treatment",
+"name": "RO / water-treatment skid",
+"category": "static",
+"domain": "building",
+"criticality": "Medium",
+"tags": [
+"PT",
+"FT"
+],
+"failures": [
+"Membrane fouling",
+"Pump failure",
+"Chemical dosing fault"
+],
+"checks": [
+"Normalised permeate flow",
+"SDI test"
+],
+"standards": [
+"ASTM D4516",
+"WHO GDWQ"
+],
+"howTo": [
+"Normalised permeate flow — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASTM D4516).",
+"SDI test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASTM D4516)."
+]
+},
+{
+"id": "fire-pump",
+"name": "Fire pump set",
+"category": "fire-gas",
+"domain": "building",
+"criticality": "Critical",
+"tags": [
+"PT",
+"ST"
+],
+"failures": [
+"Fails to start",
+"Low churn pressure",
+"Controller fault"
+],
+"checks": [
+"Weekly churn test",
+"Annual flow test"
+],
+"standards": [
+"NFPA 20",
+"NFPA 25"
+],
+"howTo": [
+"Weekly churn test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 20).",
+"Annual flow test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 20)."
+]
+},
+{
+"id": "sprinkler",
+"name": "Sprinkler system",
+"category": "fire-gas",
+"domain": "building",
+"criticality": "Critical",
+"tags": [
+"PT"
+],
+"failures": [
+"Valve closed",
+"Corrosion",
+"Obstruction"
+],
+"checks": [
+"Inspect control valves open",
+"Main drain test"
+],
+"standards": [
+"NFPA 13",
+"NFPA 25"
+],
+"howTo": [
+"Inspect control valves open — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 13).",
+"Main drain test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 13)."
+]
+},
+{
+"id": "fire-alarm",
+"name": "Fire alarm panel & detectors",
+"category": "fire-gas",
+"domain": "building",
+"criticality": "Critical",
+"tags": [],
+"failures": [
+"Detector fault",
+"Battery low",
+"Earth fault"
+],
+"checks": [
+"Test detectors",
+"Battery load test"
+],
+"standards": [
+"NFPA 72",
+"BS 5839"
+],
+"howTo": [
+"Test detectors — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 72).",
+"Battery load test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NFPA 72)."
+]
+},
+{
+"id": "gas-detector",
+"name": "Fixed gas detector",
+"category": "fire-gas",
+"domain": "industrial",
+"criticality": "Critical",
+"tags": [
+"AT"
+],
+"failures": [
+"Sensor drift",
+"Poisoning"
+],
+"checks": [
+"Bump test",
+"Calibrate with certified gas"
+],
+"standards": [
+"IEC 60079-29",
+"ISA 92"
+],
+"howTo": [
+"Bump test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60079-29).",
+"Calibrate with certified gas — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60079-29)."
+]
+},
+{
+"id": "refrigerator",
+"name": "Refrigerator / freezer",
+"category": "appliances",
+"domain": "home",
+"criticality": "Low",
+"tags": [
+"TT"
+],
+"failures": [
+"Not cooling",
+"Frost build-up",
+"Noisy compressor"
+],
+"checks": [
+"Clean condenser coils",
+"Door seal test",
+"Check defrost heater"
+],
+"standards": [
+"IEC 60335-2-24",
+"UL 60335"
+],
+"howTo": [
+"Clean condenser coils — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-24).",
+"Door seal test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-24).",
+"Check defrost heater — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-24)."
+]
+},
+{
+"id": "washing-machine",
+"name": "Washing machine",
+"category": "appliances",
+"domain": "home",
+"criticality": "Low",
+"tags": [],
+"failures": [
+"Won't drain",
+"Excess vibration",
+"Door-lock fault"
+],
+"checks": [
+"Clean drain filter",
+"Level & check shocks",
+"Test door lock"
+],
+"standards": [
+"IEC 60335-2-7"
+],
+"howTo": [
+"Clean drain filter — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-7).",
+"Level & check shocks — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-7).",
+"Test door lock — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-7)."
+]
+},
+{
+"id": "dryer",
+"name": "Clothes dryer",
+"category": "appliances",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"TT"
+],
+"failures": [
+"Lint fire risk",
+"No heat",
+"Drum belt broken"
+],
+"checks": [
+"Clean lint duct",
+"Test thermal fuse"
+],
+"standards": [
+"UL 2158",
+"IEC 60335-2-11"
+],
+"howTo": [
+"Clean lint duct — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 2158).",
+"Test thermal fuse — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 2158)."
+]
+},
+{
+"id": "dishwasher",
+"name": "Dishwasher",
+"category": "appliances",
+"domain": "home",
+"criticality": "Low",
+"tags": [],
+"failures": [
+"Not draining",
+"Poor cleaning",
+"Leak"
+],
+"checks": [
+"Clean filter & spray arms",
+"Check inlet valve"
+],
+"standards": [
+"IEC 60335-2-5"
+],
+"howTo": [
+"Clean filter & spray arms — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-5).",
+"Check inlet valve — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-5)."
+]
+},
+{
+"id": "oven-range",
+"name": "Electric / gas cooker & oven",
+"category": "appliances",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"TT"
+],
+"failures": [
+"Element failure",
+"Igniter fault",
+"Gas smell"
+],
+"checks": [
+"Test element continuity",
+"Leak test gas fittings"
+],
+"standards": [
+"IEC 60335-2-6",
+"ANSI Z21.1"
+],
+"howTo": [
+"Test element continuity — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-6).",
+"Leak test gas fittings — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-6)."
+]
+},
+{
+"id": "microwave",
+"name": "Microwave oven",
+"category": "appliances",
+"domain": "home",
+"criticality": "Low",
+"tags": [],
+"failures": [
+"No heating",
+"Arcing",
+"Door switch fault"
+],
+"checks": [
+"Do NOT open — HV capacitor",
+"Check door interlocks"
+],
+"standards": [
+"IEC 60335-2-25"
+],
+"howTo": [
+"Do NOT open — HV capacitor — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-25).",
+"Check door interlocks — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-25)."
+]
+},
+{
+"id": "garage-door",
+"name": "Garage door opener",
+"category": "appliances",
+"domain": "home",
+"criticality": "Medium",
+"tags": [],
+"failures": [
+"Won't reverse",
+"Spring broken",
+"Remote fault"
+],
+"checks": [
+"Monthly auto-reverse test",
+"Photo-eye alignment"
+],
+"standards": [
+"UL 325"
+],
+"howTo": [
+"Monthly auto-reverse test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 325).",
+"Photo-eye alignment — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (UL 325)."
+]
+},
+{
+"id": "pool-pump",
+"name": "Pool / spa pump",
+"category": "pumps",
+"domain": "home",
+"criticality": "Low",
+"tags": [
+"PT"
+],
+"failures": [
+"Loss of prime",
+"Air leak",
+"Motor overheating"
+],
+"checks": [
+"Clean strainer basket",
+"Check lid O-ring"
+],
+"standards": [
+"NEC 680",
+"IEC 60335-2-41"
+],
+"howTo": [
+"Clean strainer basket — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NEC 680).",
+"Check lid O-ring — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (NEC 680)."
+]
+},
+{
+"id": "sump-pump",
+"name": "Sump pump",
+"category": "pumps",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"LT"
+],
+"failures": [
+"Float stuck",
+"Check-valve failure",
+"Power loss"
+],
+"checks": [
+"Pour-test float",
+"Test backup battery"
+],
+"standards": [
+"IEC 60335-2-41"
+],
+"howTo": [
+"Pour-test float — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-41).",
+"Test backup battery — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 60335-2-41)."
+]
+},
+{
+"id": "ev-charger",
+"name": "EV charger (wallbox)",
+"category": "electrical",
+"domain": "home",
+"criticality": "Medium",
+"tags": [
+"IT"
+],
+"failures": [
+"Ground fault",
+"Overheating plug",
+"Comms fault"
+],
+"checks": [
+"RCD test",
+"Torque terminals",
+"Firmware"
+],
+"standards": [
+"IEC 61851",
+"NEC 625",
+"UL 2594"
+],
+"howTo": [
+"RCD test — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61851).",
+"Torque terminals — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61851).",
+"Firmware — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61851)."
+]
+},
+{
+"id": "smart-thermostat",
+"name": "Smart thermostat / BMS controller",
+"category": "instrumentation",
+"domain": "building",
+"criticality": "Low",
+"tags": [
+"TT"
+],
+"failures": [
+"Wiring fault",
+"Sensor offset",
+"Comms loss"
+],
+"checks": [
+"Verify C-wire",
+"Calibrate sensor"
+],
+"standards": [
+"ASHRAE 135 (BACnet)"
+],
+"howTo": [
+"Verify C-wire — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 135 (BACnet)).",
+"Calibrate sensor — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ASHRAE 135 (BACnet))."
+]
+},
+{
+"id": "plc-rack",
+"name": "PLC rack & I/O",
+"category": "plc",
+"domain": "industrial",
+"criticality": "High",
+"tags": [],
+"failures": [
+"I/O card fault",
+"Comms loss",
+"Battery low"
+],
+"checks": [
+"Download backup",
+"Check diagnostics",
+"Replace battery"
+],
+"standards": [
+"IEC 61131",
+"IEC 62443"
+],
+"howTo": [
+"Download backup — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61131).",
+"Check diagnostics — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61131).",
+"Replace battery — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61131)."
+]
+},
+{
+"id": "vfd-generic",
+"name": "Variable-frequency drive (generic)",
+"category": "vfds",
+"domain": "industrial",
+"criticality": "High",
+"tags": [
+"IT",
+"TT"
+],
+"failures": [
+"Overcurrent trip",
+"DC-bus fault",
+"Fan failure"
+],
+"checks": [
+"Check fault log",
+"Capacitor reform",
+"Clean heatsink"
+],
+"standards": [
+"IEC 61800",
+"IEEE 519"
+],
+"howTo": [
+"Check fault log — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800).",
+"Capacitor reform — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800).",
+"Clean heatsink — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61800)."
+]
+},
+{
+"id": "meter-flow",
+"name": "Flow meter (Coriolis/mag/ultrasonic)",
+"category": "instruments",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"FT"
+],
+"failures": [
+"Zero drift",
+"Coating",
+"Empty pipe"
+],
+"checks": [
+"Zero verification",
+"Meter verification"
+],
+"standards": [
+"ISO 5167",
+"API MPMS"
+],
+"howTo": [
+"Zero verification — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5167).",
+"Meter verification — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (ISO 5167)."
+]
+},
+{
+"id": "analyzer",
+"name": "Process analyzer (gas/pH/conductivity)",
+"category": "instruments",
+"domain": "industrial",
+"criticality": "Medium",
+"tags": [
+"AT"
+],
+"failures": [
+"Sensor drift",
+"Sample-system blockage"
+],
+"checks": [
+"Calibrate",
+"Check sample flow"
+],
+"standards": [
+"IEC 61207",
+"ISA 76"
+],
+"howTo": [
+"Calibrate — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61207).",
+"Check sample flow — How: isolate/LOTO first, follow the OEM manual, record as-found and as-left values. Done when: reading within OEM/standard limits (IEC 61207)."
+]
+}
+]

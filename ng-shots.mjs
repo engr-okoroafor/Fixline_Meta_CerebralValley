@@ -1,0 +1,18 @@
+import { chromium } from "@playwright/test";
+const O="/workspace/fixline/shots/nextgen/",U="https://fixline-guardian.vercel.app";
+const b=await chromium.launch();const p=await b.newPage({viewport:{width:1920,height:1080}});const w=ms=>p.waitForTimeout(ms);
+const skip=async()=>{const s=p.getByRole("button",{name:/^Skip/});if(await s.count()&&await s.first().isVisible())await s.first().click().catch(()=>{});await w(300);};
+const tab=async n=>{await p.getByRole("tab",{name:n}).click();await w(900);};
+const go=async l=>{await l.first().scrollIntoViewIfNeeded({timeout:3000}).catch(()=>{});await w(500);};
+const shot=n=>p.screenshot({path:O+n});
+await p.goto(U,{waitUntil:"networkidle"});await w(1000);await shot("01-home-walkthrough.png");await skip();await go(p.getByText("What FixLine can save"));await shot("01b-home-insights.png");
+await tab("Engineering");await skip();await p.getByRole("button",{name:/Show vibration trend/}).click().catch(()=>{});await p.getByRole("button",{name:/^Run$/}).click().catch(()=>{});await w(9000);await shot("02-engineering-nl-chart.png");
+await tab("Safety");await skip();await go(p.getByText(/Fire guidance/));await p.getByText(/Fire guidance/).first().click().catch(()=>{});await w(1500);await shot("03-safety-docs-fire.png");
+await tab("Tuning");await skip();await go(p.getByText(/alignment/i));await shot("04-tuning-shaft-alignment.png");
+await tab("Projects");await skip();await p.getByRole("button",{name:/Gantt/}).click().catch(()=>{});await w(1500);await shot("05-projects-gantt.png");
+await p.goto(U+"/admin",{waitUntil:"networkidle"});await w(1500);await shot("06-admin-vendors.png");
+await p.goto(U,{waitUntil:"networkidle"});await skip();await tab("Ask AI");await skip();await shot("07-ask-ai-deeplinks.png");
+await p.goto(U+"/xr",{waitUntil:"networkidle"});await w(2500);await shot("08-xr-ar.png");
+await p.goto(U,{waitUntil:"networkidle"});await skip();await tab("Settings");await skip();await go(p.getByText("AI providers"));await shot("09-settings-meta-nvidia-enus.png");
+await tab("Voice & Vision");await skip();await shot("09b-voice-dock.png");
+await b.close();console.log("ok");

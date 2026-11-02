@@ -1,0 +1,535 @@
+[
+ {
+  "id": "pump-centrifugal",
+  "name": "Centrifugal pump",
+  "category": "pumps",
+  "tags": [
+   "FT",
+   "PT",
+   "VT",
+   "TT"
+  ],
+  "failures": [
+   "Cavitation",
+   "Seal leak",
+   "High vibration",
+   "Low flow"
+  ],
+  "checks": [
+   "Check NPSH / suction strainer",
+   "Inspect mechanical seal flush",
+   "Check alignment and bearing condition (ISO 10816)"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Check NPSH / suction strainer — How: measure suction pressure and compare to required NPSH per manufacturer manual, remove and clean suction strainer. Tools: suction/discharge pressure gauges, wrenches, cleaning brush. Safety first: pump locked out, isolated, depressurized and PPE worn. Done when: suction pressure above minimum per manufacturer manual and strainer clean with steady flow and no cavitation noise.",
+   "Inspect mechanical seal flush — How: inspect flush piping, filter/orifice and sight glass for flow, leaks and blockage and verify pressure per manufacturer manual. Tools: flashlight, pressure gauge, wrench, clean cloth. Safety first: pump locked out and cooled with spill containment in place. Done when: clear steady flush flow at pressure per manufacturer manual with no leaks or overheating at seal.",
+   "Check alignment and bearing condition (ISO 10816) — How: check coupling alignment and tighten to torque per manufacturer manual, measure bearing vibration per ISO 10816 and check temperature and lubrication. Tools: dial indicator/laser alignment tool, vibration meter, IR thermometer, grease gun. Safety first: pump locked out with coupling guard refitted after check and PPE worn. Done when: alignment and vibration within limits per manufacturer manual and ISO 10816 with smooth quiet bearings and no overheating."
+  ]
+ },
+ {
+  "id": "pump-pd",
+  "name": "Positive-displacement pump",
+  "category": "pumps",
+  "tags": [
+   "PT",
+   "FT"
+  ],
+  "failures": [
+   "Overpressure",
+   "Valve wear",
+   "Pulsation"
+  ],
+  "checks": [
+   "Verify relief valve setting",
+   "Inspect check valves",
+   "Check pulsation dampener charge"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Verify relief valve setting — How: confirm lift pressure with calibrated gauge and adjust only to setpoint per manufacturer manual. Tools: calibrated pressure gauge, basic hand tools. Safety first: pump locked out, depressurized, and isolated from system. Done when: valve lifts at set pressure per manufacturer manual and reseats without leak.",
+   "Inspect check valves — How: remove, clean, and inspect balls/poppets, seats, and springs for wear or debris, torque fasteners per manufacturer manual. Tools: basic hand tools, cleaning cloths, inspection light. Safety first: pump locked out, depressurized, and drained. Done when: seats seal cleanly with no backflow, wear, or sticking.",
+   "Check pulsation dampener charge — How: isolate and depressurize pump side, then check pre-charge with gauge and recharge to pressure per manufacturer manual. Tools: air/gas pressure gauge, charging pump/hose. Safety first: pump locked out and fully depressurized before checking charge. Done when: pre-charge holds at pressure per manufacturer manual with no leak."
+  ]
+ },
+ {
+  "id": "pump-submersible",
+  "name": "Submersible pump",
+  "category": "pumps",
+  "tags": [
+   "LT",
+   "IT"
+  ],
+  "failures": [
+   "Motor overload",
+   "Dry running",
+   "Insulation failure"
+  ],
+  "checks": [
+   "Megger motor cable",
+   "Check level cut-out",
+   "Inspect impeller for debris"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Megger motor cable — How: isolate and disconnect cable, then test phase-to-earth and phase-to-phase insulation per manufacturer manual. Tools: insulation resistance tester, multimeter. Safety first: power isolated, locked out, and proven dead. Done when: readings are stable and above minimum per manufacturer manual.",
+   "Check level cut-out — How: raise and lower float / simulate level to verify start and stop levels per manufacturer manual. Tools: multimeter, water level simulator or manual lift. Safety first: power isolated for adjustment, then live test with guards in place. Done when: pump cuts in and cuts out at setpoints per manufacturer manual.",
+   "Inspect impeller for debris — How: lift pump, remove cover, clear debris and check for damage, tighten fasteners per manufacturer manual. Tools: lifting gear, hand tools, cleaning brush, torch. Safety first: power isolated and locked out, pump drained and clean. Done when: impeller clear, undamaged, and rotates freely per manufacturer manual."
+  ]
+ },
+ {
+  "id": "compressor",
+  "name": "Compressor",
+  "category": "rotating",
+  "tags": [
+   "PT",
+   "TT",
+   "VT"
+  ],
+  "failures": [
+   "High discharge temp",
+   "Surge",
+   "Valve failure"
+  ],
+  "checks": [
+   "Check intercooler",
+   "Verify anti-surge valve",
+   "Inspect valve plates"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Check intercooler — How: Visually inspect for fouling, leaks, and corrosion and check temperature differential per manufacturer manual. Tools: inspection lamp, thermometer, pressure gauges. Safety first: compressor stopped, isolated, and depressurized. Done when: clean, leak-free, and cooling performance within limits per manufacturer manual.",
+   "Verify anti-surge valve — How: Check valve movement, actuator response, and setpoints per manufacturer manual. Tools: hand tools, calibration test equipment. Safety first: compressor in safe shutdown with control power isolated as required. Done when: valve strokes freely and opens/closes at settings per manufacturer manual.",
+   "Inspect valve plates — How: Remove covers, inspect plates and springs for cracks, wear, and deposits, clean seats, and retighten to torque per manufacturer manual. Tools: hand tools, torque wrench, cleaner, inspection lamp. Safety first: compressor locked out, isolated, and depressurized. Done when: plates seal properly with no damage and fasteners torqued per manufacturer manual."
+  ]
+ },
+ {
+  "id": "turbine",
+  "name": "Gas/steam turbine",
+  "category": "rotating",
+  "tags": [
+   "ST",
+   "TT",
+   "VT"
+  ],
+  "failures": [
+   "Overspeed",
+   "High exhaust temp",
+   "Vibration"
+  ],
+  "checks": [
+   "Test overspeed trip",
+   "Inspect combustors/nozzles",
+   "Check lube oil"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Test overspeed trip — How: perform electronic/mechanical overspeed trip test per manufacturer manual procedure. Tools: tachometer, control panel test switch. Safety first: turbine unloaded and stable with personnel clear of rotating parts. Done when: trip actuates at set speed per manufacturer manual and resets normally.",
+   "Inspect combustors/nozzles — How: remove covers and visually/borescope inspect liners, nozzles and fasteners, tighten to torque per manufacturer manual. Tools: borescope, hand tools, torque wrench, flashlight. Safety first: unit shutdown, cooled, fuel isolated and lockout/tagout applied. Done when: no cracks, burning, clogging or distortion beyond limits per manufacturer manual.",
+   "Check lube oil — How: check level, pressure, temperature and condition against settings per manufacturer manual, top up or sample as needed. Tools: sight glass/dipstick, gauges, oil sample bottle. Safety first: wear PPE and check with unit in state per manufacturer manual, beware hot surfaces. Done when: level and pressure in normal range per manufacturer manual with clean oil and no leaks/alarms."
+  ]
+ },
+ {
+  "id": "motor",
+  "name": "Induction motor",
+  "category": "electrical",
+  "tags": [
+   "IT",
+   "TT",
+   "VT"
+  ],
+  "failures": [
+   "Overload trip",
+   "Bearing noise",
+   "Low insulation"
+  ],
+  "checks": [
+   "Measure phase currents",
+   "Megger windings",
+   "Grease bearings per schedule"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Measure phase currents — How: Clamp each phase conductor at the starter with motor at normal load and record all three readings. Tools: clamp ammeter, PPE. Safety first: energized work by qualified person only with guards secured. Done when: currents are balanced and within nameplate FLA per manufacturer manual.",
+   "Megger windings — How: Isolate motor, disconnect leads and test phase-to-earth and phase-to-phase at test voltage per manufacturer manual. Tools: insulation resistance tester, discharge lead, PPE. Safety first: locked out, tagged out, verified dead and fully discharged. Done when: readings are above minimum per manufacturer manual and logged.",
+   "Grease bearings per schedule — How: Clean grease fitting and add specified type and quantity per manufacturer manual with grease gun. Tools: grease gun, correct grease, lint-free rag. Safety first: motor stopped and isolated unless per manufacturer manual requires rotation with guards on. Done when: correct amount added per manufacturer manual with no over-greasing and fitting wiped clean."
+  ]
+ },
+ {
+  "id": "gearbox",
+  "name": "Gearbox",
+  "category": "rotating",
+  "tags": [
+   "TT",
+   "VT"
+  ],
+  "failures": [
+   "Gear mesh noise",
+   "Oil leak",
+   "High oil temp"
+  ],
+  "checks": [
+   "Oil analysis",
+   "Check backlash",
+   "Inspect seals and breather"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Oil analysis — How: draw warm oil sample from sample valve after flushing a small amount into waste container. Tools: sample pump/bottle, clean sample bottle and label, gloves. Safety first: gearbox stopped, isolated, and oil cool enough for safe handling. Done when: labeled sample sealed with no spills and level topped up per manufacturer manual if needed.",
+   "Check backlash — How: mount dial indicator against gear tooth and gently rock shaft to read movement and compare to per manufacturer manual. Tools: dial indicator with magnetic base, hand tools. Safety first: lockout-tagout with zero rotation confirmed. Done when: backlash measurement recorded and within per manufacturer manual.",
+   "Inspect seals and breather — How: clean exterior and visually check seals for leaks and remove breather to check for blockage. Tools: flashlight, lint-free rags, soft brush. Safety first: machine isolated and surfaces cool to touch. Done when: no active leaks, breather clear and refitted tightened per manufacturer manual."
+  ]
+ },
+ {
+  "id": "valve-manual",
+  "name": "Isolation valve",
+  "category": "valves",
+  "tags": [],
+  "failures": [
+   "Passing",
+   "Stem leak",
+   "Seized"
+  ],
+  "checks": [
+   "Repack gland",
+   "Lap seats",
+   "Exercise valve"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Repack gland — How: isolate valve, remove gland follower, pick out old packing, install new packing rings with joints staggered per manufacturer manual. Tools: wrenches, packing pick, new packing. Safety first: valve isolated, depressurized and vented. Done when: gland tightened per manufacturer manual with no stem leakage and free stem movement.",
+   "Lap seats — How: disassemble valve, clean disc and seats, apply lapping compound and rotate to lap per manufacturer manual, clean fully and reassemble. Tools: wrenches, lapping compound, lapping tool, lint-free cloths. Safety first: valve isolated, depressurized and parts cleaned. Done when: even matte contact pattern and leak-tight closure retorqued per manufacturer manual.",
+   "Exercise valve — How: slowly operate valve fully closed to fully open and back per manufacturer manual. Tools: handwheel or hand wrench only. Safety first: confirm system permits operation with stable pressure. Done when: smooth full travel without sticking and correct open/closed position reached."
+  ]
+ },
+ {
+  "id": "heat-exchanger",
+  "name": "Shell & tube heat exchanger",
+  "category": "static",
+  "tags": [
+   "TT",
+   "PT"
+  ],
+  "failures": [
+   "Fouling",
+   "Tube leak",
+   "Low duty"
+  ],
+  "checks": [
+   "Trend approach temperature",
+   "Pressure test tubes",
+   "Clean bundle"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Trend approach temperature — How: Record hot-side and cold-side inlet/outlet temperatures daily and calculate approach temperature per manufacturer manual. Tools: calibrated thermometers/RTDs, log sheet. Safety first: System in normal operation with guards closed and PPE worn. Done when: Trend is stable and within limits per manufacturer manual.",
+   "Pressure test tubes — How: Isolate, drain, and pressurize tubeside to test pressure per manufacturer manual and watch gauge for drop. Tools: hydrostatic test pump, calibrated pressure gauge, blinds/plugs. Safety first: Exchanger isolated, depressurized, drained, cooled, and locked out. Done when: Pressure holds per manufacturer manual with no drop or visible leaks.",
+   "Clean bundle — How: Remove covers, pull bundle, brush and flush tubes, then reinstall and tighten per manufacturer manual. Tools: soft tube brushes, low-pressure hose, non-corrosive cleaner, wrenches. Safety first: Locked out, depressurized, drained, cooled with gloves, goggles and chemical PPE. Done when: Tubes visibly clear, bundle reinstalled leak-free and performance restored."
+  ]
+ },
+ {
+  "id": "boiler",
+  "name": "Boiler",
+  "category": "static",
+  "tags": [
+   "PT",
+   "LT",
+   "TT"
+  ],
+  "failures": [
+   "Low water",
+   "Flame failure",
+   "High stack temp"
+  ],
+  "checks": [
+   "Test low-water cut-off",
+   "Inspect burner/igniter",
+   "Check water chemistry"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Test low-water cut-off — How: slow-drain test to low-water trip point per manufacturer manual and verify burner shutdown and alarm. Tools: bucket, hand tools, multimeter. Safety first: boiler attended in test mode with PPE to avoid steam and hot water burns. Done when: burner shuts off at low-water level with alarm on and resets normally on refill.",
+   "Inspect burner/igniter — How: visually inspect, clean deposits, check gap and position per manufacturer manual and observe trial ignition. Tools: soft brush, rags, feeler gauge, screwdrivers. Safety first: fuel and power locked out, boiler cool and ventilated with no fuel odor. Done when: igniter is clean and aligned with strong spark and smooth burner light-off.",
+   "Check water chemistry — How: take cooled sample and test pH, TDS or conductivity, and hardness against limits per manufacturer manual. Tools: sample bottle, water test kit and strips, log sheet. Safety first: cool and depressurize sample line slowly with gloves and eye protection to prevent scalding. Done when: results are within range per manufacturer manual and recorded with treatment adjusted if needed."
+  ]
+ },
+ {
+  "id": "conveyor",
+  "name": "Belt conveyor",
+  "category": "mechanical",
+  "tags": [
+   "ST"
+  ],
+  "failures": [
+   "Belt mistracking",
+   "Slip",
+   "Idler failure"
+  ],
+  "checks": [
+   "Adjust training idlers",
+   "Check take-up tension",
+   "Replace seized idlers"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Adjust training idlers — How: loosen mounting bolts and nudge training idler frame slightly to steer belt to center then retighten per manufacturer manual. Tools: wrenches, pry bar, tape measure. Safety first: conveyor locked out/tagged out and tested for zero energy. Done when: belt runs centered without rubbing structure.",
+   "Check take-up tension — How: inspect take-up position and belt sag then adjust screw or gravity take-up to setting per manufacturer manual. Tools: wrenches, tape measure, belt tension gauge. Safety first: conveyor locked out/tagged out with take-up secured against sudden movement. Done when: take-up is within travel marks and belt tension is per manufacturer manual with no slip.",
+   "Replace seized idlers — How: remove clips/bolts, lift out seized idler roller, install new roller and tighten fasteners per manufacturer manual. Tools: wrenches, pry bar, replacement idler roller. Safety first: conveyor locked out/tagged out with belt supported if lifted. Done when: new idler spins freely by hand and is seated squarely."
+  ]
+ },
+ {
+  "id": "transformer",
+  "name": "Power transformer",
+  "category": "electrical",
+  "tags": [
+   "TT",
+   "LT"
+  ],
+  "failures": [
+   "Overheating",
+   "Oil leak",
+   "Buchholz alarm"
+  ],
+  "checks": [
+   "Check oil level and DGA",
+   "Inspect cooling fans",
+   "Thermal scan connections"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Check oil level and DGA — How: read conservator oil level gauge and take oil sample from sampling valve for lab DGA. Tools: PPE, DGA sampling syringe/bottle kit, wiping cloth. Safety first: transformer normally energized - maintain electrical clearance with no open flames. Done when: level is in normal band per manufacturer manual and labeled sample is secured for lab.",
+   "Inspect cooling fans — How: visually check blades, guards and wiring for damage/dirt, verify auto/manual run and check mounting fasteners per manufacturer manual. Tools: PPE, flashlight, soft brush. Safety first: fans may auto-start - keep hands and clothing clear, use lockout for contact work. Done when: all fans start and run smoothly with no abnormal noise/vibration and guards secure.",
+   "Thermal scan connections — How: scan bushings, terminals and cable connections with IR camera under load from safe distance. Tools: calibrated thermal imaging camera, PPE. Safety first: equipment energized - maintain safe clearance and do not touch live parts. Done when: no abnormal hotspots and temperature rise is within limits per manufacturer manual."
+  ]
+ },
+ {
+  "id": "mcc",
+  "name": "MCC panel",
+  "category": "electrical",
+  "tags": [
+   "IT"
+  ],
+  "failures": [
+   "Breaker trip",
+   "Hot spot",
+   "Contactor chatter"
+  ],
+  "checks": [
+   "Thermal scan under load",
+   "Torque terminations",
+   "Check control voltage"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Thermal scan under load — How: scan all breakers, bus joints, and cable terminations through IR window / with covers closed under normal load. Tools: calibrated IR thermal camera. Safety first: panel energized - wear arc-rated PPE, keep safe distance, do not open energized covers. Done when: no abnormal hotspots and phase-to-phase delta within limits per manufacturer manual.",
+   "Torque terminations — How: de-energize, inspect then re-torque power and control terminations to spec per manufacturer manual in sequence. Tools: insulated torque screwdriver / torque wrench, LOTO kit. Safety first: locked-out/tagged-out and verified zero energy with meter. Done when: all terminations tight to torque per manufacturer manual with no loose, frayed, or discolored conductors.",
+   "Check control voltage — How: energize control circuit and measure AC/DC control voltage at control transformer secondary and control terminals. Tools: CAT III digital multimeter, insulated probes. Safety first: wear PPE and avoid contact with live power bus, test leads one-hand where possible. Done when: measured voltage stable within rated tolerance per manufacturer manual."
+  ]
+ },
+ {
+  "id": "fg-detector",
+  "name": "Fire & gas detector",
+  "category": "instrumentation",
+  "tags": [
+   "AT"
+  ],
+  "failures": [
+   "Fault/beam block",
+   "Drift",
+   "False alarm"
+  ],
+  "checks": [
+   "Bump test with certified gas",
+   "Clean optics",
+   "Calibrate per maker procedure"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Bump test with certified gas — How: Apply certified test gas with calibration cap per manufacturer manual. Tools: certified test gas, regulator, calibration cap. Safety first: Inhibit fire/gas alarm outputs and inform control room. Done when: Detector alarms within time per manufacturer manual and returns to normal in clean air.",
+   "Clean optics — How: Wipe lens/window with soft lint-free cloth and approved cleaner per manufacturer manual. Tools: lint-free cloths, approved lens cleaner. Safety first: Inhibit detector outputs and de-energize per permit if required. Done when: Optics are clean, clear, and fault signal clears per manufacturer manual.",
+   "Calibrate per maker procedure — How: Zero and span calibrate using certified gas per manufacturer manual. Tools: certified calibration gas, regulator, calibration cap, multimeter per manufacturer manual. Safety first: Inhibit alarm/deluge outputs and obtain work permit. Done when: Reading matches test gas within tolerance per manufacturer manual with no fault."
+  ]
+ },
+ {
+  "id": "tx-pressure",
+  "name": "Pressure transmitter",
+  "category": "instrumentation",
+  "tags": [
+   "PT"
+  ],
+  "failures": [
+   "Frozen reading",
+   "Drift",
+   "Impulse line blocked"
+  ],
+  "checks": [
+   "Blow down impulse lines",
+   "Compare with test gauge",
+   "Check 4-20 mA loop"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Blow down impulse lines — How: close transmitter isolation valves then crack drain/vent valves slowly to flush lines to safe container. Tools: wrench, drain container, rags, PPE. Safety first: transmitter isolated, drain path clear and PPE worn. Done when: steady clean flow with no sludge, air bubbles or blockage and fittings retightened per manufacturer manual.",
+   "Compare with test gauge — How: connect calibrated test gauge to test port and apply same pressure in steps across range. Tools: calibrated test gauge, pressure hand pump, fittings. Safety first: pressure kept within rated limit and connections leak-checked. Done when: transmitter reading matches test gauge within tolerance per manufacturer manual.",
+   "Check 4-20 mA loop — How: connect digital multimeter in series in loop and read output at zero and span pressure. Tools: digital multimeter, loop calibrator, screwdriver. Safety first: loop powered with covers secured and live terminals not touched. Done when: stable 4 mA at zero and 20 mA at full scale with linear response per manufacturer manual."
+  ]
+ },
+ {
+  "id": "tx-temperature",
+  "name": "Temperature transmitter",
+  "category": "instrumentation",
+  "tags": [
+   "TT"
+  ],
+  "failures": [
+   "Open RTD",
+   "Drift"
+  ],
+  "checks": [
+   "Check RTD resistance",
+   "Inspect thermowell",
+   "Loop test"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Check RTD resistance — How: disconnect sensor leads and measure resistance with multimeter and compare to temperature vs resistance table per manufacturer manual. Tools: digital multimeter, temperature chart. Safety first: loop power isolated and de-energized. Done when: measured resistance matches expected value for ambient temperature within tolerance.",
+   "Inspect thermowell — How: visually check for corrosion, pitting, coating damage and fouling, clean as needed and verify tightness to torque per manufacturer manual. Tools: wrench, flashlight, cleaning cloth. Safety first: process isolated, depressurized and cool. Done when: thermowell is clean, undamaged, tightly seated with no leak.",
+   "Loop test — How: apply temperature simulation or drive output and verify 4-20 mA at controller with settings per manufacturer manual. Tools: temperature calibrator, loop calibrator/multimeter. Safety first: notify control room and place loop in manual/bypass. Done when: 4 mA at low range and 20 mA at high range read correctly within tolerance."
+  ]
+ },
+ {
+  "id": "tx-level",
+  "name": "Level transmitter",
+  "category": "instrumentation",
+  "tags": [
+   "LT"
+  ],
+  "failures": [
+   "Wrong density",
+   "Stuck float",
+   "Radar echo loss"
+  ],
+  "checks": [
+   "Verify density/config",
+   "Compare with sight glass",
+   "Clean antenna"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Verify density/config — How: Check programmed fluid density, LRV/URV and units against process datasheet and correct per manufacturer manual. Tools: handheld communicator, datasheet. Safety first: Obtain work permit and do not change output in auto without operations approval. Done when: Config matches datasheet and reading is stable.",
+   "Compare with sight glass — How: Compare transmitter reading to sight glass at steady level after flushing sight glass. Tools: PPE, sight glass valves. Safety first: Check for hot/pressurized fluid and wear PPE before operating valves. Done when: Transmitter agrees with sight glass within tolerance per manufacturer manual.",
+   "Clean antenna — How: Isolate, remove sensor if needed, wipe antenna with soft lint-free cloth and reinstall and torque per manufacturer manual. Tools: soft cloth, mild cleaner, hand tools. Safety first: De-energize and follow lockout/tagout and vessel entry rules. Done when: Antenna is clean, undamaged and level reading is stable."
+  ]
+ },
+ {
+  "id": "tx-flow",
+  "name": "Flow transmitter",
+  "category": "instrumentation",
+  "tags": [
+   "FT"
+  ],
+  "failures": [
+   "Zero drift",
+   "Air entrainment"
+  ],
+  "checks": [
+   "Zero at no flow",
+   "Check straight-run",
+   "Inspect primary element"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Zero at no flow — How: close block valves to ensure full pipe with no flow and perform zero trim per manufacturer manual. Tools: wrench, HART communicator. Safety first: confirm line isolated and depressurized for valve operation. Done when: transmitter reads 0 flow within tolerance.",
+   "Check straight-run — How: measure upstream and downstream straight pipe runs and compare to requirements per manufacturer manual. Tools: tape measure, inspection light. Safety first: do not open live process, inspect externally only. Done when: straight-run lengths meet minimum diameters with no disturbances.",
+   "Inspect primary element — How: remove and inspect orifice plate / averaging tube for damage or plugging and reinstall to torque per manufacturer manual. Tools: wrenches, cleaning brush, inspection mirror. Safety first: line depressurized, drained and LOTO verified. Done when: element is clean, undamaged and correctly seated with no leaks."
+  ]
+ },
+ {
+  "id": "control-valve",
+  "name": "Control valve",
+  "category": "instrumentation",
+  "tags": [
+   "ZT"
+  ],
+  "failures": [
+   "Stiction",
+   "Hunting",
+   "Passing"
+  ],
+  "checks": [
+   "Stroke test 0-25-50-75-100%",
+   "Check positioner air supply",
+   "Inspect trim"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Stroke test 0-25-50-75-100% — How: Apply 4-20 mA input in steps of 0-25-50-75-100% and back down while observing stem travel indicator. Tools: loop calibrator, travel scale/ruler. Safety first: Confirm with operations that valve movement is safe with process isolated or bypassed. Done when: Stem position tracks each step smoothly with no sticking and error within tolerance per manufacturer manual.",
+   "Check positioner air supply — How: Check supply pressure gauge, drain filter, inspect tubing/fittings for leaks with soapy water. Tools: pressure gauge, leak detection solution, clean cloth. Safety first: Keep air supply on and process in safe steady state with eye protection worn. Done when: Supply pressure is clean, dry and steady at setpoint per manufacturer manual with no leaks.",
+   "Inspect trim — How: Disassemble bonnet and inspect plug, seat, cage and stem for erosion, scoring or buildup, clean and replace damaged parts. Tools: general hand tools, soft brush, new gaskets. Safety first: Fully isolate, depressurize, drain and lockout/tagout valve before opening. Done when: Trim is clean and undamaged and bonnet reassembled and torqued per manufacturer manual with no leak on test."
+  ]
+ },
+ {
+  "id": "esd",
+  "name": "ESD system",
+  "category": "safety",
+  "tags": [
+   "XS"
+  ],
+  "failures": [
+   "Spurious trip",
+   "Bypass left on",
+   "Valve fails to close"
+  ],
+  "checks": [
+   "Review bypass register",
+   "Partial-stroke test",
+   "Proof-test per SIL schedule"
+  ],
+  "standards": [
+   "ISO 14224 (generic failure taxonomy)"
+  ],
+  "howTo": [
+   "Review bypass register — How: review bypass register for active bypasses/inhibits and verify authorization and expiry per manufacturer manual. Tools: bypass register, HMI/panel. Safety first: confirm no required safety function is left bypassed without approved permit. Done when: register checked, expired bypasses cleared and all statuses documented.",
+   "Partial-stroke test — How: initiate partial-stroke test from control panel per manufacturer manual and observe valve movement. Tools: HMI/test switch, position indication. Safety first: confirm process is stable and test will not cause trip. Done when: valve strokes to partial position and returns with pass indication logged.",
+   "Proof-test per SIL schedule — How: perform full SIL proof-test per schedule and test procedure per manufacturer manual by simulating trip demands. Tools: proof-test procedure, calibrator/multimeter, HMI. Safety first: obtain work permit and confirm system lined up for safe full shutdown test. Done when: all ESD functions actuate correctly and results are recorded as pass."
+  ]
+ }
+]

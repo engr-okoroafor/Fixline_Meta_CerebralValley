@@ -32,7 +32,7 @@ export function Loader({ label = "Loading module", full = false }: { label?: str
 }
 
 /** Full-screen centered variant for route-level loading. */
-export function PageLoader({ label = "Booting FixLine" }: { label?: string }) {
+export function PageLoader({ label = "Booting FixLine Guardian" }: { label?: string }) {
   return <div className="loader-page"><Loader full label={label} /></div>;
 }
 

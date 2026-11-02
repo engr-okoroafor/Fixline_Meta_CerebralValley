@@ -1,5 +1,7 @@
 # Cerebral Valley submission — FixLine
 
+> Codebase: this repo now ships the full **FixLine Guardian** app (Meta Model API via `MODEL_API_KEY`: muse-spark-1.3, sam-3.1, muse-voice-transcribe). Live: https://fixline-meta-cerebralvalley.vercel.app
+
 **Project name:** FixLine
 **Tagline:** The repair agent that sees the machine — and won't let you skip a step.
 **Event:** Meta Global AI Developer Hackathon 2026

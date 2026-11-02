@@ -1,0 +1,34 @@
+import { chromium } from 'playwright';
+const out = '/workspace/fixline/shots/submit-v2';
+const base = 'http://127.0.0.1:3100';
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const clickNav = async (label) => {
+  const btn = page.getByRole('button', { name: new RegExp(label, 'i') }).first();
+  if (await btn.count()) await btn.click();
+  else await page.locator(`text=${label}`).first().click({ timeout: 8000 }).catch(()=>{});
+};
+await page.goto(base+'/', { waitUntil:'domcontentloaded' });
+await page.waitForTimeout(800);
+await clickNav('Repair');
+await page.waitForTimeout(1000);
+// scroll main for upload
+await page.evaluate(() => { const m = document.querySelector('main') || document.body; m.scrollTop = m.scrollHeight; });
+await page.waitForTimeout(800);
+await page.screenshot({ path: `${out}/03b-repair-docs.png` });
+await clickNav('Safety');
+await page.waitForTimeout(1000);
+const gen = page.getByText(/permit|HAZOP|Generate|risk assessment|PTW/i).first();
+if (await gen.count()) await gen.scrollIntoViewIfNeeded().catch(()=>{});
+await page.waitForTimeout(600);
+await page.screenshot({ path: `${out}/05b-safety-generate.png` });
+await clickNav('Ask');
+await page.waitForTimeout(1000);
+await page.evaluate(() => { const m = document.querySelector('main') || document.body; m.scrollTop = 400; });
+await page.waitForTimeout(600);
+await page.screenshot({ path: `${out}/04b-ask-upload.png` });
+await clickNav('Voice');
+await page.waitForTimeout(1200);
+await page.screenshot({ path: `${out}/02b-voice-translate.png` });
+console.log('extra shots ok');
+await browser.close();
