@@ -10,7 +10,7 @@ export default function QA() {
     <div><Camera ref={cam} boxes={boxes} scene="line" hud={<>Defects this shift: <b className="warn">{all.length}</b></>} />
       <div className="row" style={{ marginTop: 14 }}><button className="btn lg" onClick={scan}>🔍 Scan line (SAM 3.1)</button><button className="btn ghost" onClick={report}>Write shift report (Muse Spark)</button><button className="btn ghost" onClick={() => rep && navigator.clipboard.writeText(rep)}>Copy</button></div></div>
     <div className="grid">
-      <div className="card"><h2>Telemetry — P-101 vibration vs defects</h2><svg viewBox="0 0 480 140" width="100%">{TELEMETRY.map((t, i) => <g key={i}><rect x={i * 20} y={140 - (t.vib / max) * 120} width="12" height={(t.vib / max) * 120} rx="3" fill={t.vib > 7 ? "#ff5c6c" : "#0081FB"} opacity=".7" />{t.defects > 0 && <circle cx={i * 20 + 6} cy={10} r={2 + t.defects} fill="#ffb547" />}</g>)}</svg><p className="mute" style={{ fontSize: 12 }}>Bars: vibration mm/s · dots: defect count per hour</p></div>
+      <div className="card"><h2>Telemetry — P-101 vibration vs defects</h2><svg viewBox="0 0 480 140" width="100%">{TELEMETRY.map((t, i) => <g key={i}><rect x={i * 20} y={140 - (t.vib / max) * 120} width="12" height={(t.vib / max) * 120} rx="3" fill={t.vib > 7 ? "#ff5c6c" : "#39FF14"} opacity=".7" />{t.defects > 0 && <circle cx={i * 20 + 6} cy={10} r={2 + t.defects} fill="#ffb547" />}</g>)}</svg><p className="mute" style={{ fontSize: 12 }}>Bars: vibration mm/s · dots: defect count per hour</p></div>
       <div className="card"><h2>Shift report</h2>{rep ? <pre>{rep}</pre> : <Empty e="📝" t="No report yet" d="Scan the line, then press Write shift report." />}</div>
     </div>
   </div></main>;

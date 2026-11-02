@@ -14,7 +14,7 @@ const Camera = forwardRef<CamHandle, { boxes: Box[]; hud?: React.ReactNode; scen
   useEffect(() => {
     if (live) return; let f = 0, raf = 0; const ctx = c.current?.getContext("2d"); if (!ctx) return;
     const draw = () => { f++; const W = 800, H = 500; ctx.fillStyle = "#0a1222"; ctx.fillRect(0, 0, W, H);
-      if (scene === "pump") { ctx.fillStyle = "#284a63"; ctx.fillRect(120, 200, 200, 140); ctx.fillStyle = "#3b6a8a"; ctx.beginPath(); ctx.arc(390, 270, 85, 0, 7); ctx.fill(); ctx.fillStyle = "#555f6b"; ctx.fillRect(520, 190, 170, 150); ctx.fillStyle = "#4FB3FF"; const d = (f * 3) % 120; ctx.fillRect(388, 330 + d, 4, 8); ctx.fillStyle = "#8aa0b8"; ctx.font = "14px sans-serif"; ctx.fillText("P-101", 360, 180); }
+      if (scene === "pump") { ctx.fillStyle = "#284a63"; ctx.fillRect(120, 200, 200, 140); ctx.fillStyle = "#3b6a8a"; ctx.beginPath(); ctx.arc(390, 270, 85, 0, 7); ctx.fill(); ctx.fillStyle = "#555f6b"; ctx.fillRect(520, 190, 170, 150); ctx.fillStyle = "#00FF9C"; const d = (f * 3) % 120; ctx.fillRect(388, 330 + d, 4, 8); ctx.fillStyle = "#8aa0b8"; ctx.font = "14px sans-serif"; ctx.fillText("P-101", 360, 180); }
       else { for (let i = 0; i < 5; i++) { const x = ((f * 2 + i * 180) % 1000) - 150; ctx.fillStyle = "#c9d3dc"; ctx.fillRect(x, 170, 130, 150); ctx.fillStyle = "#ff4d5e"; if (i % 2) ctx.fillRect(x + 30, 220, 40, 6); } ctx.fillStyle = "#1c2a45"; ctx.fillRect(0, 330, 800, 30); }
       raf = requestAnimationFrame(draw); };
     draw(); return () => cancelAnimationFrame(raf);
