@@ -3,7 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
-  "dependencies": { "next": "16.4.2", "react": "19.3.0", "react-dom": "19.3.0", "framer-motion": "^14.5.0" },
-  "devDependencies": { "typescript": "^5", "@types/node": "^20", "@types/react": "^19", "@types/react-dom": "^19" }
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@radix-ui/react-tooltip": "^1.4.1",
+    "framer-motion": "^14.5.0",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
 }

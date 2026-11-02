@@ -12,14 +12,14 @@ export default function Repair() {
     else setMsg("Could not confirm — re-aim the camera at the part.");
   }
   const done = job.confirmed.filter(Boolean).length;
-  return <main className="wrap"><Banner img="/img/repair.jpg" tag="Step 3 · Repair" title="Guided repair" sub="Follow the spoken step, then confirm on camera. The next step stays locked until FixLine sees it done." />
+  return <div className="flex flex-col gap-4"><Banner tag="Step 3 · Repair" title="Guided repair" sub="Follow the spoken step, then confirm on camera. The next step stays locked until FixLine sees it done." />
     <div className="steps">{REPAIR_STEPS.map((s, i) => <span key={s.id} className={`step ${job.confirmed[i] ? "done" : i === cur ? "on" : ""}`}>{job.confirmed[i] ? "✓ " : ""}Step {s.id}</span>)}</div><div className="grid g2">
     <div><Camera ref={cam} boxes={boxes} hud={step ? <><b>Step {step.id}:</b> {step.say}<br /><span className="warn">📸 {step.confirm}</span></> : <span className="ok">All steps camera-confirmed ✓</span>} />
-      {!lotoDone && cur > 0 && <div className="card" style={{ marginTop: 12, borderColor: "#ff5c6c66" }}><b className="bad">🔒 Lockout required</b><p className="mute" style={{ margin: "6px 0 10px" }}>Finish LOTO before continuing this repair.</p><Link className="btn" href="/safety">Go to Safety →</Link></div>}
-      <div className="row" style={{ marginTop: 14 }}>{step && <><button className="btn ghost" onClick={() => speak(step.say, job.lang)}>🔊 Speak step</button><button className="btn lg" onClick={confirm} disabled={cur > 0 && !lotoDone}>📸 Confirm with camera</button></>}</div>
+      {!lotoDone && cur > 0 && <div className="glass card" style={{ marginTop: 12, borderColor: "rgba(255,77,109,.5)" }}><b className="bad">🔒 Lockout required</b><p className="mute" style={{ margin: "6px 0 10px" }}>Finish LOTO before continuing this repair.</p><Link className="btn btn-primary" href="/safety">Go to Safety →</Link></div>}
+      <div className="row" style={{ marginTop: 14 }}>{step && <><button className="btn" onClick={() => speak(step.say, job.lang)}>🔊 Speak step</button><button className="btn btn-primary" onClick={confirm} disabled={cur > 0 && !lotoDone}>📸 Confirm with camera</button></>}</div>
       {msg && <motion.p key={msg} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="ok">{msg}</motion.p>}</div>
-    <div className="card"><h2>Confirm-gated plan</h2><div className="bar" style={{ marginBottom: 14 }}><motion.div animate={{ width: `${(done / REPAIR_STEPS.length) * 100}%` }} /></div>{REPAIR_STEPS.map((s, i) => <motion.div key={s.id} className="chk" animate={{ opacity: i <= cur || cur < 0 ? 1 : 0.4 }}><b className={job.confirmed[i] ? "ok" : i === cur ? "warn" : "mute"}>{job.confirmed[i] ? "✓" : i === cur ? "▶" : "🔒"}</b><div>{s.say}<div className="mute" style={{ fontSize: 12 }}>Gate: {s.confirm}</div></div></motion.div>)}
+    <div className="glass card"><h2>Confirm-gated plan</h2><div className="bar" style={{ marginBottom: 14 }}><motion.div animate={{ width: `${(done / REPAIR_STEPS.length) * 100}%` }} /></div>{REPAIR_STEPS.map((s, i) => <motion.div key={s.id} className="chk" animate={{ opacity: i <= cur || cur < 0 ? 1 : 0.4 }}><b className={job.confirmed[i] ? "ok" : i === cur ? "warn" : "mute"}>{job.confirmed[i] ? "✓" : i === cur ? "▶" : "🔒"}</b><div>{s.say}<div className="mute" style={{ fontSize: 12 }}>Gate: {s.confirm}</div></div></motion.div>)}
       <h3>Audit log</h3>{job.log.length ? job.log.map((l, i) => <div key={i} className="mute" style={{ fontSize: 12 }}>{l}</div>) : <Empty e="📸" t="No confirmations yet" d="Confirm the first step with the camera." />}
-      <div style={{ marginTop: 10, display: "flex", gap: 8 }}><Link className="btn ghost" href="/safety">Close job →</Link></div></div>
-  </div></main>;
+      <div style={{ marginTop: 10, display: "flex", gap: 8 }}><Link className="btn" href="/safety">Close job →</Link></div></div>
+  </div></div>;
 }
