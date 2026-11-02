@@ -1,7 +1,9 @@
 "use client";
-import Link from "next/link"; import { usePathname } from "next/navigation";
-const L = [["/glasses","Glasses HUD"],["/repair","Guided Repair"],["/safety","Safety / LOTO"],["/qa","Line QA"],["/admin","Admin"],["/settings","Settings"]];
+import Link from "next/link"; import { usePathname } from "next/navigation"; import { motion } from "framer-motion";
+const L = [["/glasses", "👓 Glasses"], ["/repair", "🔧 Repair"], ["/safety", "🔒 Safety"], ["/qa", "🏭 Line QA"], ["/admin", "📋 Jobs"], ["/settings", "⚙️ Settings"]];
 export default function Nav() {
   const p = usePathname();
-  return <nav className="nav"><Link href="/" className="brand">◉ FIXLINE</Link>{L.map(([h, t]) => <Link key={h} href={h} className={p === h ? "on" : ""}>{t}</Link>)}<span className="pill" style={{ marginLeft: "auto" }}>Muse Spark 1.3 · SAM 3.1</span></nav>;
+  return <nav className="nav"><Link href="/" className="brand"><span className="logo">◉</span>FIXLINE</Link>
+    {L.map(([h, t]) => <Link key={h} href={h} className={`lnk ${p === h ? "on" : ""}`}>{p === h && <motion.span layoutId="nav-act" className="act" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}{t}</Link>)}
+    <span className="pill blue" style={{ marginLeft: "auto" }}>Muse Spark 1.3 · SAM 3.1</span></nav>;
 }

@@ -6,5 +6,5 @@ export const metadata: Metadata = {
   openGraph: { title: "FixLine — AI that sees the machine and won't let you skip a step", description: "SAM 3.1 + Muse Spark 1.3 on Ray-Ban Meta glasses for factory floors.", type: "website" },
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body><Nav />{children}<footer className="wrap mute" style={{ fontSize: 12 }}>FixLine · MIT · Built by Chukwudifu Okoroafor for the Meta Global AI Developer Hackathon 2026 (Push the Frontier · Indie).</footer></body></html>;
+  return <html lang="en"><body><Nav />{children}<footer><div className="wrap mute" style={{ fontSize: 12 }}>FixLine · MIT · Built by Chukwudifu Okoroafor for the Meta Global AI Developer Hackathon 2026 (Push the Frontier · Indie). Photos: Unsplash.</div></footer></body></html>;
 }
