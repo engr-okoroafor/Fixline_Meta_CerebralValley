@@ -22,7 +22,7 @@ It works today: the live demo runs the whole loop with no login, using the Mock 
 
 **Public GitHub Repository:** https://github.com/engr-okoroafor/Fixline_Meta_CerebralValley
 
-**3-Minute Demo Video:** (YouTube URL — pending)
+**3-Minute Demo Video:** https://youtu.be/PRZU5jMbjU8
 
 **Live demo:** https://fixline-meta-cerebralvalley.vercel.app (Glasses HUD: /glasses)
 
