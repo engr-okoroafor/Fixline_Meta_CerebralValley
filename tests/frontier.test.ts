@@ -5,7 +5,7 @@ import { guardValve } from "@/lib/scada/model";
 import { buildDoc } from "@/lib/safetydocs";
 import { navCommand } from "@/lib/ai/harness";
 import { formatShiftReport, qualityDoc } from "@/lib/qualitydocs";
-import { fallbackPlan } from "@/lib/projectplan";
+import { ALL_DOCS, METHODS, STAGES, fallbackPlan } from "@/lib/projectplan";
 const t = (id: string, name: string, start: string, end: string, dep?: string): GanttTask => ({ id, name, start, end, owner: "PM", cost: 10, done: 0, dep });
 describe("critical path", () => {
   const chain = [t("a", "Design", "2026-01-01", "2026-01-02"), t("b", "Build", "2026-01-03", "2026-01-04", "a")];
@@ -23,6 +23,30 @@ describe("gantt helpers", () => {
     expect(applyProjectCommand("disconnect handover", tasks).tasks!.find((x) => x.id === "b")!.dep).toBeUndefined();
   });
   it("names the next action on the critical path", () => { const tasks = [{ ...t("a", "Install", "2026-01-01", "2026-01-20"), done: 10 }]; expect(nextBestAction(tasks, "2026-01-05", ["a"])).toMatch(/critical path/); });
+});
+describe("stage deliverables", () => {
+  const legacy = ["Project Charter", "Stakeholder Register", "WBS", "Schedule Baseline", "Cost Baseline", "Risk Register", "Quality Management Plan", "Communications Plan", "Procurement Plan", "Status Report", "Issue Log", "Change Log", "Earned Value Report", "A3 Summary", "Closure Report", "Lessons Learned"];
+  it("lists a complete PMP set under each lifecycle stage", () => {
+    expect(STAGES.PMP.map((s) => s.name)).toEqual(["Initiating", "Planning", "Executing", "Monitoring & Controlling", "Closing"]);
+    const by = Object.fromEntries(STAGES.PMP.map((s) => [s.name, s.deliverables]));
+    for (const doc of ["Project Charter", "Stakeholder Register", "Business Case"]) expect(by.Initiating).toContain(doc);
+    for (const doc of ["WBS", "Schedule Baseline", "Cost Baseline", "Risk Register", "Quality Management Plan", "Communications Plan", "Procurement Plan"]) expect(by.Planning).toContain(doc);
+    for (const doc of ["Status Report", "Issue Log", "Change Request"]) expect(by.Executing).toContain(doc);
+    for (const doc of ["Change Log", "Performance Report", "Earned Value Report", "Risk Review", "A3 Summary"]) expect(by["Monitoring & Controlling"]).toContain(doc);
+    for (const doc of ["Final Report", "Lessons Learned", "Closure Report", "Formal Acceptance", "Closeout Certificate"]) expect(by.Closing).toContain(doc);
+    for (const stage of STAGES.PMP) expect(stage.deliverables.length).toBeGreaterThanOrEqual(5);
+    const flat = STAGES.PMP.flatMap((s) => s.deliverables);
+    expect(new Set(flat).size).toBe(flat.length);
+    for (const doc of legacy) expect(flat).toContain(doc);
+    expect(ALL_DOCS.PMP).toEqual(flat);
+  });
+  it("replaces the staged set for every methodology", () => {
+    for (const m of METHODS) {
+      expect(STAGES[m].length).toBeGreaterThanOrEqual(4);
+      expect(STAGES[m].every((s) => s.gate.length > 0 && s.deliverables.length > 0)).toBe(true);
+      expect(ALL_DOCS[m]).toEqual(STAGES[m].flatMap((s) => s.deliverables));
+    }
+  });
 });
 describe("showcase and costing plan", () => {
   it("CCGT showcase has full names, links and realistic cost", () => { const s = ccgtShowcase(); expect(s.name).toMatch(/150 MW/); expect(s.tasks.length).toBeGreaterThan(15); expect(s.tasks.some((t) => t.name.length > 30)).toBe(true); expect(s.tasks.reduce((a, t) => a + t.cost, 0)).toBeGreaterThan(100_000_000); expect(analyseSchedule(s.tasks).criticalIds.length).toBeGreaterThan(0); });
