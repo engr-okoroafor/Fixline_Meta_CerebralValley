@@ -4,22 +4,59 @@ export type Plan = { name: string; summary: string; method: Method; tasks: PlanT
 export const METHODS = ["PMP", "PRINCE2", "Agile", "Waterfall", "CPM", "LSS"] as const;
 export type Method = (typeof METHODS)[number];
 export const METHOD_LABEL: Record<Method, string> = { PMP: "PMP", PRINCE2: "PRINCE2", Agile: "Agile / Scrum", Waterfall: "Waterfall", CPM: "Critical Path / CCPM", LSS: "Lean Six Sigma" };
-/** Every document a judge or PM can generate for the active methodology. Shown as its own list, not only inside stage cards. */
-export const ALL_DOCS: Record<Method, string[]> = {
-  PMP: ["Project Charter", "Stakeholder Register", "WBS", "Schedule Baseline", "Cost Baseline", "Risk Register", "Change Log", "Status Report", "Earned Value Report", "Quality Management Plan", "Communications Plan", "Procurement Plan", "A3 Summary", "Issue Log", "Closure Report", "Lessons Learned"],
-  PRINCE2: ["Project Brief", "Outline Business Case", "Project Initiation Documentation (PID)", "Risk Register", "Stage Plan", "Work Package", "Highlight Report", "End Stage Report", "Exception Report", "A3 Summary", "End Project Report", "Lessons Report"],
-  Agile: ["Product Vision", "Product Backlog", "Sprint Backlog", "Definition of Done", "Daily Stand-up Log", "Burndown Report", "Sprint Review Notes", "Retrospective Actions", "Release Notes", "A3 Summary", "Handover Pack"],
-  Waterfall: ["Requirements Specification", "Design Basis", "WBS", "Drawings Register", "Schedule Baseline", "Risk Register", "Construction Progress Report", "Punch List", "Test Report", "Commissioning Dossier", "A3 Summary", "Handover Certificate", "Lessons Learned"],
-  CPM: ["Activity List", "WBS", "Network Diagram", "Schedule Baseline", "Critical Path Analysis", "Buffer Plan (CCPM)", "Risk Register", "Fever Chart Report", "Look-ahead Schedule", "Schedule Variance Report", "Recovery Plan", "A3 Summary", "As-built Schedule", "Lessons Learned"],
-  LSS: ["Project Charter", "SIPOC & VOC", "Data Collection Plan", "MSA / Baseline Report", "Root Cause Analysis (Fishbone/5-Why)", "Pareto Analysis", "Improvement Plan", "FMEA", "Control Plan", "A3 Summary", "SPC Charts & Closure"],
-};
+/** Standard lifecycle libraries. The Projects screen shows these under Stage deliverables only. */
 export const STAGES: Record<Method, { name: string; gate: string; deliverables: string[] }[]> = {
-  PMP: [{ name: "Initiating", gate: "Charter approved", deliverables: ["Project Charter", "Stakeholder Register"] }, { name: "Planning", gate: "Baselines approved", deliverables: ["WBS", "Schedule Baseline", "Cost Baseline", "Risk Register", "Quality Management Plan"] }, { name: "Executing", gate: "Work complete", deliverables: ["Status Report", "Change Log", "Issue Log"] }, { name: "Monitoring & Controlling", gate: "Performance in tolerance", deliverables: ["Earned Value Report", "A3 Summary"] }, { name: "Closing", gate: "Acceptance signed", deliverables: ["Closure Report", "Lessons Learned"] }],
-  PRINCE2: [{ name: "Starting up", gate: "Authorize initiation", deliverables: ["Project Brief", "Outline Business Case"] }, { name: "Initiating", gate: "Authorize the project", deliverables: ["Project Initiation Documentation (PID)", "Risk Register"] }, { name: "Delivery stage 1", gate: "End stage assessment", deliverables: ["Stage Plan", "Highlight Report", "Work Package"] }, { name: "Delivery stage 2", gate: "End stage assessment", deliverables: ["End Stage Report", "Exception Report (if needed)"] }, { name: "Closing", gate: "Authorize closure", deliverables: ["End Project Report", "Lessons Report"] }],
-  Agile: [{ name: "Vision & backlog", gate: "Product backlog ready", deliverables: ["Product Vision", "Product Backlog"] }, { name: "Sprint planning", gate: "Sprint goal agreed", deliverables: ["Sprint Backlog", "Definition of Done"] }, { name: "Sprint execution", gate: "Increment done", deliverables: ["Daily Stand-up Log", "Burndown Report"] }, { name: "Review & retro", gate: "Increment accepted", deliverables: ["Sprint Review Notes", "Retrospective Actions"] }, { name: "Release", gate: "Release approved", deliverables: ["Release Notes", "Handover Pack"] }],
-  Waterfall: [{ name: "Requirements", gate: "Requirements signed off", deliverables: ["Requirements Specification"] }, { name: "Design", gate: "Design review passed", deliverables: ["Design Basis", "Drawings Register"] }, { name: "Construction", gate: "Mechanical completion", deliverables: ["Construction Progress Report", "Punch List"] }, { name: "Testing & commissioning", gate: "Performance test passed", deliverables: ["Test Report", "Commissioning Dossier"] }, { name: "Handover", gate: "Client acceptance", deliverables: ["Handover Certificate", "Lessons Learned"] }],
-  CPM: [{ name: "Activity definition", gate: "WBS & logic complete", deliverables: ["Activity List", "Network Diagram"] }, { name: "Critical path & buffers", gate: "Schedule baseline", deliverables: ["Critical Path Analysis", "Buffer Plan (CCPM)"] }, { name: "Execution", gate: "Buffer in green/yellow", deliverables: ["Fever Chart Report", "Look-ahead Schedule"] }, { name: "Control", gate: "Float recovered", deliverables: ["Schedule Variance Report", "Recovery Plan"] }, { name: "Close", gate: "Completion", deliverables: ["As-built Schedule", "Lessons Learned"] }],
-  LSS: [{ name: "Define", gate: "Charter & CTQs agreed", deliverables: ["Project Charter", "SIPOC & VOC"] }, { name: "Measure", gate: "Baseline measured", deliverables: ["Data Collection Plan", "MSA / Baseline Report"] }, { name: "Analyze", gate: "Root cause verified", deliverables: ["Root Cause Analysis (Fishbone/5-Why)", "Pareto Analysis"] }, { name: "Improve", gate: "Solution piloted", deliverables: ["Improvement Plan", "FMEA"] }, { name: "Control", gate: "Sustained gains", deliverables: ["Control Plan", "SPC Charts & Closure"] }],
+  PMP: [
+    { name: "Initiating", gate: "Charter approved", deliverables: ["Project Charter", "Stakeholder Register", "Business Case", "Assumption Log", "Benefits Management Plan"] },
+    { name: "Planning", gate: "Baselines approved", deliverables: ["Project Management Plan", "Scope Management Plan", "Requirements Documentation", "Requirements Traceability Matrix", "Project Scope Statement", "WBS", "WBS Dictionary", "Schedule Management Plan", "Activity List", "Milestone List", "Network Diagram", "Schedule Baseline", "Cost Management Plan", "Cost Estimates", "Cost Baseline", "Resource Management Plan", "Risk Management Plan", "Risk Register", "Quality Management Plan", "Quality Metrics", "Communications Plan", "Stakeholder Engagement Plan", "Procurement Plan", "Change Management Plan"] },
+    { name: "Executing", gate: "Work complete", deliverables: ["Status Report", "Issue Log", "Change Request", "Work Performance Data", "Deliverables Register", "Quality Audit Report", "Team Assignments", "Procurement Status"] },
+    { name: "Monitoring & Controlling", gate: "Performance in tolerance", deliverables: ["Change Log", "Performance Report", "Earned Value Report", "Risk Review", "Forecast Report", "Variance Analysis", "Quality Control Measurements", "A3 Summary"] },
+    { name: "Closing", gate: "Acceptance signed", deliverables: ["Final Report", "Closure Report", "Lessons Learned", "Formal Acceptance", "Closeout Certificate", "Procurement Closure", "Handover Dossier"] },
+  ],
+  PRINCE2: [
+    { name: "Starting up", gate: "Authorize initiation", deliverables: ["Project Brief", "Outline Business Case"] },
+    { name: "Initiating", gate: "Authorize the project", deliverables: ["Project Initiation Documentation (PID)", "Risk Register"] },
+    { name: "Delivery stage 1", gate: "End stage assessment", deliverables: ["Stage Plan", "Highlight Report", "Work Package"] },
+    { name: "Delivery stage 2", gate: "End stage assessment", deliverables: ["End Stage Report", "Exception Report"] },
+    { name: "Closing", gate: "Authorize closure", deliverables: ["End Project Report", "Lessons Report", "A3 Summary"] },
+  ],
+  Agile: [
+    { name: "Vision & backlog", gate: "Product backlog ready", deliverables: ["Product Vision", "Product Backlog"] },
+    { name: "Sprint planning", gate: "Sprint goal agreed", deliverables: ["Sprint Backlog", "Definition of Done"] },
+    { name: "Sprint execution", gate: "Increment done", deliverables: ["Daily Stand-up Log", "Burndown Report"] },
+    { name: "Review & retro", gate: "Increment accepted", deliverables: ["Sprint Review Notes", "Retrospective Actions"] },
+    { name: "Release", gate: "Release approved", deliverables: ["Release Notes", "A3 Summary", "Handover Pack"] },
+  ],
+  Waterfall: [
+    { name: "Requirements", gate: "Requirements signed off", deliverables: ["Requirements Specification"] },
+    { name: "Design", gate: "Design review passed", deliverables: ["Design Basis", "Drawings Register", "WBS", "Schedule Baseline", "Risk Register"] },
+    { name: "Construction", gate: "Mechanical completion", deliverables: ["Construction Progress Report", "Punch List"] },
+    { name: "Testing & commissioning", gate: "Performance test passed", deliverables: ["Test Report", "Commissioning Dossier"] },
+    { name: "Handover", gate: "Client acceptance", deliverables: ["A3 Summary", "Handover Certificate", "Lessons Learned"] },
+  ],
+  CPM: [
+    { name: "Activity definition", gate: "WBS & logic complete", deliverables: ["Activity List", "WBS", "Network Diagram", "Schedule Baseline"] },
+    { name: "Critical path & buffers", gate: "Schedule baseline", deliverables: ["Critical Path Analysis", "Buffer Plan (CCPM)", "Risk Register"] },
+    { name: "Execution", gate: "Buffer in green/yellow", deliverables: ["Fever Chart Report", "Look-ahead Schedule"] },
+    { name: "Control", gate: "Float recovered", deliverables: ["Schedule Variance Report", "Recovery Plan", "A3 Summary"] },
+    { name: "Close", gate: "Completion", deliverables: ["As-built Schedule", "Lessons Learned"] },
+  ],
+  LSS: [
+    { name: "Define", gate: "Charter & CTQs agreed", deliverables: ["Project Charter", "SIPOC & VOC"] },
+    { name: "Measure", gate: "Baseline measured", deliverables: ["Data Collection Plan", "MSA / Baseline Report"] },
+    { name: "Analyze", gate: "Root cause verified", deliverables: ["Root Cause Analysis (Fishbone/5-Why)", "Pareto Analysis"] },
+    { name: "Improve", gate: "Solution piloted", deliverables: ["Improvement Plan", "FMEA"] },
+    { name: "Control", gate: "Sustained gains", deliverables: ["Control Plan", "A3 Summary", "SPC Charts & Closure"] },
+  ],
+};
+/** Flat union of the stage library, for callers that still want every title. The UI does not render this as its own section. */
+export const ALL_DOCS: Record<Method, string[]> = {
+  PMP: STAGES.PMP.flatMap((s) => s.deliverables),
+  PRINCE2: STAGES.PRINCE2.flatMap((s) => s.deliverables),
+  Agile: STAGES.Agile.flatMap((s) => s.deliverables),
+  Waterfall: STAGES.Waterfall.flatMap((s) => s.deliverables),
+  CPM: STAGES.CPM.flatMap((s) => s.deliverables),
+  LSS: STAGES.LSS.flatMap((s) => s.deliverables),
 };
 /** Deterministic plan when no AI provider answers — still complete and editable. */
 export function fallbackPlan(brief: string, method: Method): Plan {

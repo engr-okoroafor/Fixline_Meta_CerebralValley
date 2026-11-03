@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { PHASE_ICON, analyseSchedule, addDays, barBox, barStatus, dayNum, durationDays, nextBestAction, timeColumns, type GanttTask } from "@/lib/schedule";
 export type GanttModel = { name: string; location?: string; subtitle?: string; capacity?: string; timeline?: string; tasks: GanttTask[]; deliverables?: string[]; impact?: string[]; slogan?: string; cost?: string; duration?: string };
 const todayIso = () => new Date().toISOString().slice(0, 10);
-const STATUS_COLOR = { completed: "#2f9e3a", "in-progress": "#8fd14a", pending: "transparent" } as const;
+const THEME_DONE = "#39ff14";
 /** Reference-style Gantt: full activity text, month grid, dependency connectors, today line, critical path, footer. */
-export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttModel; showLinks: boolean; onPatch?: (id: string, patch: Partial<GanttTask>) => void }) {
+export function FuturisticGantt({ model, showLinks, doneColor = "#39FF14", onPatch }: { model: GanttModel; showLinks: boolean; doneColor?: string; onPatch?: (id: string, patch: Partial<GanttTask>) => void }) {
   const tasks = model.tasks;
   const today = todayIso();
   const analysis = useMemo(() => analyseSchedule(tasks), [tasks]);
@@ -39,7 +39,9 @@ export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttMod
   const yMid = new Map<string, number>();
   let yAcc = 0;
   for (const r of rows) { const h = r.kind === "phase" ? 32 : 52; if (r.kind === "task") yMid.set(r.task.id, yAcc + h / 2); yAcc += h; }
-  return <div className="fgantt" data-testid="fgantt" data-notranslate onPointerMove={move} onPointerUp={() => setDrag(null)} onPointerLeave={() => { setDrag(null); setTip(null); }}>
+  const doneHex = /^#[0-9a-fA-F]{6}$/.test(doneColor) ? doneColor : "#39FF14";
+  const customDone = doneHex.toLowerCase() !== THEME_DONE;
+  return <div className="fgantt" data-testid="fgantt" data-notranslate data-done={customDone ? "custom" : "theme"} style={customDone ? ({ "--gantt-done": doneHex } as React.CSSProperties) : undefined} onPointerMove={move} onPointerUp={() => setDrag(null)} onPointerLeave={() => { setDrag(null); setTip(null); }}>
     <header className="fgantt-head">
       <div className="fgantt-title">
         <h3 data-testid="gantt-title">{model.name}</h3>
@@ -76,7 +78,7 @@ export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttMod
             return <div key={t.id} className="fgantt-row" data-testid="gantt-bar">
               <motion.div className={`fgantt-bar st-${st}${crit.has(t.id) ? " is-cp" : ""}`} initial={false} animate={{ left: `${box.x * 100}%`, width: `${box.w * 100}%` }} transition={{ type: "spring", stiffness: 260, damping: 28, duration: drag ? 0.01 : undefined }}
                 onPointerDown={grab("move")} onPointerEnter={(e) => !drag && setTip({ t, x: e.clientX, y: e.clientY })} onPointerLeave={() => setTip(null)} role="img" aria-label={`${t.name}, ${t.done}% ${st}`}>
-                <i style={{ width: `${st === "pending" ? 0 : Math.max(8, t.done)}%`, background: STATUS_COLOR[st] }} />
+                <i data-testid="gantt-done-fill" style={{ width: `${Math.max(0, Math.min(100, t.done))}%` }} />
                 <b onPointerDown={grab("start")} /><b className="end" onPointerDown={grab("end")} />
               </motion.div>
               <span className="fgantt-pct" style={{ left: `calc(${(box.x + box.w) * 100}% + 8px)` }}>{t.done}%</span>
