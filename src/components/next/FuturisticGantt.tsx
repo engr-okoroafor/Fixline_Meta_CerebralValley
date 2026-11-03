@@ -78,7 +78,7 @@ export function FuturisticGantt({ model, showLinks, doneColor = "#39FF14", onPat
             return <div key={t.id} className="fgantt-row" data-testid="gantt-bar">
               <motion.div className={`fgantt-bar st-${st}${crit.has(t.id) ? " is-cp" : ""}`} initial={false} animate={{ left: `${box.x * 100}%`, width: `${box.w * 100}%` }} transition={{ type: "spring", stiffness: 260, damping: 28, duration: drag ? 0.01 : undefined }}
                 onPointerDown={grab("move")} onPointerEnter={(e) => !drag && setTip({ t, x: e.clientX, y: e.clientY })} onPointerLeave={() => setTip(null)} role="img" aria-label={`${t.name}, ${t.done}% ${st}`}>
-                <i data-testid="gantt-done-fill" style={{ width: `${Math.max(0, Math.min(100, t.done))}%` }} />
+                <span className="fgantt-fillclip" aria-hidden><i data-testid="gantt-done-fill" style={{ width: `${Math.max(0, Math.min(100, t.done))}%` }} /></span>
                 <b onPointerDown={grab("start")} /><b className="end" onPointerDown={grab("end")} />
               </motion.div>
               <span className="fgantt-pct" style={{ left: `calc(${(box.x + box.w) * 100}% + 8px)` }}>{t.done}%</span>
