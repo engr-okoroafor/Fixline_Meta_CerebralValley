@@ -9,6 +9,7 @@ const CHECK: Record<string, string[]> = { weld: ["No cracks", "Porosity within I
 /** Autonomous visual inspector: live camera auto-scan or uploads → /api/inspect. */
 import { CameraCapture, UploadZone, NeonCheck } from "../next/Chrome";
 import { NeonSelect } from "../NeonSelect";
+import { QUALITY_DOCS, qualityDoc } from "@/lib/qualitydocs";
 export default function Inspector() {
   const v = useRef<HTMLVideoElement>(null); const timer = useRef<ReturnType<typeof setInterval> | null>(null); const [kind, setKind] = useState<(typeof KINDS)[number]>("weld"); const [cam, setCam] = useState(false); const [auto, setAuto] = useState(false);
   const [res, setRes] = useState<Insp | null>(null); const [hist, setHist] = useState<Insp[]>([]); const [busy, setBusy] = useState(false); const [err, setErr] = useState(""); const [done, setDone] = useState<Record<string, boolean>>({});
@@ -27,5 +28,6 @@ export default function Inspector() {
       {res.defects.length > 0 && <div style={{ overflowX: "auto" }}><table className="text-xs"><thead><tr><th>Defect</th><th>Severity</th><th>Where</th><th>Action</th><th>Std</th></tr></thead><tbody>{res.defects.map((d, i) => <tr key={i}><td>{d.name}</td><td>{d.severity}</td><td>{d.where}</td><td>{d.action}</td><td>{d.standard}</td></tr>)}</tbody></table></div>}</motion.div>}
     <b className="text-sm">Manual checklist ({kind})</b><div className="grid gap-1 md:grid-cols-2">{CHECK[kind].map((c) => <NeonCheck key={c} checked={!!done[kind + c]} onChange={(v) => setDone({ ...done, [kind + c]: v })} label={c} />)}</div>
     {hist.length > 1 && <p className="m-0 text-xs muted">History: {hist.map((h) => `${h.verdict}(${h.score})`).join(" → ")}</p>}
+    <div className="row">{QUALITY_DOCS.map((k) => <Btn key={k} tip={`Download a ${k}`} onClick={async () => { const d = qualityDoc(k, res?.summary || `${kind} inspection`); const { jsPDF } = await import("jspdf"); const pdf = new jsPDF({ unit: "pt", format: "a4" }); pdf.setFontSize(16); pdf.text(pdf.splitTextToSize(d.title, 520), 40, 48); let y = 80; pdf.setFontSize(11); for (const s of d.sections) { pdf.setFont("helvetica", "bold"); pdf.text(s.heading, 40, y); y += 16; pdf.setFont("helvetica", "normal"); for (const b of s.bullets) { const lines = pdf.splitTextToSize(`• ${b}`, 500); pdf.text(lines, 48, y); y += lines.length * 14 + 4; if (y > 760) { pdf.addPage(); y = 48; } } y += 8; } if (res) { pdf.text(`Photo review: ${res.verdict} ${res.score}/100 — ${res.summary}`, 40, y); } pdf.save(`${k.replace(/\s+/g, "-")}.pdf`); }}>{k}</Btn>)}</div>
   </Card>;
 }

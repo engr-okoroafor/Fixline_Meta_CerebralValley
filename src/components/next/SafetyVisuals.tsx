@@ -1,18 +1,27 @@
 "use client";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from "recharts";
-import { Card, Tip } from "../ui";
-import { usePrefs } from "./useLocale";
-import { regionOf } from "@/lib/regions";
+import { Card } from "../ui";
 const EXT: { agent: string; A: number; B: number; C: number; D: number; K: number; color: string }[] = [
   { agent: "Water", A: 3, B: 0, C: 0, D: 0, K: 0, color: "#4da3ff" }, { agent: "Foam", A: 3, B: 3, C: 0, D: 0, K: 1, color: "#fff3b0" }, { agent: "CO₂", A: 1, B: 3, C: 3, D: 0, K: 0, color: "#cfd8dc" },
   { agent: "ABC powder", A: 3, B: 3, C: 3, D: 0, K: 0, color: "#ff8a3d" }, { agent: "Class D", A: 0, B: 0, C: 0, D: 3, K: 0, color: "#ffd166" }, { agent: "Wet chem", A: 2, B: 0, C: 0, D: 0, K: 3, color: "#c39bff" },
 ];
 const CLASSES = [["A", "Wood, paper, cloth", "#39FF14"], ["B", "Flammable liquids/gases", "#ff4d6d"], ["C", "Energised electrical", "#4da3ff"], ["D", "Combustible metals", "#ffd166"], ["K", "Cooking oils/fats", "#c39bff"]] as const;
 const CAUSES = [{ n: "Electrical", v: 34 }, { n: "Hot work", v: 22 }, { n: "Smoking/ignition", v: 12 }, { n: "Static", v: 10 }, { n: "Overheating", v: 14 }, { n: "Other", v: 8 }];
+const QUENCH: Record<string, { agent: string; how: string }> = {
+  A: { agent: "Water, foam, or ABC powder", how: "Aim at the base of the material and soak it until the glow is gone. Stay low if there is smoke." },
+  B: { agent: "Foam, CO₂, or ABC/BC powder — never a water jet", how: "Aim at the base and the near edge of the pool so the agent blankets the fuel. Do not splash it." },
+  C: { agent: "CO₂ or dry powder. De-energise first if you can do it safely", how: "Aim at the base of the flames on the equipment. Water and foam conduct — do not use them while it is live." },
+  D: { agent: "Class D powder only", how: "Cover the metal gently. Do not blast it. Water, CO₂ and foam can react violently." },
+  K: { agent: "Wet chemical, then a lid or fire blanket", how: "Turn the heat off. Aim the wet chemical across the oil surface, not into the pan. Never use water." },
+};
 /** Fire guidance: class icons, extinguisher suitability chart, P.A.S.S. aim-point diagram, do's/don'ts. */
 export function FireGuidance() {
+  const [cls, setCls] = useState<keyof typeof QUENCH>("A");
   return <Card title="🔥 Fire guidance — classes, agents, aim point" sub="Illustrative; follow site fire plan and local code (NFPA 10 / EN 3 / ISO 7165)." className="lg:col-span-2">
+    <div className="row" data-testid="fire-class">{(Object.keys(QUENCH) as (keyof typeof QUENCH)[]).map((c) => <button key={c} type="button" className={`btn ${cls === c ? "btn-primary" : ""}`} aria-pressed={cls === c} onClick={() => setCls(c)}>Class {c}</button>)}</div>
+    <p className="m-0"><b className="neon">Use: {QUENCH[cls].agent}.</b> {QUENCH[cls].how} Aim point is the base of the fire, then sweep.</p>
     <div className="grid gap-3 grid-cols-2 md:grid-cols-5">{CLASSES.map(([c, d, col], i) => <motion.div key={c} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .06 }} className="glass flex flex-col items-center gap-1 rounded-3xl p-3 text-center">
       <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden><motion.path d="M28 6c6 10 14 14 14 26a14 14 0 0 1-28 0c0-8 6-10 6-18 4 4 6 6 8 10 0-8 0-12 0-18z" fill={col} fillOpacity=".25" stroke={col} strokeWidth="2" animate={{ scale: [1, 1.06, 1] }} transition={{ repeat: Infinity, duration: 1.4 + i * .1 }} style={{ transformOrigin: "28px 40px" }} /><text x="28" y="42" textAnchor="middle" fontWeight="900" fontSize="16" fill={col}>{c}</text></svg>
       <span className="text-xs">{d}</span></motion.div>)}</div>

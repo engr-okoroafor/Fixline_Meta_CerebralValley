@@ -12,24 +12,33 @@
 **Problem statement:** Push the Frontier
 
 **Project Description:**
-On a factory floor in Lagos or Port Harcourt, a conveyor bearing fails at 2am. The technician on shift is alone, the senior engineer is asleep, and the manual is a PDF on someone's laptop. He does his best, but nobody checks whether each step was actually done right, and sometimes lockout/tagout gets skipped to save time. The machine runs again, fails again a week later, and the line loses hours of output — or someone gets hurt.
+On a factory floor in Lagos or Port Harcourt, a conveyor bearing fails at 2am. The technician on shift is alone, the senior engineer is asleep, and the manual is a PDF on someone's laptop. He does his best, but nobody checks whether each step was actually done right, and sometimes lockout/tagout gets skipped to save time. The machine runs again, fails again a week later, and the line loses hours of output — or someone gets hurt. The same plant is also trying to run a 30-month power project in a spreadsheet.
 
-FixLine is a hands-free AI repair, safety and quality agent that lives on Ray-Ban Meta glasses (or any phone or screen). It runs a simple loop: **perceive → reason → confirm → enforce.** SAM 3.1 finds and segments the part the technician is looking at. Muse Spark 1.3 reads the manual, the machine's history and live trends, and plans the repair one step at a time, spoken in the technician's ear. After each step, SAM 3.1 looks again and confirms the step on camera — a step does not count until it is visually verified. And FixLine enforces the rules: no work starts until LOTO is confirmed, and a quality inspector checks the finished job before the machine is signed off.
+FixLine is a hands-free AI repair, safety, quality and project agent that lives on Ray-Ban Meta glasses (or any phone or screen). It runs a simple loop: **perceive → reason → confirm → enforce.** SAM 3.1 finds and segments the part the technician is looking at. Muse Spark 1.3 reads the manual, the machine's history and live trends, and plans the repair one step at a time, spoken in the technician's ear. After each step, SAM 3.1 looks again — a step does not count until the camera gate passes, or the technician explicitly confirms a low-confidence box. FixLine enforces the rules: no work starts until LOTO is confirmed, fire guidance names the class, the extinguisher and the aim point, and a quality inspector checks the finished job before the machine is signed off.
 
-The technician can talk instead of type (Muse Voice Transcribe), and SeamlessM4T translates so a Pidgin- or Igbo-speaking technician and an English manual can still work together. Around the core loop sit tools a plant already needs: machine library and live trends, tuning (PID, alignment, ISO 10816 vibration), a SCADA alarm view with an AI agent, safety documents (PTW, JSA, HAZOP, LOTO) and a shift quality report.
+The technician can talk instead of type (Muse Voice Transcribe), and SeamlessM4T translates so a Pidgin- or Igbo-speaking technician and an English manual can still work together. Around that loop:
 
-It works today: the live demo runs the whole loop with no login, using the Mock Device Kit to stand in for Ray-Ban Meta glasses.
+- **Repair** — ask by text or voice how to fix a pump, robot, CNC, compressor, conveyor, motor, turbine or valve. Steps stay numbered, with tools and a “done when”. Manuals still feed the copilot.
+- **Tuning** — shaft alignment with the seven field readings, a live machine that shows which value moves which view, drag-to-snap, and a correct-versus-wrong teaching pair. AI auto-align explains the shims.
+- **SCADA** — the flow-station P&ID plus labeled demo boards for electrical, manufacturing and other factories. MQTT, OPC UA, Modbus and MCP stay available. Valves and setpoints move only after an on-screen approval. A real valve is never written from this app; the SIS stays in charge (IEC 61511).
+- **Safety** — Meta (or the offline template) generates every permit type, including a fire plan: class, agent, and aim at the base.
+- **Quality** — photo inspection plus ITP, NCR, visual and dimensional reports, and a structured shift report.
+- **Projects** — PMP, PRINCE2, Agile, Waterfall, CPM and Lean Six Sigma plans with 2026 indicative costs (not a tender). The Gantt matches a plant control-room chart: full activity names, month grid, dependency connectors you can connect or disconnect, Today, critical path, deliverables, impact and a legend. Download an A3 PDF, a photo, or the whole folder as a zip. Say “mark gas pipeline 55%” or “switch to the CCGT project”. Several projects persist in PGlite or Postgres.
+
+It works today with no login. Without `MODEL_API_KEY` the same screens answer from labeled mocks (`catalog (mock)`, `template`, `rules`) so a judge is never shown a fake live deployment. The Mock Device Kit stands in for Ray-Ban Meta glasses.
 
 **Public GitHub Repository:** https://github.com/engr-okoroafor/Fixline_Meta_CerebralValley
 
 **3-Minute Demo Video:** https://youtu.be/PRZU5jMbjU8
 
+The video above is the existing walkthrough. This upgrade was not posted to YouTube. Please use the live app for the Gantt, alignment, valve-approval and fire-class flows.
+
 **Live demo:** https://fixline-meta-cerebralvalley.vercel.app (Glasses HUD: /glasses)
 
 **Describe your use of Meta products to build the submitted project:**
-- **SAM 3.1 (`sam-3.1`) — the eyes and the confirm-gate.** Segments and tracks the part in view, then re-checks it after every repair step. If SAM can't confirm the step, the next step stays locked.
-- **Muse Spark 1.3 (`muse-spark-1.3`) via Meta Model API — the brain.** Plans repairs from manuals and history, diagnoses from photos, answers "why is this pump vibrating?", drafts LOTO/PTW/JSA documents, runs the SCADA alarm agent and writes the shift quality report. Called through the OpenAI-compatible chat endpoint.
-- **Muse Voice Transcribe (`muse-voice-transcribe`).** Hands-free commands and notes in a noisy plant — the technician's hands stay on the tools.
+- **SAM 3.1 (`sam-3.1`) — the eyes and the confirm-gate.** Segments and tracks the part in view, then re-checks it after every repair step. If the box is missing or the confidence is low, the next step stays locked until the technician confirms the highlight. The UI labels a mock box when the key is absent.
+- **Muse Spark 1.3 (`muse-spark-1.3`) via Meta Model API — the brain.** Plans repairs from a spoken fault or a manual, drafts every safety document including the fire plan, writes project plans and deliverables, adjusts a live Gantt from a follow-up sentence, explains alignment moves, diagnoses SCADA alarms and writes the shift quality report. Called through the OpenAI-compatible chat endpoint. NVIDIA is only the fallback.
+- **Muse Voice Transcribe (`muse-voice-transcribe`).** Hands-free fault questions, project edits (“slip commissioning by 14 days”) and page changes (“open projects”). Hands stay on the tools.
 - **SeamlessM4T (Meta open weights).** Speech and text translation so instructions reach the technician in his own language.
 - **Ray-Ban Meta glasses + Mock Device Kit.** The HUD (`/glasses`) is built for the glasses view; the Mock Device Kit lets judges and developers run the full experience in a browser without hardware.
 

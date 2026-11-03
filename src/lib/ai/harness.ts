@@ -8,7 +8,7 @@ import { findStandards } from "../standards";
 import { memoryContext, addMessage, ensureSession } from "../memory";
 export type AgentName = "RepairAgent" | "SafetyAgent" | "ScadaAgent" | "TranslatorAgent";
 export type Trace = { t: number; agent: string; event: string; detail?: string };
-const NAV: Record<string, string> = { repair: "repair", fix: "repair", safety: "safety", fire: "safety", scada: "scada", plant: "scada", tuning: "tuning", translate: "voice", quality: "quality", settings: "settings", ask: "ask", home: "overview", overview: "overview" };
+const NAV: Record<string, string> = { repair: "repair", fix: "repair", safety: "safety", fire: "safety", scada: "scada", plant: "scada", tuning: "tuning", alignment: "tuning", align: "tuning", translate: "voice", quality: "quality", inspector: "quality", settings: "settings", ask: "ask", home: "overview", overview: "overview", projects: "projects", project: "projects", gantt: "projects", engineering: "eng" };
 /** Voice command → mode ("open safety", "go to scada"). */
 export function navCommand(text: string) { const m = text.toLowerCase().match(/\b(?:open|go to|show|switch to)\s+(\w+)/); return m ? NAV[m[1]] ?? null : null; }
 /** Supervisor: keyword router (cheap, deterministic, testable). */

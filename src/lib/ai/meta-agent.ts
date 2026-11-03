@@ -3,6 +3,7 @@ import { HAZARDS, findHazard, EMERGENCY, DISCLAIMER, FIRE_CLASSES } from "../haz
 import { langName } from "../langs";
 import { chat } from "./router";
 import type { AiRequest } from "../security";
+import { formatShiftReport } from "../qualitydocs";
 const BASE = process.env.META_MODEL_API_BASE ?? "https://api.meta.ai/v1";
 const KEY = process.env.MODEL_API_KEY;
 export const live = () => !!KEY;
@@ -40,7 +41,7 @@ export async function runAi(req: AiRequest) {
       const defects = [...(vibration > 7 ? [{ type: "bearing wear (vibration)", severity: "high" }] : []), ...(temp > 85 ? [{ type: "overheating", severity: "high" }] : []), ...(req.image ? [{ type: "surface scratch (mock vision)", severity: "low" }] : [])];
       const status = defects.some((d) => d.severity === "high") ? "FAIL" : "PASS";
       try { const r = await chat([{ role: "user", content: req.image ? [{ type: "text", text: `Telemetry: temp ${temp}°C, vibration ${vibration} mm/s, ${rpm} rpm. Rule findings: ${JSON.stringify(defects)}. Status ${status}. Write a 3-sentence shift QA report.${req.image ? " Also inspect the image." : ""}` }, { type: "image_url", image_url: { url: req.image } }] : `Telemetry: temp ${temp}°C, vibration ${vibration} mm/s, ${rpm} rpm. Rule findings: ${JSON.stringify(defects)}. Status ${status}. Write a 3-sentence shift QA report.` }]); return { mock: false, model: r.model, defects, status, report: r.text }; } catch { /* fallback */ }
-      return { mock: true, model: "defect-detector (mock)", defects, status, report: `Shift report ${new Date().toISOString().slice(0, 16)}Z: status ${status}; temp ${temp}°C, vibration ${vibration} mm/s, ${rpm} rpm; ${defects.length} finding(s). ${status === "FAIL" ? "Hold line; schedule maintenance." : "Continue production."}` };
+      return { mock: true, model: "defect-detector (mock)", defects, status, report: formatShiftReport({ status, temp, vibration, rpm, findings: defects.length ? defects.map((d) => d.type).join("; ") : "none" }) };
     }
     case "safety": {
       const h = findHazard(req.hazard);

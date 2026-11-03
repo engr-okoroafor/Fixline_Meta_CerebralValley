@@ -13,7 +13,10 @@ create table if not exists mem_message(id integer generated always as identity p
 create table if not exists mem_fact(id integer generated always as identity primary key,owner text not null,kind text not null default 'fact',content text not null,source text,created_at timestamp not null default now());
 create table if not exists mem_doc(id integer generated always as identity primary key,owner text not null,session_id text,name text not null,mime text,chunk integer not null default 0,content text not null,created_at timestamp not null default now());
 create table if not exists audit_log(id integer generated always as identity primary key,user_id text,action text not null,detail jsonb,created_at timestamp not null default now());
-create table if not exists app_setting(key text primary key,value jsonb not null,updated_by text,updated_at timestamp not null default now());`;
+create table if not exists app_setting(key text primary key,value jsonb not null,updated_by text,updated_at timestamp not null default now());
+create table if not exists plant_project(id text primary key,owner text not null,name text not null,payload jsonb not null,updated_at timestamp not null default now());
+create table if not exists scada_connection(id text primary key,owner text not null,kind text not null,label text not null,industry text not null default 'oil-gas',endpoint text,notes text,created_at timestamp not null default now());
+create table if not exists repair_session(id text primary key,owner text not null,machine text not null,fault text,steps jsonb,step_index integer not null default 0,confirmed jsonb,updated_at timestamp not null default now());`;
 async function make() {
   if (process.env.DATABASE_URL) {
     const { drizzle } = await import("drizzle-orm/node-postgres");

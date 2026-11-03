@@ -23,6 +23,7 @@ import { UploadZone, CameraCapture, REPAIR_EXT } from "./next/Chrome";
 import { Insights } from "./next/Insights";
 import { FireGuidance } from "./next/SafetyVisuals";
 import { ModelBadge } from "./next/ModelBadge";
+import { gateAllowsNext } from "@/lib/repair-guide";
 const Projects = load(() => import("./next/Projects").then((m) => ({ default: m.Projects })));
 const EngineeringNL = load(() => import("./next/EngineeringNL").then((m) => ({ default: m.EngineeringNL })));
 type Mode = "projects" | "voice" | "eng" | "settings" | "overview" | "repair" | "tuning" | "ask" | "scada" | "safety" | "quality";
@@ -99,8 +100,10 @@ const Status = ({ busy, err }: { busy: boolean; err: string }) => <>{busy && <p 
 function Repair() {
   const { out, err, busy, run } = useRun(); const video = useRef<HTMLVideoElement>(null); const [cam, setCam] = useState(false);
   const [part, setPart] = useState("conveyor drive bearing"); const [manual, setManual] = useState(""); const [shot, setShot] = useState<string>(); const [history, setHistory] = useState(""); const step = out?.current ?? -1;
+  const [seen, setSeen] = useState(false); const [gate, setGate] = useState<{ ok: boolean; reason: string } | null>(null);
   async function startCam() { try { const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); if (video.current) { video.current.srcObject = s; await video.current.play(); setCam(true); } } catch { alert("Camera unavailable"); } }
-  const go = async (s: number) => { const r = await run({ mode: "repair", part, manual, history, step: s, image: snap(video.current) ?? shot }); if (r) speak(`${r.instruction}. ${r.verify}`); };
+  const go = async (s: number) => { const image = snap(video.current) ?? shot; const r = await run({ mode: "repair", part, manual, history, step: s, image }); if (r) { setGate(null); setSeen(false); speak(`${r.instruction}. ${r.verify}`); const d = localStorage.getItem("fixline.device") || crypto.randomUUID(); localStorage.setItem("fixline.device", d); fetch(`/api/repair-sessions?device=${d}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: "live", machine: part, fault: history.slice(0, 200), steps: r.steps, stepIndex: r.current }) }).catch(() => null); } return r; };
+  async function recheck() { const image = snap(video.current) ?? shot; const r = await run({ mode: "repair", part, manual, history, step: Math.max(step, 0), image }); const g = gateAllowsNext({ hasFrame: !!image, confidence: Number(r?.segmentation?.confidence ?? 0), userConfirmsView: seen }); setGate(g); if (g.ok) speak("Step confirmed. You can move on."); }
   return <div className="grid gap-4 lg:grid-cols-2">
     <Card title="Camera" sub="Part is segmented and tracked; re-check each step on camera.">
       <div className="relative overflow-hidden rounded-3xl" style={{ aspectRatio: "16/9", background: "#000" }}><video ref={video} playsInline muted className="h-full w-full object-cover" />
@@ -112,10 +115,12 @@ function Repair() {
       <UploadZone title="Service manual or photo" hint="TXT, MD, PDF, DOCX, PNG or JPG · max 15 MB" accept={REPAIR_EXT.map((x) => `.${x}`).join(",")} exts={REPAIR_EXT} kind="manual" multiple={false} onFiles={async ([f]) => { if (/\.(txt|md)$/i.test(f.name)) return setManual((await f.text()).slice(0, 20000)); const fd = new FormData(); fd.append("files", f); fd.append("question", `Extract the repair procedure, torques and safety notes for the ${part}`); fd.append("lang", prefs().lang); const r = await fetch("/api/docs", { method: "POST", body: fd }); const j = await r.json().catch(() => ({})); setManual(String(j.error ? `(${j.error})` : [j.summary, ...(j.steps ?? [])].filter(Boolean).join("\n")).slice(0, 20000)); }} />
       {manual && <p className="m-0 text-xs neon">✓ Manual loaded ({manual.length.toLocaleString()} chars)</p>}
       <Field label="Repair history"><textarea rows={2} value={history} onChange={(e) => setHistory(e.target.value)} /></Field>
-      <div className="row"><Btn tip="Segment the part and plan steps" className="btn-primary" onClick={() => go(0)}>Segment & plan</Btn>{step >= 0 && !out?.done && <Btn tip="Confirm this step after the camera re-check" onClick={() => go(step + 1)}>Verified → next</Btn>}</div>
+      <div className="row"><Btn tip="Segment the part and plan steps" className="btn-primary" onClick={() => go(0)}>Segment & plan</Btn>{step >= 0 && !out?.done && <Btn tip="Re-check this step on camera before it counts" onClick={recheck}>Re-check on camera</Btn>}{step >= 0 && !out?.done && <Btn tip="Next step unlocks only after the confirm gate" className="btn-primary" disabled={!gate?.ok} onClick={() => go(step + 1)}>Verified → next</Btn>}</div>
+      <label className="row text-sm"><input type="checkbox" checked={seen} onChange={(e) => setSeen(e.target.checked)} /> I can see the highlighted part and it matches this step</label>
+      {gate && <p role="status" className="m-0 text-sm" style={{ color: gate.ok ? "var(--neon)" : "var(--warn, #f5b301)" }}>{gate.reason}</p>}
       <Status busy={busy} err={err} />
-      {out?.steps && <ol className="m-0 pl-5 flex flex-col gap-1">{out.steps.map((s: string, i: number) => <li key={i} className={i === out.current ? "neon font-bold" : i < out.current ? "line-through opacity-60" : ""}>{s}</li>)}</ol>}
-      {out?.verify && <p className="m-0">📷 {out.verify}</p>}{out?.done && <p className="neon m-0">✓ Repair complete</p>}
+      {out?.steps && <><p className="m-0 text-sm">Machine: <b>{part}</b> · SAM {out.segmentation?.mock ? "mock box" : out.segmentation?.model} · confidence {Math.round((out.segmentation?.confidence ?? 0) * 100)}%</p><ol className="m-0 pl-5 flex flex-col gap-2">{out.steps.map((s: string, i: number) => { const [what, rest] = String(s).split(/\s+[—–-]\s+/); return <li key={i} className={i === out.current ? "neon" : i < out.current ? "line-through opacity-60" : ""}><b>{what}</b>{i === out.current && rest && <div className="font-normal text-sm">{rest}</div>}</li>; })}</ol></>}
+      {out?.verify && <p className="m-0">📷 {out.verify}</p>}{out?.done && <p className="neon m-0">✓ Repair complete — every step passed the camera gate.</p>}
     </Card><div className="lg:col-span-2"><DocCopilot scope="repair" title="Repair copilot · manuals, photos & data" sub="Drop PDFs, DOCX, XLSX/CSV, TXT or photos — get insights, follow-up Q&A and memory of past jobs" defaultQ={`Plan the repair of the ${part}`} machine={prefs().machine || undefined} /></div></div>;
 }
 function Quality() {
