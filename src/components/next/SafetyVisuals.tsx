@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from "recharts";
 import { Card } from "../ui";
@@ -17,11 +17,15 @@ const QUENCH: Record<string, { agent: string; how: string }> = {
   K: { agent: "Wet chemical, then a lid or fire blanket", how: "Turn the heat off. Aim the wet chemical across the oil surface, not into the pan. Never use water." },
 };
 /** Fire guidance: class icons, extinguisher suitability chart, P.A.S.S. aim-point diagram, do's/don'ts. */
+const PASS = ["1. Pull the pin", "2. Aim at the base", "3. Squeeze", "4. Sweep"];
 export function FireGuidance() {
   const [cls, setCls] = useState<keyof typeof QUENCH>("A");
+  const [step, setStep] = useState(0);
+  useEffect(() => { const id = setInterval(() => setStep((n) => (n + 1) % PASS.length), 1400); return () => clearInterval(id); }, []);
   return <Card title="🔥 Fire guidance — classes, agents, aim point" sub="Illustrative; follow site fire plan and local code (NFPA 10 / EN 3 / ISO 7165)." className="lg:col-span-2">
     <div className="row" data-testid="fire-class">{(Object.keys(QUENCH) as (keyof typeof QUENCH)[]).map((c) => <button key={c} type="button" className={`btn ${cls === c ? "btn-primary" : ""}`} aria-pressed={cls === c} onClick={() => setCls(c)}>Class {c}</button>)}</div>
-    <p className="m-0"><b className="neon">Use: {QUENCH[cls].agent}.</b> {QUENCH[cls].how} Aim point is the base of the fire, then sweep.</p>
+    <p className="m-0"><b className="neon">Use: {QUENCH[cls].agent}.</b> {QUENCH[cls].how}</p>
+    <div className="row" aria-label="PASS sequence">{PASS.map((p, i) => <motion.span key={p} className="pill" animate={{ scale: step === i ? 1.08 : 1, opacity: step === i ? 1 : 0.55 }} transition={{ type: "spring", stiffness: 260, damping: 18 }} style={{ borderColor: step === i ? "#ffe56a" : undefined, color: step === i ? "#ffe56a" : undefined }}>{p}</motion.span>)}</div>
     <div className="grid gap-3 grid-cols-2 md:grid-cols-5">{CLASSES.map(([c, d, col], i) => <motion.div key={c} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .06 }} className="glass flex flex-col items-center gap-1 rounded-3xl p-3 text-center">
       <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden><motion.path d="M28 6c6 10 14 14 14 26a14 14 0 0 1-28 0c0-8 6-10 6-18 4 4 6 6 8 10 0-8 0-12 0-18z" fill={col} fillOpacity=".25" stroke={col} strokeWidth="2" animate={{ scale: [1, 1.06, 1] }} transition={{ repeat: Infinity, duration: 1.4 + i * .1 }} style={{ transformOrigin: "28px 40px" }} /><text x="28" y="42" textAnchor="middle" fontWeight="900" fontSize="16" fill={col}>{c}</text></svg>
       <span className="text-xs">{d}</span></motion.div>)}</div>
