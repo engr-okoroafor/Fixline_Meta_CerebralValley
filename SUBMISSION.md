@@ -30,9 +30,9 @@ It works today with no login. Without `MODEL_API_KEY` the same screens answer fr
 
 **Public GitHub Repository:** https://github.com/engr-okoroafor/Fixline_Meta_CerebralValley
 
-**3-Minute Demo Video:** https://youtu.be/PRZU5jMbjU8
+**3-Minute Demo Video:** https://www.youtube.com/watch?v=Zc3FuSNBxUg
 
-The video above is the existing walkthrough. This upgrade was not posted to YouTube. Please use the live app for the Gantt, alignment, valve-approval and fire-class flows.
+This is the official walkthrough for the Indie Dev Track, Push the Frontier entry. Muse Spark 1.3 plans the repair and the project, SAM 3.1 confirms the part before the next step unlocks, and NVIDIA Nemotron answers only when Meta is unavailable. The same build is clickable with no login.
 
 **Live demo:** https://fixline-meta-cerebralvalley.vercel.app (Glasses HUD: /glasses)
 
