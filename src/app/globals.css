@@ -106,40 +106,38 @@ html:not(.dark) .lang-menu{background:rgba(255,255,255,.96)}html:not(.dark) .lan
 @media (min-width:900px){.hud-ar{grid-template-columns:minmax(0,1fr) minmax(200px,1.1fr) minmax(0,1fr);grid-auto-flow:row dense}.hud-ar-center{display:flex;grid-column:2;grid-row:1 / span 4;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:280px;font-size:11px;color:rgba(255,255,255,.55)}}
 .hud-ar *{animation:none!important}
 /* Futuristic project Gantt */
-.fgantt{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:28px;background:radial-gradient(1200px 400px at 10% -10%,rgba(57,255,20,.16),transparent 50%),linear-gradient(180deg,#02140c,#031208 40%,#021008);border:1px solid rgba(57,255,20,.45);box-shadow:0 0 0 1px rgba(57,255,20,.15),0 0 40px rgba(57,255,20,.12),inset 0 0 80px rgba(0,0,0,.35);color:#e9ffe8}
-.fgantt-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,220px);gap:12px;align-items:stretch}
-.fgantt-title h3{margin:0;color:#ffe56a;font-size:clamp(1.15rem,2vw,1.7rem);line-height:1.15;text-shadow:0 0 18px rgba(255,229,106,.35)}
-.fgantt-title p{margin:4px 0 0;color:#d7ffe4}
-.fgantt-sub{color:#39FF14!important;font-size:.92rem}
+.fgantt{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:28px;background:radial-gradient(900px 280px at 90% 0%,rgba(0,229,255,.12),transparent 46%),linear-gradient(180deg,#071018,#050d14 42%,#06140f);border:1px solid rgba(0,229,255,.38);box-shadow:0 0 0 1px rgba(57,255,20,.12),0 0 32px rgba(0,229,255,.1),inset 0 0 80px rgba(0,0,0,.35);color:#e7fff6}
+.fgantt-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(160px,240px);gap:14px;align-items:stretch;padding:14px 16px;border-radius:20px;background:linear-gradient(120deg,rgba(7,18,32,.96),rgba(8,28,36,.92));border:1px solid rgba(0,229,255,.4);box-shadow:inset 0 0 0 1px rgba(57,255,20,.12),0 0 24px rgba(0,229,255,.12)}
+.fgantt-title h3{margin:0;color:#f4fbff;font-size:clamp(1.2rem,2vw,1.75rem);line-height:1.15;letter-spacing:-.02em;font-weight:800;text-shadow:0 0 16px rgba(0,229,255,.28)}
+.fgantt-title p{margin:4px 0 0;color:#d5f6ff}
+.fgantt-sub{color:#7af6ff!important;font-size:.92rem;letter-spacing:.01em}
 .fgantt-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.fgantt-pills span{display:flex;flex-direction:column;min-width:108px;padding:8px 12px;border-radius:16px;background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.45);box-shadow:0 0 16px rgba(57,255,20,.15)}
-.fgantt-pills b{color:#39FF14;font-size:.95rem}.fgantt-pills small{color:#9fb3a8}
-.fgantt-photo{border-radius:18px;overflow:hidden;border:1px solid rgba(57,255,20,.55);min-height:120px;box-shadow:0 0 24px rgba(57,255,20,.2)}
-.fgantt-photo img{width:100%;height:100%;object-fit:cover;display:block}
-.fgantt-skyline{height:100%;min-height:140px;background:linear-gradient(#163a66 0%,#0c2418 42%,#e8a23a 42.2%,#1a1208 100%);position:relative}
-.fgantt-skyline:before{content:"";position:absolute;left:12%;bottom:18%;width:18%;height:38%;background:#071018;box-shadow:46px -20px 0 #071018,92px 8px 0 #071018,140px -36px 0 6px #071018}
-.fgantt-skyline:after{content:"";position:absolute;right:18%;top:16%;width:18px;height:18px;border-radius:50%;background:#ffd27a;box-shadow:0 0 24px #ffd27a}
-.fgantt-chart{display:grid;grid-template-columns:minmax(220px,34%) minmax(0,1fr);gap:0;border-radius:20px;overflow:hidden;border:1px solid rgba(57,255,20,.25);background:rgba(0,0,0,.25)}
+.fgantt-pills span{display:flex;flex-direction:column;min-width:108px;padding:8px 12px;border-radius:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.45);box-shadow:0 0 14px rgba(0,229,255,.12)}
+.fgantt-pills b{color:#e9fbff;font-size:.95rem}.fgantt-pills small{color:#8fd0dc;letter-spacing:.06em;text-transform:uppercase}
+.fgantt-photo{border-radius:16px;overflow:hidden;border:1px solid rgba(0,229,255,.55);min-height:120px;background:#071422;box-shadow:0 0 20px rgba(0,229,255,.18)}
+.fgantt-photo img,.fgantt-mark{width:100%;height:100%;object-fit:cover;display:block;min-height:140px}
+.fgantt-chart{display:grid;grid-template-columns:minmax(220px,34%) minmax(0,1fr);gap:0;border-radius:20px;overflow:hidden;border:1px solid rgba(0,229,255,.28);background:#040c10}
 .fgantt-labels{min-width:0}
-.fgantt-monthspace{height:36px;border-bottom:1px solid rgba(57,255,20,.25)}
-.fgantt-phase,.fgantt-phasegap{height:32px;display:flex;align-items:center;padding:0 10px;color:#ffe56a;font-weight:700;font-size:.82rem;background:rgba(255,229,106,.06)}
+.fgantt-monthspace{height:36px;border-bottom:1px solid rgba(0,229,255,.28);background:rgba(0,229,255,.05)}
+.fgantt-phase,.fgantt-phasegap{height:32px;display:flex;align-items:center;padding:0 10px;color:#9aefff;font-weight:700;font-size:.82rem;letter-spacing:.02em;background:rgba(0,229,255,.06)}
 .fgantt-name,.fgantt-row{height:52px;display:flex;align-items:center;gap:8px;padding:0 10px;border-top:1px solid rgba(57,255,20,.12)}
 .fgantt-name span{white-space:normal;line-height:1.2;font-size:.82rem}
 .fgantt-name em{font-style:normal;color:#021208;background:#ffe56a;border-radius:999px;padding:0 6px;font-size:.65rem;font-weight:800}
 .fgantt-time{position:relative;min-width:0}
-.fgantt-months{height:36px;display:flex;border-bottom:1px solid rgba(57,255,20,.25);color:#ffe56a;font-size:.75rem;font-weight:700}
-.fgantt-months div{display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(57,255,20,.18)}
+.fgantt-months{height:36px;display:flex;border-bottom:1px solid rgba(0,229,255,.28);color:#b8f6ff;font-size:.75rem;font-weight:700;letter-spacing:.04em;background:rgba(0,229,255,.06)}
+.fgantt-months div{display:flex;align-items:center;justify-content:center;border-left:1px solid rgba(0,229,255,.22)}
 .fgantt-rows{position:relative}
 .fgantt-vline{position:absolute;top:0;bottom:0;width:1px;background:rgba(57,255,20,.2);pointer-events:none}
 .fgantt-today{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed #ff4d4d;z-index:3;pointer-events:none}
 .fgantt-today span{position:absolute;top:2px;left:4px;color:#ff4d4d;font-size:.65rem;font-weight:800;letter-spacing:.08em}
 .fgantt-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
 .fgantt-row{position:relative;padding:0}
-.fgantt-bar{position:absolute;top:12px;height:28px;border-radius:999px;cursor:grab;z-index:2;background:rgba(57,255,20,.08);box-shadow:0 0 12px rgba(57,255,20,.25)}
-.fgantt-bar i{display:block;height:100%;border-radius:inherit;box-shadow:0 0 16px rgba(57,255,20,.8)}
-.fgantt-bar.st-pending{background:transparent;border:1.5px dashed rgba(57,255,20,.8);box-shadow:none}
+.fgantt-bar{position:absolute;top:10px;height:28px;border-radius:999px;cursor:grab;z-index:2;box-sizing:border-box;background:rgba(4,16,18,.65);border:3px solid #eafff4;box-shadow:0 0 0 1px rgba(0,229,255,.45),0 0 14px rgba(57,255,20,.4)}
+.fgantt-bar i{display:block;height:100%;border-radius:inherit;box-shadow:inset 0 0 10px rgba(57,255,20,.65)}
+.fgantt-bar.st-pending{background:transparent;border:3px dashed #3dff9a;box-shadow:0 0 0 1px rgba(61,255,154,.35)}
+.fgantt-bar.st-in-progress,.fgantt-bar.st-completed{border:3px solid #f4fff8}
 .fgantt-bar.st-completed i{background:#39FF14}
-.fgantt-bar.is-cp{outline:2px solid #ffe56a;outline-offset:2px}
+.fgantt-bar.is-cp{border:3px solid #7af6ff;box-shadow:0 0 0 2px rgba(122,246,255,.75),0 0 16px rgba(0,229,255,.45)}
 .fgantt-bar b{position:absolute;top:4px;left:-3px;width:8px;height:20px;border-radius:4px;background:#39FF14;cursor:ew-resize}
 .fgantt-bar b.end{left:auto;right:-3px}
 .fgantt-pct{position:absolute;top:16px;color:#ffe56a;font-size:.75rem;font-weight:800;pointer-events:none;text-shadow:0 0 8px rgba(0,0,0,.8)}

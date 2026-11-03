@@ -23,8 +23,31 @@ const mk = (s: string, rows: [string, number, number, string, number, number][])
 const seed = (): Proj => { const s = today(); return { name: "Pump P-101 overhaul & realignment", method: "PMP", startISO: s, currency: "USD", contingency: 10, doneColor: "#39FF14", company: "FixLine Energy Ltd", contractor: "Delta Mechanical Services", stages: STAGES.PMP, risks: [], memory: ["Client requires PTW + LOTO sign-off before any mechanical work", "Last overhaul: seal kit arrived 3 days late — order early"], location: "Flow station manifold", subtitle: "Seal, bearings, laser alignment and commissioning", capacity: "75 kW", timeline: "16 days", deliverables: ["Aligned pump within tolerance", "Vibration baseline in zone A/B", "Close-out and lessons learned"], impact: ["Fewer repeat seal failures", "LOTO before any hands-on work", "A job a junior tech can repeat"], showLinks: true,
   tasks: mk(s, [["Scope, PTW & risk assessment", 0, 2, "HSE", 1800, 100], ["Procure seal + bearings", 1, 6, "Procurement", 4200, 60], ["LOTO & dismantle", 7, 2, "Mechanical", 2200, 0], ["Replace & laser-align", 9, 3, "Mechanical", 3100, 0], ["Commission & vibration baseline", 12, 2, "Reliability", 1600, 0], ["Close-out & lessons learned", 14, 1, "PM", 900, 0]]) }; };
 const ccgtProject = (): Proj => { const s = ccgtShowcase(); return { ...seed(), name: s.name, summary: s.summary, method: "Waterfall", stages: STAGES.Waterfall, startISO: s.startISO, tasks: s.tasks, location: s.location, subtitle: s.subtitle, capacity: s.capacity, timeline: s.timeline, deliverables: s.deliverables, impact: s.impact, contingency: 12, company: "FixLine Energy Ltd", contractor: "Oguta Power EPC JV", slogan: "Powering Progress. Lighting Our Community", showLinks: true, memory: ["Indicative 2026 EPC cost, not a tender", "Community forum weekly in Oguta LGA"] }; };
-const KEY = "fixline.projects.v3";
+const KEY = "fixline.projects.v4";
 type Bag = { id: string; p: Proj };
+type Store = { active: string; bag: Bag[] };
+function freshStore(): Store { return { active: "ccgt-oguta", bag: [{ id: "ccgt-oguta", p: ccgtProject() }, { id: "pump", p: seed() }] }; }
+/** Keep a saved CCGT record from inheriting the pump title when an older save mixed the two. */
+function hydrate(id: string, raw?: Partial<Proj>): Proj {
+  const base = id.includes("ccgt") ? ccgtProject() : seed();
+  if (!raw) return base;
+  const poisoned = id.includes("ccgt") && (!raw.name || raw.name.startsWith("Pump P-101"));
+  if (poisoned) return { ...base, ...raw, name: base.name, tasks: base.tasks, location: base.location, subtitle: base.subtitle, capacity: base.capacity, timeline: base.timeline, deliverables: base.deliverables, impact: base.impact, slogan: base.slogan };
+  return { ...base, ...raw, name: raw.name || base.name, tasks: raw.tasks?.length ? raw.tasks : base.tasks, stages: raw.stages?.length ? raw.stages : base.stages, memory: raw.memory?.length ? raw.memory : base.memory };
+}
+function loadStore(): Store {
+  if (typeof window === "undefined") return freshStore();
+  try {
+    const raw = localStorage.getItem(KEY) ?? localStorage.getItem("fixline.projects.v3");
+    if (!raw) return freshStore();
+    const j = JSON.parse(raw) as { active?: string; bag?: Bag[] };
+    if (!j.bag?.length) return freshStore();
+    const bag = j.bag.map((b) => ({ id: b.id, p: hydrate(b.id, b.p) }));
+    if (!bag.some((b) => b.id === "ccgt-oguta")) bag.unshift({ id: "ccgt-oguta", p: ccgtProject() });
+    const active = j.active && bag.some((b) => b.id === j.active) ? j.active : "ccgt-oguta";
+    return { active, bag };
+  } catch { return freshStore(); }
+}
 const deviceId = () => { let d = localStorage.getItem("fixline.device"); if (!d) { d = crypto.randomUUID(); localStorage.setItem("fixline.device", d); } return d; };
 const money = (usd: number, c: string) => new Intl.NumberFormat("en-US", { style: "currency", currency: c, maximumFractionDigits: 0 }).format(usd * (FX[c]?.[0] ?? 1));
 function Calendar({ p }: { p: Proj }) {
@@ -81,14 +104,16 @@ async function exportDoc(p: Proj, stage: string, d: Doc, kind: "pdf" | "docx") {
 }
 /** Projects: AI plan builder (PMP + PRINCE2), dated Gantt, drag-reorder, multi-currency costing, stage deliverables to PDF/DOCX with logos. */
 export function Projects() {
-  const [bag, setBag] = useState<Bag[]>([{ id: "pump", p: seed() }, { id: "ccgt-oguta", p: ccgtProject() }]); const [active, setActive] = useState("pump");
+  const [store, setStore] = useState<Store>(loadStore);
+  const { active, bag } = store;
   const p = bag.find((b) => b.id === active)?.p ?? bag[0].p;
-  const setP = (u: Proj | ((q: Proj) => Proj)) => setBag((b) => b.map((x) => x.id === active ? { ...x, p: typeof u === "function" ? (u as (q: Proj) => Proj)(x.p) : u } : x));
+  const setActive = (id: string) => setStore((s) => (s.bag.some((b) => b.id === id) ? { ...s, active: id } : s));
+  const setP = (u: Proj | ((q: Proj) => Proj)) => setStore((s) => ({ ...s, bag: s.bag.map((x) => x.id === s.active ? { ...x, p: typeof u === "function" ? (u as (q: Proj) => Proj)(x.p) : u } : x) }));
   const [note, setNote] = useState(""); const [ai, setAi] = useState<Rich | null>(null); const [busy, setBusy] = useState(""); const [brief, setBrief] = useState("150 MW combined-cycle power plant at Oguta LGA, Imo State — full EPC to first power in 30 months."); const [msg, setMsg] = useState(""); const [cmd, setCmd] = useState(""); const [listening, setListening] = useState(false);
-  useEffect(() => { try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw) as { active?: string; bag?: Bag[] }; if (j.bag?.length) { setBag(j.bag.map((b) => ({ ...b, p: { ...seed(), ...b.p, tasks: b.p.tasks?.length ? b.p.tasks : seed().tasks } }))); if (j.active) setActive(j.active); return; } } const old = localStorage.getItem("fixline.project.v2"); if (old) setBag((b) => b.map((x) => x.id === "pump" ? { ...x, p: { ...seed(), ...JSON.parse(old) } } : x)); } catch { /* ignore */ } }, []);
-  useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify({ active, bag })); } catch { /* quota */ } }, [bag, active]);
-  useEffect(() => { const id = deviceId(); fetch(`/api/projects?device=${id}`).then((r) => r.json()).then((j) => { const rows = (j.projects ?? []) as { id: string; name: string; payload: Proj }[]; if (!rows.length) return; setBag((b) => { const map = new Map(b.map((x) => [x.id, x])); for (const row of rows) { const pid = row.id.includes(":") ? row.id.split(":").slice(1).join(":") : row.id; map.set(pid, { id: pid, p: { ...seed(), ...row.payload, name: row.payload?.name || row.name } }); } return [...map.values()]; }); }).catch(() => null); }, []);
-  useEffect(() => { const t = setTimeout(() => { const id = deviceId(); fetch(`/api/projects?device=${id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: active, name: p.name, payload: { ...p, companyLogo: undefined, contractorLogo: undefined, heroPhoto: undefined } }) }).catch(() => null); }, 800); return () => clearTimeout(t); }, [p, active]);
+  const live = useRef({ active, p }); live.current = { active, p };
+  useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch { /* quota */ } }, [store]);
+  useEffect(() => { let cancel = false; const id = deviceId(); fetch(`/api/projects?device=${id}`).then((r) => r.json()).then((j) => { const rows = (j.projects ?? []) as { id: string; name: string; payload: Proj }[]; if (cancel || !rows.length) return; setStore((s) => { const map = new Map(s.bag.map((x) => [x.id, x])); for (const row of rows) { const pid = row.id.includes(":") ? row.id.slice(row.id.lastIndexOf(":") + 1) : row.id; if (!pid || map.has(pid)) continue; map.set(pid, { id: pid, p: hydrate(pid, { ...row.payload, name: row.payload?.name || row.name }) }); } return { ...s, bag: [...map.values()] }; }); }).catch(() => null); return () => { cancel = true; }; }, []);
+  useEffect(() => { const t = setTimeout(() => { const cur = live.current; const id = deviceId(); fetch(`/api/projects?device=${id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: cur.active, name: cur.p.name, payload: { ...cur.p, companyLogo: undefined, contractorLogo: undefined, heroPhoto: undefined } }) }).catch(() => null); }, 800); return () => clearTimeout(t); }, [p, active]);
   const cost = useMemo(() => { const base = p.tasks.reduce((a, t) => a + t.cost, 0); const earned = p.tasks.reduce((a, t) => a + (t.cost * t.done) / 100, 0); const cont = (base * p.contingency) / 100; const days = p.tasks.length ? dd(p.tasks.reduce((m, t) => (t.start < m ? t.start : m), p.tasks[0].start), p.tasks.reduce((m, t) => (t.end > m ? t.end : m), p.tasks[0].end)) + 1 : 0; return { base, earned, cont, total: base + cont, pct: base ? Math.round((earned / base) * 100) : 0, days }; }, [p]);
   const upd = (id: string, patch: Partial<Task>) => setP((q) => ({ ...q, tasks: q.tasks.map((t) => { if (t.id !== id) return t; const n = { ...t, ...patch }; if (n.end < n.start) n.end = n.start; return n; }) }));
   async function build() {
@@ -136,7 +161,7 @@ export function Projects() {
   const mic = useListen((t) => { setCmd(t); void follow(t); }, (s) => setListening(s === "listening" || s === "recording"));
   return <div className="grid gap-4 lg:grid-cols-2">
     <Card title="✦ AI project builder" sub="One-line brief → complete PMP · PRINCE2 · Agile/Scrum · Waterfall · CPM/CCPM · Lean Six Sigma plan: tasks, dates, owners, costs, stages, risks" className="lg:col-span-2" right={<div className="row" data-testid="pm-methods">{METHODS.map((m) => <motion.button whileTap={{ scale: .95 }} key={m} className={`btn btn-sm ${p.method === m ? "btn-primary" : ""}`} aria-pressed={p.method === m} onClick={() => setP({ ...p, method: m, stages: STAGES[m] })}>{METHOD_LABEL[m]}</motion.button>)}</div>}>
-      <div className="row" data-testid="project-switch">{bag.map((b) => <button key={b.id} type="button" className={`btn ${b.id === active ? "btn-primary" : ""}`} aria-pressed={b.id === active} onClick={() => setActive(b.id)}>{b.p.name.slice(0, 42)}</button>)}<button type="button" className="btn" onClick={() => { const id = `p${Date.now()}`; setBag((b) => [...b, { id, p: { ...seed(), name: "New project" } }]); setActive(id); }}>+ Project</button></div>
+      <div className="row" data-testid="project-switch">{bag.map((b) => <button key={b.id} type="button" className={`btn ${b.id === active ? "btn-primary" : ""}`} aria-pressed={b.id === active} onClick={() => setActive(b.id)}>{b.p.name.slice(0, 42)}</button>)}<button type="button" className="btn" onClick={() => { const id = `p${Date.now()}`; setStore((s) => ({ active: id, bag: [...s.bag, { id, p: { ...seed(), name: "New project" } }] })); }}>+ Project</button></div>
       <div data-tour="pm-ai" className="flex flex-col gap-2"><textarea aria-label="Project brief" rows={2} value={brief} onChange={(e) => setBrief(e.target.value)} />
         <div className="row"><motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: .97 }} className="btn btn-primary" disabled={!!busy} onClick={build} data-testid="pm-build">{busy === "plan" ? <span className="row" style={{ gap: 8 }}><MiniSpin /> Building plan…</span> : "✦ Build full plan with AI"}</motion.button>
           <span className="text-xs muted">Meta muse-spark first, NVIDIA failover, offline template last.</span></div>
@@ -160,7 +185,7 @@ export function Projects() {
         <button type="button" className="btn btn-primary" disabled={!!busy} onClick={exportZip}>{busy === "zip" ? "Packing…" : "⬇ Project folder (zip)"}</button>
         <label className="btn" style={{ cursor: "pointer" }}>Plant photo<input type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={async (e) => { const f = e.target.files?.[0]; if (f) setP({ ...p, heroPhoto: await fileToDataUrl(f, 900) }); }} /></label></div>
       <form className="row" onSubmit={(e) => { e.preventDefault(); void follow(); }}><input aria-label="Adjust the project" value={cmd} onChange={(e) => setCmd(e.target.value)} placeholder='Say “mark gas pipeline 55%”, “slip commissioning by 14 days”, “switch to the pump project”' /><button type="button" className="btn" aria-pressed={listening} onClick={() => (listening ? mic.stop() : mic.start(prefs().lang || "en-US"))}>{listening ? "■" : "🎙"}</button><button className="btn btn-primary" disabled={!!busy}>Apply</button></form>
-      <FuturisticGantt model={{ name: p.name, location: p.location, subtitle: p.subtitle, capacity: p.capacity, timeline: p.timeline, tasks: p.tasks, deliverables: p.deliverables, impact: p.impact, heroPhoto: p.heroPhoto, slogan: p.slogan }} showLinks={p.showLinks !== false} onPatch={upd} />
+      <FuturisticGantt key={active} model={{ name: p.name, location: p.location, subtitle: p.subtitle, capacity: p.capacity, timeline: p.timeline, tasks: p.tasks, deliverables: p.deliverables, impact: p.impact, heroPhoto: p.heroPhoto, slogan: p.slogan }} showLinks={p.showLinks !== false} onPatch={upd} />
       <div className="overflow-x-auto"><table className="text-xs"><thead><tr><th>Task</th><th>Dur</th><th>Float</th><th>Critical</th><th>Predecessor</th></tr></thead><tbody>{analyseSchedule(p.tasks).rows.map((r) => <tr key={r.id}><td>{r.name}</td><td>{r.duration}d</td><td>{r.float}d{r.conflict ? " · overlap" : ""}</td><td>{r.critical ? "Yes" : ""}</td><td><select aria-label={`Predecessor of ${r.name}`} value={p.tasks.find((t) => t.id === r.id)?.dep ?? ""} onChange={(e) => upd(r.id, { dep: e.target.value || undefined })}><option value="">None</option>{p.tasks.filter((t) => t.id !== r.id).map((t) => <option key={t.id} value={t.id}>{t.name.slice(0, 48)}</option>)}</select></td></tr>)}</tbody></table></div>
       <AnimatePresence>{busy && busy !== "review" && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed bottom-24 left-1/2 z-50 w-[min(92vw,340px)] -translate-x-1/2" data-testid="doc-generating"><Loader full label={busy === "plan" ? "Generating plan" : "Generating document"} /></motion.div>}</AnimatePresence>
       <div className="overflow-x-auto"><div className="grid gap-1 text-xs muted" style={{ gridTemplateColumns: "28px minmax(180px,2fr) 130px 130px 110px 110px 170px 30px", minWidth: 900 }}><span /><span>Task</span><span>Start</span><span>End</span><span>Owner</span><span>Cost ({p.currency})</span><span>% complete</span><span /></div>

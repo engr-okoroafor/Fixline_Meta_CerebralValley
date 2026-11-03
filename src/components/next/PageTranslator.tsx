@@ -17,7 +17,7 @@ export function PageTranslator() {
     const root = document.body; const en = lang === "en";
     const key = `fixline.tr.${loc}`; let mem: Record<string, string> = {}; try { mem = JSON.parse(localStorage.getItem(key) ?? "{}"); } catch {}
     const failed = new Map<string, number>();
-    let busy = false, again = false, timer: ReturnType<typeof setTimeout> | undefined, dead = false;
+    let busy = false, again = false, primed = false, timer: ReturnType<typeof setTimeout> | undefined, dead = false;
     const nodes = () => { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const out: Text[] = []; let n: Node | null;
       while ((n = w.nextNode())) { const el = (n as Text).parentElement; if (!el || el.closest(SKIP)) continue; out.push(n as Text); } return out; };
     const elems = () => Array.from(root.querySelectorAll(ATTRS.map((a) => `[${a}]`).join(","))).filter((e) => !e.closest(".notranslate,[data-notranslate]"));
@@ -34,7 +34,20 @@ export function PageTranslator() {
         const list = nodes(); const els = elems();
         for (const n of list) { if (!orig.has(n)) { const v = n.nodeValue ?? ""; if (!ok(v.trim())) continue; orig.set(n, v); } }
         for (const e of els) { const o = origAttr.get(e) ?? {}; for (const a of ATTRS) { const v = e.getAttribute(a); if (v && !(a in o) && ok(v.trim())) o[a] = v; } origAttr.set(e, o); }
-        if (en) { for (const n of list) { const o = orig.get(n); if (o !== undefined && n.nodeValue !== o) n.nodeValue = o; } for (const e of els) { const o = origAttr.get(e); if (o) for (const [a, v] of Object.entries(o)) e.setAttribute(a, v); } return; }
+        if (en) {
+          // First pass after a language switch restores English. Later passes are the app
+          // changing the DOM (project switch, live values). Remember the new string — do not
+          // write the first-seen text back over a React update.
+          if (!primed) {
+            for (const n of list) { const o = orig.get(n); if (o !== undefined && n.nodeValue !== o) n.nodeValue = o; }
+            for (const e of els) { const o = origAttr.get(e); if (o) for (const [a, v] of Object.entries(o)) e.setAttribute(a, v); }
+            primed = true; return;
+          }
+          for (const n of list) { if (orig.has(n) && n.nodeValue !== orig.get(n)) orig.set(n, n.nodeValue ?? ""); }
+          for (const e of els) { const o = origAttr.get(e); if (!o) continue; for (const a of ATTRS) { const v = e.getAttribute(a); if (v && o[a] !== v) o[a] = v; } }
+          return;
+        }
+        primed = false;
         const srcs = [...list.map((n) => orig.get(n)?.trim()), ...els.flatMap((e) => Object.values(origAttr.get(e) ?? {}).map((v) => v.trim()))];
         const need = [...new Set(srcs.filter((s): s is string => !!s && !(s in mem) && (failed.get(s) ?? 0) < 2))];
         if (need.length) { await translate(need); try { localStorage.setItem(key, JSON.stringify(mem)); } catch {} }

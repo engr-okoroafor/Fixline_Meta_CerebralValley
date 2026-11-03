@@ -24,14 +24,16 @@ export function paintGantt(ctx: CanvasRenderingContext2D, W: number, H: number, 
   round(ctx, pad, pad, W - pad * 2, headerH, 28); ctx.fillStyle = "rgba(8,28,16,.92)"; ctx.fill(); ctx.strokeStyle = "rgba(57,255,20,.45)"; ctx.lineWidth = 2; ctx.stroke();
   const photoW = Math.round(W * 0.22); const photoX = W - pad - 18 - photoW; const photoY = pad + 16; const photoH = headerH - 32;
   round(ctx, photoX, photoY, photoW, photoH, 18); ctx.save(); ctx.clip();
-  const g = ctx.createLinearGradient(photoX, photoY, photoX, photoY + photoH); g.addColorStop(0, "#1a3a6a"); g.addColorStop(0.45, "#0c2418"); g.addColorStop(1, "#f0a020"); ctx.fillStyle = g; ctx.fillRect(photoX, photoY, photoW, photoH);
-  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(photoX, photoY + photoH * 0.62, photoW, photoH * 0.38);
-  ctx.fillStyle = "#123"; ctx.fillRect(photoX + photoW * 0.18, photoY + photoH * 0.42, photoW * 0.16, photoH * 0.28);
-  ctx.fillRect(photoX + photoW * 0.4, photoY + photoH * 0.28, photoW * 0.12, photoH * 0.42);
-  ctx.fillStyle = GOLD; ctx.fillRect(photoX + photoW * 0.62, photoY + photoH * 0.18, 8, photoH * 0.5);
-  ctx.fillStyle = "rgba(255,180,60,.9)"; ctx.beginPath(); ctx.arc(photoX + photoW * 0.78, photoY + photoH * 0.22, 16, 0, Math.PI * 2); ctx.fill();
-  ctx.restore(); ctx.strokeStyle = "rgba(57,255,20,.6)"; ctx.stroke();
-  ctx.fillStyle = GOLD; ctx.font = `700 ${Math.round(H * 0.032)}px sans-serif`; ctx.textBaseline = "top";
+  const g = ctx.createLinearGradient(photoX, photoY, photoX, photoY + photoH); g.addColorStop(0, "#071422"); g.addColorStop(1, "#0a242c"); ctx.fillStyle = g; ctx.fillRect(photoX, photoY, photoW, photoH);
+  ctx.strokeStyle = "rgba(57,231,255,.2)"; ctx.lineWidth = 1;
+  for (let y = photoY; y < photoY + photoH; y += 18) { ctx.beginPath(); ctx.moveTo(photoX, y); ctx.lineTo(photoX + photoW, y); ctx.stroke(); }
+  ctx.fillStyle = "#050d12"; ctx.fillRect(photoX, photoY + photoH * 0.72, photoW, photoH * 0.28);
+  ctx.fillStyle = "#12343f"; ctx.strokeStyle = "#39e7ff"; ctx.lineWidth = 2;
+  ctx.fillRect(photoX + photoW * 0.12, photoY + photoH * 0.42, photoW * 0.22, photoH * 0.3); ctx.strokeRect(photoX + photoW * 0.12, photoY + photoH * 0.42, photoW * 0.22, photoH * 0.3);
+  ctx.fillRect(photoX + photoW * 0.4, photoY + photoH * 0.28, photoW * 0.14, photoH * 0.44); ctx.strokeRect(photoX + photoW * 0.4, photoY + photoH * 0.28, photoW * 0.14, photoH * 0.44);
+  ctx.fillStyle = "#7af6ff"; ctx.beginPath(); ctx.arc(photoX + photoW * 0.78, photoY + photoH * 0.22, 10, 0, Math.PI * 2); ctx.fill();
+  ctx.restore(); ctx.strokeStyle = "rgba(0,229,255,.7)"; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = "#f4fbff"; ctx.font = `700 ${Math.round(H * 0.032)}px sans-serif`; ctx.textBaseline = "top";
   const titleLines = wrap(ctx, spec.name, photoX - pad - 80);
   titleLines.forEach((l, i) => ctx.fillText(l, pad + 28, pad + 22 + i * Math.round(H * 0.038)));
   ctx.fillStyle = "#e8fff0"; ctx.font = `${Math.round(H * 0.018)}px sans-serif`;
@@ -83,13 +85,15 @@ export function paintGantt(ctx: CanvasRenderingContext2D, W: number, H: number, 
     const x = chartX + box.x * chartW; const bw = Math.max(8, box.w * chartW); const by = y + rowH * 0.22; const bh = rowH * 0.5;
     const st = barStatus(t, today);
     ctx.beginPath(); round(ctx, x, by, bw, bh, bh / 2);
-    if (st === "pending") { ctx.strokeStyle = "rgba(57,255,20,.75)"; ctx.setLineDash([5, 4]); ctx.stroke(); ctx.setLineDash([]); }
-    else {
+    if (st !== "pending") {
       const grd = ctx.createLinearGradient(x, by, x + bw, by); grd.addColorStop(0, "#b6ff5c"); grd.addColorStop(1, GREEN);
-      ctx.fillStyle = grd; ctx.shadowColor = GREEN; ctx.shadowBlur = st === "completed" ? 16 : 8; ctx.fill(); ctx.shadowBlur = 0;
-      if (st === "in-progress" && t.done < 100) { ctx.fillStyle = "rgba(3,18,8,.45)"; ctx.fillRect(x + bw * Math.max(0.08, t.done / 100), by, bw * (1 - Math.max(0.08, t.done / 100)), bh); }
+      ctx.fillStyle = grd; ctx.fill();
+      if (st === "in-progress" && t.done < 100) { ctx.save(); round(ctx, x, by, bw, bh, bh / 2); ctx.clip(); ctx.fillStyle = "rgba(3,18,8,.45)"; ctx.fillRect(x + bw * Math.max(0.08, t.done / 100), by, bw, bh); ctx.restore(); }
     }
-    if (crit.has(t.id)) { ctx.strokeStyle = GOLD; ctx.lineWidth = 2; round(ctx, x - 1, by - 1, bw + 2, bh + 2, bh / 2); ctx.stroke(); ctx.lineWidth = 1; }
+    ctx.beginPath(); round(ctx, x, by, bw, bh, bh / 2);
+    ctx.lineWidth = Math.max(4, bh * 0.14); ctx.strokeStyle = crit.has(t.id) ? "#7af6ff" : "#f4fff8";
+    if (st === "pending") ctx.setLineDash([8, 6]); else ctx.setLineDash([]);
+    ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth = 1;
     ctx.fillStyle = GOLD; ctx.font = `700 ${Math.round(rowH * 0.28)}px sans-serif`; ctx.fillText(`${t.done}%`, x + bw + 8, y + rowH / 2);
     if (spec.showLinks && t.dep) {
       const pi = tasks.findIndex((z) => z.id === t.dep); if (pi >= 0) {

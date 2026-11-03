@@ -4,6 +4,31 @@ import { motion } from "framer-motion";
 import { PHASE_ICON, analyseSchedule, addDays, barBox, barStatus, dayNum, durationDays, nextBestAction, timeColumns, type GanttTask } from "@/lib/schedule";
 export type GanttModel = { name: string; location?: string; subtitle?: string; capacity?: string; timeline?: string; tasks: GanttTask[]; deliverables?: string[]; impact?: string[]; heroPhoto?: string; slogan?: string };
 const todayIso = () => new Date().toISOString().slice(0, 10);
+/** Night-plant mark: slate and cyan only. No sunset fill — that read as a broken brown patch. */
+function PlantMark() {
+  return <svg className="fgantt-mark" viewBox="0 0 320 180" aria-hidden>
+    <defs>
+      <linearGradient id="fgantt-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#071422" /><stop offset="1" stopColor="#0a242c" /></linearGradient>
+      <linearGradient id="fgantt-steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#1a3a48" /><stop offset="1" stopColor="#071018" /></linearGradient>
+    </defs>
+    <rect width="320" height="180" fill="url(#fgantt-sky)" />
+    <g stroke="#39e7ff" strokeOpacity=".35" fill="none">{[40, 80, 120, 160].map((y) => <line key={y} x1="0" x2="320" y1={y} y2={y} />)}{[40, 80, 120, 160, 200, 240, 280].map((x) => <line key={x} y1="0" y2="180" x1={x} x2={x} />)}</g>
+    <rect y="132" width="320" height="48" fill="#050d12" />
+    <g fill="url(#fgantt-steel)" stroke="#39e7ff" strokeWidth="1.4">
+      <rect x="28" y="78" width="70" height="54" rx="2" />
+      <rect x="108" y="58" width="46" height="74" rx="2" />
+      <rect x="164" y="88" width="78" height="44" rx="2" />
+      <polygon points="250,132 262,46 274,132" />
+    </g>
+    <g fill="#39FF14">
+      <rect x="40" y="92" width="8" height="6" /><rect x="54" y="92" width="8" height="6" /><rect x="68" y="92" width="8" height="6" />
+      <rect x="118" y="72" width="8" height="6" /><rect x="132" y="72" width="8" height="6" />
+      <rect x="176" y="100" width="10" height="5" /><rect x="192" y="100" width="10" height="5" /><rect x="208" y="100" width="10" height="5" />
+    </g>
+    <circle cx="268" cy="36" r="5" fill="#7af6ff" opacity=".9" />
+    <path d="M268 44 v18" stroke="#7af6ff" strokeWidth="2" />
+  </svg>;
+}
 const STATUS_COLOR = { completed: "#39FF14", "in-progress": "#b6ff4a", pending: "transparent" } as const;
 /** Reference-style Gantt: full activity text, month grid, dependency connectors, today line, critical path, footer. */
 export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttModel; showLinks: boolean; onPatch?: (id: string, patch: Partial<GanttTask>) => void }) {
@@ -39,10 +64,10 @@ export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttMod
   const yMid = new Map<string, number>();
   let yAcc = 0;
   for (const r of rows) { const h = r.kind === "phase" ? 32 : 52; if (r.kind === "task") yMid.set(r.task.id, yAcc + h / 2); yAcc += h; }
-  return <div className="fgantt" data-testid="fgantt" onPointerMove={move} onPointerUp={() => setDrag(null)} onPointerLeave={() => { setDrag(null); setTip(null); }}>
+  return <div className="fgantt" data-testid="fgantt" data-notranslate onPointerMove={move} onPointerUp={() => setDrag(null)} onPointerLeave={() => { setDrag(null); setTip(null); }}>
     <header className="fgantt-head">
       <div className="fgantt-title">
-        <h3>{model.name}</h3>
+        <h3 data-testid="gantt-title">{model.name}</h3>
         <p>{model.location || "Project location"}</p>
         <p className="fgantt-sub">{model.subtitle || "Full plan — design through handover"}</p>
         <div className="fgantt-pills">
@@ -51,7 +76,7 @@ export function FuturisticGantt({ model, showLinks, onPatch }: { model: GanttMod
           <span><b>{(model.location || "Site").split(",")[0]}</b><small>Location</small></span>
         </div>
       </div>
-      <div className="fgantt-photo" aria-hidden>{model.heroPhoto ? <img src={model.heroPhoto} alt="" /> : <div className="fgantt-skyline" />}</div>
+      <div className="fgantt-photo" aria-hidden>{model.heroPhoto ? <img src={model.heroPhoto} alt="" /> : <PlantMark />}</div>
     </header>
     <div className="fgantt-chart">
       <div className="fgantt-labels">
