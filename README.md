@@ -1,4 +1,4 @@
-# FixLine — hands-free AI repair, safety, quality and project control
+# FixLine — a hands-free AI repair, safety, quality & project management agent for plant workers
 
 *Meta Global AI Developer Hackathon 2026 · Indie Dev Track · Push the Frontier*
 

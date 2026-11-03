@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Tip } from "../ui";
 import { savePrefs } from "../sections/shared";
@@ -47,7 +47,8 @@ type Turn = { who: "you" | "ai"; text: string; model?: string; lang?: string };
 export function VoiceDock() {
   const p = usePrefs(); const loc = p?.lang ?? "en-US"; const voiceOn = !!p?.voiceOn;
   const [open, setOpen] = useState(false); const [log, setLog] = useState<Turn[]>([]); const [state, setState] = useState("idle"); const [note, setNote] = useState(""); const [txt, setTxt] = useState("");
-  const loop = useRef(false); const sess = useRef(Math.random().toString(36).slice(2, 10));
+  const loop = useRef(false); const sess = useRef(Math.random().toString(36).slice(2, 10)); const panel = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (!open) return; const onDown = (e: MouseEvent) => { if (panel.current && !panel.current.contains(e.target as Node)) setOpen(false); }; document.addEventListener("mousedown", onDown); return () => document.removeEventListener("mousedown", onDown); }, [open]);
   const mic = useListen((x) => ask(x), (s, n) => { setState(s); setNote(n ?? ""); });
   async function ask(text: string) {
     if (!text.trim()) return; const heard = p?.autoDetect !== false ? detectLang(text) : null;
@@ -60,17 +61,20 @@ export function VoiceDock() {
     } catch (e) { setNote((e as Error).message); setState("idle"); }
   }
   const talk = () => { if (state === "listening" || state === "recording") { loop.current = false; mic.stop(); return; } loop.current = voiceOn; mic.start(speechTag(loc)); };
-  return <div className="fixed bottom-4 right-4 sm:right-5 z-40 flex flex-col items-end gap-2">
-    <AnimatePresence>{open && <motion.section initial={{ opacity: 0, y: 20, scale: .95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20 }} className="glass card" style={{ width: "min(92vw, 380px)", maxHeight: "70vh", padding: 16 }} aria-label="Voice assistant">
-      <div className="row" style={{ justifyContent: "space-between" }}><b className="neon">FixLine Voice</b>
+  return <div ref={panel} className="fixed bottom-4 right-4 sm:right-5 z-40 flex flex-col items-end gap-2">
+    <AnimatePresence>{open && <motion.section initial={{ opacity: 0, y: 16, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12 }} className="chat-panel card" style={{ width: "min(92vw, 400px)", maxHeight: "72vh", padding: 16 }} aria-label="Voice assistant">
+      <div className="row" style={{ justifyContent: "space-between" }}><div><b className="neon">FixLine</b><div className="text-xs muted">Hands-free repair, safety, quality and projects</div></div>
         <button className="btn text-sm" aria-pressed={voiceOn} data-testid="voice-toggle" onClick={() => { const on = !voiceOn; savePrefs({ voiceOn: on }); if (!on) { loop.current = false; speechSynthesis?.cancel(); } }}>{voiceOn ? `🔊 ${t(loc, "voiceOn")}` : `🔇 ${t(loc, "voiceOff")}`}</button></div>
-      {!voiceOn && <p className="m-0 text-xs muted">{t(loc, "voiceHint")}</p>}
-      <div className="flex flex-col gap-2 overflow-y-auto" style={{ maxHeight: "38vh" }} aria-live="polite">
-        {log.slice(-12).map((m, i) => <motion.div key={i} initial={{ opacity: 0, x: m.who === "you" ? 20 : -20 }} animate={{ opacity: 1, x: 0 }} className="rounded-3xl p-3 text-sm" style={{ alignSelf: m.who === "you" ? "flex-end" : "flex-start", background: m.who === "you" ? "rgba(57,255,20,.14)" : "var(--bg2)", maxWidth: "90%" }}>
+      {!voiceOn && <p className="m-0 text-xs muted">{t(loc, "voiceHint")} Click outside this panel to close it.</p>}
+      <div className="flex flex-col gap-2 overflow-y-auto" style={{ maxHeight: "40vh" }} aria-live="polite">
+        {log.length === 0 && <p className="m-0 text-sm muted">Try “open projects”, “how do I fix a pump seal”, or “which extinguisher for oil”.</p>}
+        {log.slice(-12).map((m, i) => <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-3 text-sm" style={{ alignSelf: m.who === "you" ? "flex-end" : "flex-start", background: m.who === "you" ? "rgba(57,255,20,.2)" : "#0c2416", border: "1px solid rgba(57,255,20,.25)", maxWidth: "92%" }}>
+          <div className="text-[10px] uppercase tracking-wide muted">{m.who === "you" ? "You" : "FixLine"}</div>
           {m.text}{m.lang && m.lang !== loc && <div className="text-xs muted">detected: {m.lang} → replying in {loc}</div>}{m.model && <div className="mt-1"><ModelBadge model={m.model} /></div>}</motion.div>)}
+        {state === "thinking" && <div className="chat-typing" role="status" aria-label="FixLine is typing"><span /><span /><span /> FixLine is writing…</div>}
       </div>
       {note && <p className="m-0 text-xs neon" role="status">{note}</p>}
-      <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); ask(txt); }}><input value={txt} onChange={(e) => setTxt(e.target.value)} placeholder="Type or talk…" aria-label="Message" /><button className="btn btn-primary">↵</button></form>
+      <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); ask(txt); }}><input value={txt} onChange={(e) => setTxt(e.target.value)} placeholder="Type a message…" aria-label="Message" /><button className="btn btn-primary" disabled={state === "thinking"}>↵</button></form>
     </motion.section>}</AnimatePresence>
     <div className="row">
       {open && <Tip label={voiceOn ? "Hands-free loop: talk, hear the answer, keep talking" : "Speak once (answers shown as text while voice output is off)"}><motion.button whileTap={{ scale: .9 }} className="btn btn-primary" style={{ minHeight: 56, borderRadius: 999 }} onClick={talk}>

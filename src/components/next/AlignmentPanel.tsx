@@ -48,17 +48,10 @@ function View({ title, off, ang, kind, tol, cToF, fToR, front, rear, onAdjust }:
       {/* motor shaft axis — visible lateral line */}
       <line x1="232" x2="500" y1={y0} y2={y0} stroke={c} strokeWidth="2.5" strokeDasharray="10 5" filter={`url(#${id}-glow)`}></line>
       {/* feet positions driven by Coupling→front / Front→rear distances */}
-      {[[xF, "F", front], [xR, "R", rear]].map(([x, l, v]) => <g key={l as string}><line x1={x as number} x2={x as number} y1={y0 + 30} y2={y0 + 58} stroke="#00e5ff" strokeWidth="2" /><circle cx={x as number} cy={y0 + 58} r="4" fill="#00e5ff" /><text x={x as number} y={y0 + 74} textAnchor="middle" fontSize="9.5" fill="#00e5ff" fontFamily="ui-monospace,monospace">{l} {(v as number) > 0 ? "+" : ""}{(v as number).toFixed(2)}</text></g>)}
+      {[[xF, "F"], [xR, "R"]].map(([x, l]) => <g key={l as string}><line x1={Number(x)} x2={Number(x)} y1={y0 + 30} y2={y0 + 48} stroke="#00e5ff" strokeWidth="2" /><circle cx={Number(x)} cy={y0 + 48} r="4" fill="#00e5ff" /></g>)}
     </motion.g>
     {/* fixed shaft axis — visible lateral line */}
     <line x1="10" x2="240" y1={y0} y2={y0} stroke="#00FF9C" strokeWidth="2.5" filter={`url(#${id}-glow)`} />
-    {/* readouts */}
-    <g fontFamily="ui-monospace,monospace" fontSize="11">
-      <text x="14" y="18" fill="#9fb3a8">{title.toUpperCase()}</text>
-      <text x="506" y="18" textAnchor="end" fill={c}>offset {off >= 0 ? "+" : ""}{off.toFixed(2)} mm · angle {ang >= 0 ? "+" : ""}{ang.toFixed(2)} /100</text>
-      <text x="506" y="50" textAnchor="end" fill="#9fb3a8">tol ±{tol.off} mm · ±{tol.ang}/100 @ speed · feet {cToF}/{fToR} mm</text>
-      <text x="506" y="34" textAnchor="end" fill={c}>{bad ? "▲ OUT OF TOLERANCE — correct the motor" : "● WITHIN TOLERANCE"}</text>
-    </g>
   </svg>;
 }
 const Row = ({ sym, v, unit, good }: { sym: string; v: number; unit: string; good: boolean }) => <div className="flex items-center justify-between gap-3 rounded-2xl p-2" style={{ background: "rgba(57,255,20,.05)" }}><span className="neon font-mono text-lg" aria-hidden>{sym}</span><span className="text-right"><span className="font-mono text-2xl font-bold">{v.toFixed(2)}</span><br /><span className="muted text-xs">{unit}</span></span><OK ok={good} /></div>;
@@ -68,7 +61,17 @@ export function AlignmentPanel() {
   const [r, setR] = useState<Reading>(found0); const [asFound, setAsFound] = useState<Reading>(found0); const [hot, setHot] = useState<keyof Reading | "">("");
   const [rpm, setRpm] = useState(1500); const [cToF, setCtoF] = useState(150); const [fToR, setFtoR] = useState(300); const [phase, setPhase] = useState<"As Found" | "As Corrected">("As Found");
   function glide(to: Reading) { const from = r; const t0 = performance.now(); const tick = (now: number) => { const k = Math.min(1, (now - t0) / 700); const e = 1 - (1 - k) ** 3; setR({ hAng: +(from.hAng + (to.hAng - from.hAng) * e).toFixed(3), hOff: +(from.hOff + (to.hOff - from.hOff) * e).toFixed(3), vAng: +(from.vAng + (to.vAng - from.vAng) * e).toFixed(3), vOff: +(from.vOff + (to.vOff - from.vOff) * e).toFixed(3) }); if (k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
-  const [ai, setAi] = useState<Rich | null>(null); const [busy, setBusy] = useState(false);
+  const [ai, setAi] = useState<Rich | null>(null); const [busy, setBusy] = useState(false); const [moves, setMoves] = useState<string[] | null>(null);
+  function shiftNote(from: Reading) {
+    const corr = corrections(from, cToF, fToR);
+    setMoves([
+      `Horizontal offset is ${from.hOff.toFixed(2)} mm. Move the motor ${from.hOff >= 0 ? "toward the − side" : "toward the + side"} ${Math.abs(from.hOff).toFixed(2)} mm at the coupling.`,
+      `Horizontal angularity is ${from.hAng.toFixed(2)} mm/100mm. Sideways: front feet ${corr.hFront >= 0 ? "+" : ""}${corr.hFront} mm, rear feet ${corr.hRear >= 0 ? "+" : ""}${corr.hRear} mm.`,
+      `Vertical offset is ${from.vOff.toFixed(2)} mm. ${from.vOff >= 0 ? "Lower" : "Raise"} the motor ${Math.abs(from.vOff).toFixed(2)} mm at the coupling.`,
+      `Vertical angularity is ${from.vAng.toFixed(2)} mm/100mm. Shims: front ${corr.vFront >= 0 ? "add" : "remove"} ${Math.abs(corr.vFront)} mm, rear ${corr.vRear >= 0 ? "add" : "remove"} ${Math.abs(corr.vRear)} mm.`,
+      `Stop at 0.00 mm offset and 0.00 mm/100mm (tolerance ±${tol.off} mm and ±${tol.ang} mm/100mm at ${rpm} rpm).`,
+    ]);
+  }
   const tol = tolFor(rpm); const c = useMemo(() => corrections(r, cToF, fToR), [r, cToF, fToR]);
   const ok = { hA: Math.abs(r.hAng) <= tol.ang, hO: Math.abs(r.hOff) <= tol.off, vA: Math.abs(r.vAng) <= tol.ang, vO: Math.abs(r.vOff) <= tol.off };
   const all = Object.values(ok).every(Boolean);
@@ -84,13 +87,17 @@ export function AlignmentPanel() {
   return <Card title="Shaft laser alignment — insight panel" sub={`Result: ${phase} · tolerance @${rpm} rpm: offset ±${tol.off} mm, angularity ±${tol.ang} mm/100mm`} className="lg:col-span-2"
     right={<div className="row"><span className="pill" style={{ color: all ? "#39FF14" : "#ff4d6d", borderColor: all ? "#39FF14" : "#ff4d6d" }}>{all ? "IN TOLERANCE" : "CORRECTION NEEDED"}</span><Btn tip="Toggle As Found / As Corrected" onClick={() => setPhase(phase === "As Found" ? "As Corrected" : "As Found")}>⇄ {phase}</Btn></div>}>
     <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
-      <div className="flex flex-col gap-2 rounded-3xl p-3" style={{ background: "linear-gradient(180deg,rgba(57,255,20,.06),transparent)", border: "1px solid rgba(57,255,20,.25)" }}><View title="Horizontal · top view" off={r.hOff} ang={r.hAng} kind="top" tol={tol} cToF={cToF} fToR={fToR} front={c.hFront} rear={c.hRear} onAdjust={(off, ang) => setR({ ...r, hOff: off, hAng: ang })} /><View title="Vertical · side view" off={r.vOff} ang={r.vAng} kind="side" tol={tol} cToF={cToF} fToR={fToR} front={c.vFront} rear={c.vRear} onAdjust={(off, ang) => setR({ ...r, vOff: off, vAng: ang })} /></div>
+      <div className="flex flex-col gap-4 rounded-3xl p-3" style={{ background: "linear-gradient(180deg,rgba(57,255,20,.06),transparent)", border: "1px solid rgba(57,255,20,.25)" }}>
+        <figure className="m-0"><View title="Horizontal · top view" off={r.hOff} ang={r.hAng} kind="top" tol={tol} cToF={cToF} fToR={fToR} front={c.hFront} rear={c.hRear} onAdjust={(off, ang) => setR({ ...r, hOff: off, hAng: ang })} /><figcaption className="mt-1 text-xs">Top view · offset {r.hOff.toFixed(2)} mm · angularity {r.hAng.toFixed(2)} mm/100mm · front {c.hFront} mm · rear {c.hRear} mm</figcaption></figure>
+        <figure className="m-0"><View title="Vertical · side view" off={r.vOff} ang={r.vAng} kind="side" tol={tol} cToF={cToF} fToR={fToR} front={c.vFront} rear={c.vRear} onAdjust={(off, ang) => setR({ ...r, vOff: off, vAng: ang })} /><figcaption className="mt-1 text-xs">Side view · offset {r.vOff.toFixed(2)} mm · angularity {r.vAng.toFixed(2)} mm/100mm · front shim {c.vFront} mm · rear shim {c.vRear} mm</figcaption></figure>
+      </div>
       <div className="flex flex-col gap-3">
         <section className="glass flex flex-col gap-2 rounded-3xl p-3"><b className="text-sm">Horizontal: Top view</b><Row sym="⊣⊢∠" v={r.hAng} unit="mm/100mm" good={ok.hA} /><Row sym="⊣⊢" v={r.hOff} unit="mm" good={ok.hO} /></section>
         <section className="glass flex flex-col gap-2 rounded-3xl p-3"><b className="text-sm">Vertical: Side view</b><Row sym="⊣⊢∠" v={r.vAng} unit="mm/100mm" good={ok.vA} /><Row sym="⊣⊢" v={r.vOff} unit="mm" good={ok.vO} /></section>
       </div></div>
     <div className="row text-xs">{([["hAng", "H angularity", "#4da3ff", "top · tilt"], ["hOff", "H offset", "#c39bff", "top · shift"], ["vAng", "V angularity", "#ffb020", "side · tilt"], ["vOff", "V offset", "#39FF14", "side · lift"]] as const).map(([k, l, col, w]) => <motion.span key={k} animate={{ scale: hot === k ? 1.06 : 1 }} className="pill" style={{ borderColor: col, color: col, boxShadow: hot === k ? `0 0 12px ${col}` : undefined }}>{l} · {w}</motion.span>)}</div>
-    <div className="row"><Btn tip="Show the captured wrong alignment" onClick={() => { setPhase("As Found"); glide(asFound); }}>Wrong (as found)</Btn><Btn tip="Animate the machine into tolerance" className="btn-primary" onClick={() => { setPhase("As Corrected"); glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); }}>Correct</Btn><Btn tip="Drag released near zero already snaps. This finishes the move." onClick={() => glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 })}>Snap to alignment</Btn><Btn tip="Capture the live readings as the wrong example" onClick={() => setAsFound(r)}>Capture as found</Btn><Btn tip="Glide to alignment and ask the model to explain the moves" className="btn-primary" onClick={() => { glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); void askAi(); }}>✦ AI auto-align</Btn></div>
+    <div className="row"><Btn tip="Show the captured wrong alignment" onClick={() => { setPhase("As Found"); glide(asFound); }}>Wrong (as found)</Btn><Btn tip="Animate the machine into tolerance" className="btn-primary" onClick={() => { shiftNote(r); setPhase("As Corrected"); glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); }}>Correct</Btn><Btn tip="Drag released near zero already snaps. This finishes the move." onClick={() => { shiftNote(r); glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); }}>Snap to alignment</Btn><Btn tip="Capture the live readings as the wrong example" onClick={() => setAsFound(r)}>Capture as found</Btn><Btn tip="Show the numeric moves, glide to alignment, then ask the model" className="btn-primary" onClick={() => { shiftNote(r); setPhase("As Corrected"); glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); void askAi(); }}>✦ AI auto-align</Btn></div>
+    {moves && <ol className="m-0 pl-5 text-sm" data-testid="align-moves">{moves.map((m) => <li key={m}>{m}</li>)}</ol>}
     <div className="grid gap-3 grid-cols-2 md:grid-cols-4">{N("hAng", "H angularity (mm/100mm)")}{N("hOff", "H offset (mm)")}{N("vAng", "V angularity (mm/100mm)")}{N("vOff", "V offset (mm)")}
       <Field label="Speed (rpm)" tip="Tolerance tightens with speed"><input type="number" value={rpm} onChange={(e) => setRpm(Number(e.target.value))} /></Field>
       <Field label="Coupling → front feet (mm)"><input type="number" value={cToF} onChange={(e) => setCtoF(Number(e.target.value))} /></Field>

@@ -109,6 +109,10 @@ export default function Engineering() {
   const choose = (id: string) => { setMid(id); savePrefs({ machine: id }); };
   async function photoGuide(f: File) { setBusy(true); setErr(""); try { const img = await fileToDataUrl(f); setPhoto(await post("/api/copilot", { session: `eng-${mid || "any"}-${Date.now()}`, question: `Inspect this photo of ${m?.name ?? "the equipment"} and give repair guidance.`, images: [img], machine: mid || undefined, lang: prefs().lang })); } catch (e) { setErr((e as Error).message); } finally { setBusy(false); } }
   return <div className="grid gap-4 lg:grid-cols-2">
+    <Card title="How to use Engineering" sub="Work top to bottom. Each tool says what it does, when to use it, and what to do if the result is wrong." className="lg:col-span-2">
+      <ol className="m-0 grid gap-2 pl-5 text-sm md:grid-cols-2">{Object.entries(HELP).map(([k, [what, when, fix]]) => <li key={k}><b className="neon capitalize">{k}</b> — {what} Use it {when.charAt(0).toLowerCase() + when.slice(1)} If it looks wrong: {fix}</li>)}</ol>
+      <p className="m-0 text-xs muted">Then open the natural-language bar above: “size cable for 60 A”, “pipe 4 inch schedule 80”, or “shaft alignment”.</p>
+    </Card>
     <Card title="Selected machine" sub="Standard asset record · linked to Ask AI, Repair and SCADA" right={<H k="machine" />} className="lg:col-span-2">
       <div className="grid gap-3 md:grid-cols-4"><Field label="Search" tip="Vendor, model, symptom — e.g. 'ABB ACS880 overcurrent'"><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search catalogue…" /></Field>
         <Field label="Category"><NeonSelect value={cat} onChange={(e) => setCat(e.target.value)}><option value="">All</option>{CATEGORIES.map((x) => <option key={x}>{x}</option>)}</NeonSelect></Field>
