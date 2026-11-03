@@ -33,6 +33,15 @@ export const INTERLOCKS: Interlock[] = [
   { id: "LSHH-TK1", when: (s) => s.TK1_L >= 95, action: "Stop transfer to tank TK-1" },
 ];
 export const activeTrips = (s: Record<TagId, number>) => INTERLOCKS.filter((i) => i.when(s));
+export type ValveId = "inlet" | "gasOut" | "liqOut";
+/** Valve move guard. AI cannot move a valve. Real plants are not written from this app — the SIS stays in charge. Simulator moves need an explicit operator approval. */
+export function guardValve(req: { valve: ValveId; open: boolean; target: "sim" | "real"; confirmed: boolean; actor: "ai" | "operator"; estop: boolean }) {
+  if (req.actor !== "operator") return { ok: false, reason: "AI cannot move valves — an operator must approve" };
+  if (!req.confirmed) return { ok: false, reason: "explicit operator approval required before any valve moves" };
+  if (req.estop && req.open) return { ok: false, reason: "E-STOP active — valves stay in the safe state" };
+  if (req.target === "real") return { ok: false, reason: "approved intent only — this app does not write valves on a live plant (IEC 61511)" };
+  return { ok: true, reason: req.open ? "simulator: valve commanded open after approval" : "simulator: valve commanded closed after approval" };
+}
 /** Write guard: applies to every write path (operator, PID, AI). */
 export function guardWrite(req: { tag: TagId; sp: number; target: "sim" | "real"; confirmed: boolean; actor: "ai" | "operator" | "pid"; estop: boolean }) {
   const t = TAGS.find((x) => x.id === req.tag); if (!t || t.sp === undefined) return { ok: false, reason: "tag not writable" };

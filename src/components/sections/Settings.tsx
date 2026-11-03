@@ -28,6 +28,22 @@ function SpeechTest() {
     <div className="row"><Btn tip="Say a short sentence; the transcript appears here" className="btn-primary btn-sm" onClick={() => (st === "listening" || st === "recording" ? mic.stop() : mic.start(speechTag(lang)))}>{st === "listening" || st === "recording" ? "● Stop" : "Test mic"}</Btn>
       <span className="text-sm" aria-live="polite">{heard ? <>Heard: <b className="neon">“{heard}”</b></> : note || "Not tested yet"}</span></div></div>;
 }
+function Profiles() {
+  const [label, setLabel] = useState("Flow station"); const [kind, setKind] = useState("demo"); const [industry, setIndustry] = useState("oil-gas"); const [endpoint, setEndpoint] = useState(""); const [rows, setRows] = useState<{ id: string; label: string; kind: string; industry: string; endpoint?: string }[]>([]); const [note, setNote] = useState("");
+  const device = () => { let d = localStorage.getItem("fixline.device"); if (!d) { d = crypto.randomUUID(); localStorage.setItem("fixline.device", d); } return d; };
+  async function load() { const j = await fetch(`/api/connections?device=${device()}`).then((r) => r.json()).catch(() => ({ connections: [] })); setRows(j.connections ?? []); }
+  useEffect(() => { void load(); }, []);
+  async function save(e: React.FormEvent) { e.preventDefault(); const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 24) || "plant"; const r = await fetch(`/api/connections?device=${device()}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id, label, kind, industry, endpoint, notes: "Reference only. Credentials stay in server env." }) }); const j = await r.json().catch(() => ({})); setNote(r.ok ? "Saved. This does not open a live connection." : j.error || "Could not save"); if (r.ok) void load(); }
+  return <Card title="Plant profiles" sub="Projects, repair sessions and connection notes are stored in PGlite (or Postgres when DATABASE_URL is set). No secrets in the browser.">
+    <form className="grid gap-2 md:grid-cols-2" onSubmit={save}><Field label="Label"><input value={label} onChange={(e) => setLabel(e.target.value)} /></Field>
+      <Field label="Protocol"><NeonSelect value={kind} onChange={(e) => setKind(e.target.value)}><option value="demo">Demo simulator</option><option value="mqtt">MQTT</option><option value="opcua">OPC UA</option><option value="modbus">Modbus TCP</option><option value="mcp">MCP</option></NeonSelect></Field>
+      <Field label="Industry"><NeonSelect value={industry} onChange={(e) => setIndustry(e.target.value)}><option value="oil-gas">Oil & gas</option><option value="electrical">Electrical</option><option value="manufacturing">Manufacturing</option><option value="factory">Other factory</option></NeonSelect></Field>
+      <Field label="Endpoint reference"><input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} placeholder="host only — no passwords" /></Field>
+      <button className="btn btn-primary" type="submit">Save profile</button></form>
+    {note && <p className="m-0 text-sm neon">{note}</p>}
+    <ul className="m-0 pl-5 text-sm">{rows.map((r) => <li key={r.id}>{r.label} · {r.kind} · {r.industry}{r.endpoint ? ` · ${r.endpoint}` : ""}</li>)}{!rows.length && <li>No saved profiles yet.</li>}</ul>
+  </Card>;
+}
 export function useStatus() { const [s, setS] = useState<{ meta: boolean; nvidia: boolean; nvidiaModel: string } | null>(null); useEffect(() => { fetch("/api/status").then((r) => r.json()).then(setS).catch(() => null); }, []); return s; }
 const FLAG_HELP: Record<string, string> = { autonomousAdvisor: "SCADA advisor re-diagnoses every 10 s (still never writes without you)", serverSpeech: "Use server ASR/TTS when the browser lacks a voice or recogniser", memory: "Remember conversations, documents and facts (PGlite)", offlineCatalog: "Keep the equipment catalogue cached for offline use", xr: "Show the Enter AR button" };
 type Audit = { id: number; action: string; detail: unknown; createdAt: string };
@@ -50,6 +66,7 @@ export default function Settings() {
     <Card title="Memory" sub={sessions === null ? "…" : `${sessions} conversation(s) stored (short-term = last turns, long-term = facts & documents)`}>
       <Field label="Retention (days)" tip="Older memory is deleted when you press Apply"><input type="number" min={1} max={3650} value={p.retentionDays} onChange={(e) => set("retentionDays", Math.max(1, +e.target.value))} /></Field>
       <div className="row"><Btn tip="Delete memory older than the retention period" onClick={() => forget(p.retentionDays)}>Apply retention</Btn><Btn tip="Delete all of your stored memory" className="btn-danger" onClick={() => forget(0)}>Forget everything</Btn></div></Card>
+    <Profiles />
     <Card title="SCADA & MCP" sub="Server connectors are configured with env vars; these are your client endpoints">
       <div className="row text-sm">{scada ? Object.entries(scada).map(([k, v]) => <span key={k} className="pill" style={{ color: v ? "var(--neon)" : undefined }}>{k} {v ? "●" : "○"}</span>) : "…"}</div>
       <Field label="MCP endpoint" tip="Point Claude/Cursor/any MCP client here"><input value={p.scadaMcpUrl} onChange={(e) => set("scadaMcpUrl", e.target.value)} /></Field>

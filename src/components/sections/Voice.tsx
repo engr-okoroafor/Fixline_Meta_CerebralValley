@@ -64,7 +64,7 @@ export default function Voice({ go }: { go: (m: string) => void }) {
       <p className="m-0 text-xs muted">Speaking & replying in <b className="neon">{langLabel(lang)}</b> — change it in the top language bar.</p>
       <div className="row"><Btn tip="Hold-free push-to-talk: one question" className="btn-primary" onClick={listen}>{listening ? "■ Stop" : "🎙 Push to talk"}</Btn><Btn tip="Continuous: listen, answer, speak, repeat" aria-pressed={hands} onClick={toggleHands}>{hands ? "Hands-free ON" : "Hands-free OFF"}</Btn><Btn tip="Clear memory" onClick={() => { setLog([]); localStorage.removeItem(MEM); }}>Clear</Btn></div>
       {note && <p role="status" className="m-0 text-sm neon">{note}</p>}
-      <p className="muted text-sm">Try: “open safety”, “pump is cavitating and noisy”, “separator pressure alarm”, “kitchen oil fire”.</p>
+      <p className="muted text-sm">Try: “open projects”, “open alignment”, “how do I fix a pump seal”, “separator pressure alarm”, “which extinguisher for an oil fire”.</p>
       <form className="row" onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const t = String(f.get("q") ?? ""); if (t) ask(t); e.currentTarget.reset(); }}><input ref={typeRef} name="q" aria-label="Type a question" placeholder="Or type…" className="flex-1" /><Btn tip="Send">Send</Btn></form>
       <ul aria-live="polite" className="grid gap-2 max-h-96 overflow-auto">{log.map((m, i) => <li key={i} className="glass p-2"><b className="neon">{m.who}</b> {m.text}{m.meta && <div className="muted text-xs">{m.meta}</div>}</li>)}</ul>
     </Card>

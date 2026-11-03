@@ -9,7 +9,7 @@ import { useListen } from "../sections/Voice";
 import { speechTag } from "@/lib/i18n";
 import { RichAnswer, type Rich } from "../sections/Copilot";
 import { CameraCapture } from "./Chrome";
-export type Widget = { id: string; kind: "trend" | "cable" | "pipe" | "photo" | "kpi" | "ai"; title: string; data?: Record<string, number | string>[]; value?: number; unit?: string; limit?: number; img?: string; rich?: Rich; lines?: string[] };
+export type Widget = { id: string; kind: "trend" | "cable" | "pipe" | "photo" | "kpi" | "ai" | "calc"; title: string; data?: Record<string, number | string>[]; value?: number; unit?: string; limit?: number; img?: string; rich?: Rich; lines?: string[] };
 const METRICS: [RegExp, string, string, number, number][] = [ // regex, name, unit, warn, typical
   [/vib/i, "Vibration", "mm/s", 7.1, 2.8], [/temp|bearing heat/i, "Temperature", "°C", 90, 60], [/press/i, "Pressure", "barg", 16, 10], [/flow/i, "Flow", "m³/h", 140, 100], [/current|amps?\b/i, "Current", "A", 110, 80], [/level/i, "Level", "%", 85, 50], [/speed|rpm/i, "Speed", "rpm", 3100, 1480],
 ];
@@ -23,6 +23,7 @@ export function parseCommand(q: string): Widget[] | "clear" | null {
   const amps = s.match(/(\d+(?:\.\d+)?)\s*a(mps?)?\b/); if (/cable/.test(s) && amps) { const a = Number(amps[1]); const der = Number(s.match(/derat\w*\s*(0?\.\d+)/)?.[1] ?? 1); const c = cableSize(a, der); out.push({ id: uid(), kind: "cable", title: `Cable for ${a} A`, lines: c ? [`${c.mm2} mm² Cu`, `Ampacity ${c.ampacity} A (derated ${c.derated} A)`, c.source] : ["Above table range — use parallel runs"] }); }
   const nps = s.match(/(\d+(?:-\d\/\d)?|\d\/\d)\s*(?:"|in|inch)/); if (/pipe|schedule|sch/.test(s) && nps) { const p = pipe(nps[1], /80/.test(s) ? "80" : "40") as Record<string, unknown>; out.push({ id: uid(), kind: "pipe", title: `NPS ${nps[1]} Sch ${/80/.test(s) ? 80 : 40}`, lines: p.error ? [String(p.error)] : [`OD ${p.od}"`, `Wall ${p.wall}"`, `ID ${p.id}"`, `Bolts ${p.bolts ?? "—"}`, String(p.source)] }); }
   for (const [re, name, unit, warn, typ] of METRICS) if (re.test(s) && !(name === "Current" && /cable/.test(s))) { const v = nums.find((n) => n > 0 && n !== 101) ?? typ; out.push({ id: uid(), kind: /trend|chart|graph|history|plot|show/.test(s) ? "trend" : "kpi", title: `${name}${tag ? ` · ${tag}` : ""}`, value: v, unit, limit: warn, data: series(typ, v) }); }
+  if (/align|angularity|soft foot|shaft/.test(s)) out.push({ id: uid(), kind: "calc", title: "Alignment assist", lines: ["H angularity tilts the top view. H offset shifts it.", "V angularity tilts the side view. V offset lifts it.", "Drag the motor — it snaps when you are within 0.03 mm.", "Correct shows the in-tolerance pose. Wrong shows the captured as-found pose.", "AI auto-align glides the machine in and explains the shim moves."] });
   if (/photo|picture|image|camera/.test(s)) out.push({ id: uid(), kind: "photo", title: "Field photo" });
   return out.length ? out : null;
 }
@@ -55,7 +56,7 @@ export function EngineeringNL() {
     <motion.div layout className="grid gap-4 md:grid-cols-2"><AnimatePresence>{ws.map((w) => <motion.section layout key={w.id} initial={{ opacity: 0, scale: .9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .9 }} className={`glass flex flex-col gap-2 rounded-3xl p-4 ${w.kind === "ai" ? "md:col-span-2" : ""}`} data-testid="eng-widget">
       <div className="row" style={{ justifyContent: "space-between" }}><b className="neon">{w.title}</b><button className="btn text-xs" style={{ minHeight: 32 }} aria-label={`Remove ${w.title}`} onClick={() => setWs(ws.filter((x) => x.id !== w.id))}>✕</button></div>
       {w.kind === "trend" && <TrendW w={w} />}{w.kind === "kpi" && <KpiW w={w} />}
-      {(w.kind === "cable" || w.kind === "pipe") && <ul className="m-0 pl-5 text-sm">{w.lines?.map((l) => <li key={l}>{l}</li>)}</ul>}
+      {(w.kind === "cable" || w.kind === "pipe" || w.kind === "calc") && <ul className="m-0 pl-5 text-sm">{w.lines?.map((l) => <li key={l}>{l}</li>)}</ul>}
       {w.kind === "photo" && (w.img ? <img src={w.img} alt="Field photo" className="w-full rounded-3xl" /> : <CameraCapture onPhoto={async (f) => { const img = await fileToDataUrl(f); setWs((all) => all.map((x) => (x.id === w.id ? { ...x, img } : x))); }} />)}
       {w.kind === "ai" && w.rich && <RichAnswer r={w.rich} onAsk={(x) => run(x)} />}
     </motion.section>)}</AnimatePresence></motion.div>

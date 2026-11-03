@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { TAGS, initSim, stepSim, alarmLevel, drift, activeTrips, guardWrite, PRIORITY, type SimState, type TagId } from "@/lib/scada/model";
+import { TAGS, initSim, stepSim, alarmLevel, drift, activeTrips, guardWrite, guardValve, PRIORITY, type SimState, type TagId, type ValveId } from "@/lib/scada/model";
 import { Card, Btn, Field, Tip } from "../ui";
 import Trend from "../Trend";
 import { post, fileToDataUrl, videoFrame, prefs } from "./shared";
@@ -74,6 +74,8 @@ export function Hmi({ s }: { s: SimState }) {
 }
 export default function Scada({ loggedIn }: { loggedIn: boolean }) {
   const [s, setS] = useState(initSim); const hist = useRef<Hist>(Object.fromEntries(TAGS.map((t) => [t.id, []])) as unknown as Hist);
+  const [industry, setIndustry] = useState<"oil-gas" | "electrical" | "manufacturing" | "factory">("oil-gas");
+  const [ask, setAsk] = useState<null | { title: string; detail: string; run: () => void }>(null);
   const [series, setSeries] = useState<Record<string, number>[]>([]); const [target, setTarget] = useState<"sim" | "real">("sim");
   const [agent, setAgent] = useState<{ summary: string; steps: { phase: string; tool?: string; note?: string; result?: unknown }[]; proposals: { proposal: { tag: TagId; sp: number }; guard: { ok: boolean; reason: string } }[] } | null>(null);
   const [msg, setMsg] = useState(""); const [busy, setBusy] = useState(false); const [replica, setReplica] = useState<Replica | null>(null);
@@ -90,6 +92,14 @@ export default function Scada({ loggedIn }: { loggedIn: boolean }) {
   useEffect(() => { if (!autoAdv) return; runAdvisor(); const id = setInterval(runAdvisor, 10000); return () => clearInterval(id); }, [autoAdv]); // eslint-disable-line react-hooks/exhaustive-deps
   async function readLive(source: "mqtt" | "opcua" | "modbus") { setLiveMsg("Reading…"); try { const r = await post("/api/scada", { op: "live", source }); setLiveMsg(`${source}: ${Object.entries(r.values ?? {}).map(([k, v]) => `${k}=${v}`).join(", ") || "no tags mapped"}`); } catch (e) { setLiveMsg(`${source}: ${(e as Error).message}`); } }
   async function diagnose() { setBusy(true); setMsg(""); try { setAgent(await post("/api/agent", { goal: alarms.length ? `Diagnose alarm on ${alarms[0].t.id}` : "Health check of flow station", target, estop: s.estop, values: s.v, history: Object.fromEntries(TAGS.map((t) => [t.id, hist.current[t.id].slice(-120)])) })); } catch (e) { setMsg((e as Error).message); } finally { setBusy(false); } }
+  function approve(title: string, detail: string, run: () => void) { setAsk({ title, detail, run }); }
+  function requestValve(valve: ValveId, open: boolean) {
+    approve(`${open ? "Open" : "Close"} ${valve}`, "Nothing moves until you press approve. A real plant valve is never written from this app.", () => {
+      const g = guardValve({ valve, open, target, confirmed: true, actor: "operator", estop: s.estop });
+      if (g.ok) setS((p) => ({ ...p, auto: false, valves: { ...p.valves, [valve]: open ? 100 : 0 } }));
+      setMsg(`${valve}: ${g.reason}`); setAsk(null);
+    });
+  }
   async function applySp(tag: TagId, sp: number, fromProposal = false) {
     if (target === "sim") { const g = guardWrite({ tag, sp, target: "sim", confirmed: true, actor: "operator", estop: s.estop }); if (g.ok) setS((p) => ({ ...p, sp: { ...p.sp, [tag]: sp } })); setMsg(`${tag} → ${sp}: ${g.reason}`); return; }
     if (!loggedIn) return setMsg("Sign in to send operator-confirmed writes to a real connector.");
@@ -104,6 +114,9 @@ export default function Scada({ loggedIn }: { loggedIn: boolean }) {
       <Btn tip="Toggle closed-loop control (simulator only)" aria-pressed={s.auto} onClick={() => setS({ ...s, auto: !s.auto })}>Auto {s.auto ? "ON" : "OFF"}</Btn>
       <Btn tip="Emergency stop: shuts inlet, trips pump, blocks all writes" className="btn-danger" aria-pressed={s.estop} onClick={() => setS({ ...s, estop: !s.estop })}>{s.estop ? "Reset E-STOP" : "E-STOP"}</Btn></div>}>
       <Hmi s={s} />
+      {industry === "oil-gas" && <div className="row" data-testid="valve-controls"><span className="text-sm muted">Valves (approval required):</span>{(["inlet", "gasOut", "liqOut"] as const).map((v) => <span key={v} className="row" style={{ gap: 4 }}><Btn tip={`Close ${v} after an explicit approval`} onClick={() => requestValve(v, false)}>Close {v}</Btn><Btn tip={`Open ${v} after an explicit approval`} onClick={() => requestValve(v, true)}>Open {v}</Btn></span>)}</div>}
+      {ask && <div role="dialog" aria-label="Approve write" className="rounded-3xl p-3" style={{ border: "1px solid #f5b301", background: "rgba(245,179,1,.08)" }}><b>{ask.title}</b><p className="m-0 text-sm">{ask.detail}</p><div className="row"><Btn tip="This is the approval gate. Nothing is written before this click." className="btn-primary" onClick={ask.run}>I approve this write</Btn><Btn tip="Leave the plant as it is" onClick={() => setAsk(null)}>Cancel</Btn></div></div>}
+      <IndustryBoard industry={industry} setIndustry={setIndustry} />
       <div className="row"><span className="text-sm muted">Inject fault:</span>{(["gas-valve-stuck", "level-sensor-drift", "pump-degraded"] as const).map((f) => <Btn key={f} tip={`Simulate ${f.replace(/-/g, " ")}`} aria-pressed={s.fault === f} onClick={() => setS({ ...s, fault: s.fault === f ? null : f })}>{f.replace(/-/g, " ")}</Btn>)}</div>
     </Card>
     <div className="grid gap-4 lg:grid-cols-2">
@@ -116,7 +129,7 @@ export default function Scada({ loggedIn }: { loggedIn: boolean }) {
           {agent.proposals.map((p, i) => <div key={i} className="row"><span>Proposal: {p.proposal.tag} → {p.proposal.sp} ({p.guard.reason})</span>{p.guard.ok || target === "real" ? <Btn tip="Apply this AI proposal (you are the approver)" onClick={() => applySp(p.proposal.tag, p.proposal.sp, true)}>Approve</Btn> : null}</div>)}</div>}
       </Card>
       <Card title="Setpoints & trends" sub="Writes pass the safety guard; real-plant writes need login + confirmation and are audit-logged.">
-        <div className="grid grid-cols-2 gap-4">{(["SEP1_P", "SEP1_L"] as TagId[]).map((id) => { const t = TAGS.find((x) => x.id === id)!; return <form key={id} className="flex flex-col gap-2" onSubmit={(e) => { e.preventDefault(); applySp(id, Number(new FormData(e.currentTarget).get("sp"))); }}><Field label={`${t.desc} SP (${t.unit})`} tip={`Safe window ${t.limits.lo}–${t.limits.hi} ${t.unit}`}><input name="sp" type="number" step="0.1" defaultValue={s.sp[id]} /></Field><button className="btn">Apply</button></form>; })}</div>
+        <div className="grid grid-cols-2 gap-4">{(["SEP1_P", "SEP1_L"] as TagId[]).map((id) => { const t = TAGS.find((x) => x.id === id)!; return <form key={id} className="flex flex-col gap-2" onSubmit={(e) => { e.preventDefault(); const sp = Number(new FormData(e.currentTarget).get("sp")); approve(`Set ${id} to ${sp} ${t.unit}`, "Setpoint changes wait for this approval. Real-plant writes also need a signed-in operator.", () => { setAsk(null); void applySp(id, sp); }); }}><Field label={`${t.desc} SP (${t.unit})`} tip={`Safe window ${t.limits.lo}–${t.limits.hi} ${t.unit}`}><input name="sp" type="number" step="0.1" defaultValue={s.sp[id]} /></Field><button className="btn">Request approval</button></form>; })}</div>
         {msg && <p role="status" className="m-0 text-sm">{msg}</p>}
         <Trend data={series} keys={[{ k: "P", c: "#39FF14", name: "SEP1_P barg" }, { k: "L", c: "#00FF9C", name: "SEP1_L %" }, { k: "F", c: "#60a5fa", name: "P101 flow /10" }]} refs={[{ y: 15, label: "P HI" }]} />
       </Card>
@@ -142,6 +155,21 @@ export default function Scada({ loggedIn }: { loggedIn: boolean }) {
   </div>;
 }
 
+const DEMOS: Record<"electrical" | "manufacturing" | "factory", { title: string; note: string; tags: { id: string; desc: string; unit: string; value: number; lo: number; hi: number }[] }> = {
+  electrical: { title: "Electrical substation (demo)", note: "Breaker and bus symbols are a simulator. A live substation would be OPC UA or IEC 61850 via your gateway — credentials stay on the server.", tags: [{ id: "BUS_V", desc: "Bus voltage", unit: "kV", value: 11.2, lo: 10, hi: 12 }, { id: "XFMR_T", desc: "Transformer temp", unit: "°C", value: 68, lo: 20, hi: 95 }, { id: "BKR", desc: "Incomer breaker", unit: "% closed", value: 100, lo: 1, hi: 101 }] },
+  manufacturing: { title: "Manufacturing cell (demo)", note: "Robot cell and conveyor are simulated. A live line is typically MQTT or OPC UA from the PLC, read-only until an operator approves a write.", tags: [{ id: "CONV", desc: "Conveyor speed", unit: "m/min", value: 18, lo: 5, hi: 30 }, { id: "ROBOT", desc: "Robot current", unit: "A", value: 12, lo: 2, hi: 22 }, { id: "CELL_T", desc: "Spindle temp", unit: "°C", value: 54, lo: 15, hi: 80 }] },
+  factory: { title: "Factory utilities (demo)", note: "Boiler and compressed air are simulated. Modbus TCP stays on a plant gateway, never exposed to the internet.", tags: [{ id: "BLR_P", desc: "Boiler pressure", unit: "barg", value: 8.4, lo: 4, hi: 12 }, { id: "AIR_P", desc: "Header air", unit: "barg", value: 6.8, lo: 5, hi: 8 }, { id: "STM_T", desc: "Steam temperature", unit: "°C", value: 175, lo: 120, hi: 210 }] },
+};
+function IndustryBoard({ industry, setIndustry }: { industry: "oil-gas" | "electrical" | "manufacturing" | "factory"; setIndustry: (v: "oil-gas" | "electrical" | "manufacturing" | "factory") => void }) {
+  const demo = industry === "oil-gas" ? null : DEMOS[industry];
+  return <div className="flex flex-col gap-2">
+    <div className="row" data-testid="industry">{(["oil-gas", "electrical", "manufacturing", "factory"] as const).map((k) => <Btn key={k} tip={`Show the ${k} demo. Live connectors are unchanged.`} aria-pressed={industry === k} onClick={() => setIndustry(k)}>{k}</Btn>)}</div>
+    {demo && <div className="rounded-3xl p-3" style={{ border: "1px solid rgba(57,255,20,.35)" }}><b className="neon">{demo.title}</b><p className="m-0 text-xs muted">{demo.note}</p>
+      <svg viewBox="0 0 640 120" width="100%" role="img" aria-label={demo.title} style={{ background: "#030a06", borderRadius: 16 }}>{demo.tags.map((t, i) => { const x = 70 + i * 190; const alarm = t.value >= t.hi || t.value <= t.lo; return <g key={t.id} transform={`translate(${x} 60)`}><rect x="-70" y="-36" width="140" height="72" rx="10" fill="#07130d" stroke={alarm ? "#ff4d6d" : "#39FF14"} /><text y="-12" textAnchor="middle" fontSize="11" fill="#ffe56a">{t.id}</text><text y="8" textAnchor="middle" fontSize="14" fontWeight="700" fill="#d7ffe9">{t.value} {t.unit}</text><text y="26" textAnchor="middle" fontSize="9" fill="#9fb3a8">{t.desc}</text></g>; })}</svg>
+      <ul className="m-0 pl-5 text-sm">{demo.tags.map((t) => <li key={t.id}>{t.id} {t.desc}: {t.value} {t.unit} {t.value >= t.hi || t.value <= t.lo ? "— ALARM" : "— normal"} (band {t.lo}–{t.hi})</li>)}</ul>
+    </div>}
+  </div>;
+}
 type Conn = Record<string, boolean> | null;
 /** Protocol status strip: MQTT / OPC UA / Modbus TCP / MCP (/api/mcp, read-only) + write lock. */
 function ConnBar({ conn }: { conn: Conn }) {

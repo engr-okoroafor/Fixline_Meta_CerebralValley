@@ -7,7 +7,7 @@ import { RichAnswer, type Rich } from "../sections/Copilot";
 import { tolFor, corrections, type Reading } from "@/lib/alignment";
 export { TOL, tolFor, corrections } from "@/lib/alignment";
 const OK = ({ ok }: { ok: boolean }) => <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} aria-label={ok ? "within tolerance" : "out of tolerance"} className="grid place-items-center rounded-full font-black" style={{ width: 34, height: 34, background: ok ? "rgba(57,255,20,.18)" : "rgba(255,77,109,.18)", color: ok ? "#39FF14" : "#ff4d6d", boxShadow: `0 0 14px ${ok ? "#39FF14" : "#ff4d6d"}` }}>{ok ? "✓" : "✕"}</motion.span>;
-function View({ title, off, ang, kind, tol, cToF, fToR, front, rear }: { title: string; off: number; ang: number; kind: "top" | "side"; tol: { off: number; ang: number }; cToF: number; fToR: number; front: number; rear: number }) {
+function View({ title, off, ang, kind, tol, cToF, fToR, front, rear, onAdjust }: { title: string; off: number; ang: number; kind: "top" | "side"; tol: { off: number; ang: number }; cToF: number; fToR: number; front: number; rear: number; onAdjust?: (off: number, ang: number) => void }) {
   // Exaggerated but proportional: 1 mm offset ≈ 40 px, 0.1 mm/100 mm ≈ 6°. Driven live by the measured values.
   const y0 = 92; const dy = Math.max(-34, Math.min(34, off * 40)); const tilt = Math.max(-10, Math.min(10, ang * 60));
   const bad = Math.abs(off) > tol.off || Math.abs(ang) > tol.ang;
@@ -35,7 +35,8 @@ function View({ title, off, ang, kind, tol, cToF, fToR, front, rear }: { title: 
     <rect x="164" y={y0 - 4} width="62" height="8" fill={`url(#${id}-steel)`} />
     <rect x="222" y={y0 - 22} width="18" height="44" rx="3" fill={`url(#${id}-steel)`} stroke="#0b1f14" />
     {/* movable machine: motor, moves with offset & angularity */}
-    <g transform={`translate(0 ${dy}) rotate(${tilt} 246 ${y0})`} data-dy={dy.toFixed(1)} data-tilt={tilt.toFixed(2)}>
+    <motion.g initial={false} animate={{ y: dy, rotate: tilt }} transition={{ type: "spring", stiffness: 220, damping: 24 }} style={{ transformOrigin: `246px ${y0}px`, cursor: onAdjust ? "grab" : undefined }} data-dy={dy.toFixed(1)} data-tilt={tilt.toFixed(2)}
+      onPointerDown={(e) => { if (!onAdjust) return; const svg = e.currentTarget.ownerSVGElement; if (!svg) return; const y0p = e.clientY, x0p = e.clientX, off0 = off, ang0 = ang; const move = (ev: PointerEvent) => { const rct = svg.getBoundingClientRect(); let o = off0 + ((ev.clientY - y0p) / rct.height) * 190 / 40; let a = ang0 + ((ev.clientX - x0p) / rct.width) * 2.2; if (Math.abs(o) < 0.03) o = 0; if (Math.abs(a) < 0.02) a = 0; onAdjust(+Math.max(-2, Math.min(2, o)).toFixed(2), +Math.max(-1, Math.min(1, a)).toFixed(2)); }; const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); }; window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); }}>
       <rect x="244" y={y0 - 22} width="18" height="44" rx="3" fill={`url(#${id}-steel)`} stroke="#0b1f14" />
       <rect x="262" y={y0 - 4} width="40" height="8" fill={`url(#${id}-steel)`} />
       <rect x="300" y={y0 - 44} width="150" height="88" rx="14" fill={`url(#${id}-body)`} stroke={c} strokeOpacity=".85" />
@@ -48,7 +49,7 @@ function View({ title, off, ang, kind, tol, cToF, fToR, front, rear }: { title: 
       <line x1="232" x2="500" y1={y0} y2={y0} stroke={c} strokeWidth="2.5" strokeDasharray="10 5" filter={`url(#${id}-glow)`}></line>
       {/* feet positions driven by Coupling→front / Front→rear distances */}
       {[[xF, "F", front], [xR, "R", rear]].map(([x, l, v]) => <g key={l as string}><line x1={x as number} x2={x as number} y1={y0 + 30} y2={y0 + 58} stroke="#00e5ff" strokeWidth="2" /><circle cx={x as number} cy={y0 + 58} r="4" fill="#00e5ff" /><text x={x as number} y={y0 + 74} textAnchor="middle" fontSize="9.5" fill="#00e5ff" fontFamily="ui-monospace,monospace">{l} {(v as number) > 0 ? "+" : ""}{(v as number).toFixed(2)}</text></g>)}
-    </g>
+    </motion.g>
     {/* fixed shaft axis — visible lateral line */}
     <line x1="10" x2="240" y1={y0} y2={y0} stroke="#00FF9C" strokeWidth="2.5" filter={`url(#${id}-glow)`} />
     {/* readouts */}
@@ -63,8 +64,10 @@ function View({ title, off, ang, kind, tol, cToF, fToR, front, rear }: { title: 
 const Row = ({ sym, v, unit, good }: { sym: string; v: number; unit: string; good: boolean }) => <div className="flex items-center justify-between gap-3 rounded-2xl p-2" style={{ background: "rgba(57,255,20,.05)" }}><span className="neon font-mono text-lg" aria-hidden>{sym}</span><span className="text-right"><span className="font-mono text-2xl font-bold">{v.toFixed(2)}</span><br /><span className="muted text-xs">{unit}</span></span><OK ok={good} /></div>;
 /** Next-gen "As Found" shaft laser alignment panel (inspired by SKF TKSA-style result screens). */
 export function AlignmentPanel() {
-  const [r, setR] = useState<Reading>({ hAng: 0.42, hOff: 0.32, vAng: 0.02, vOff: -0.56 });
+  const found0: Reading = { hAng: 0.42, hOff: 0.32, vAng: 0.02, vOff: -0.56 };
+  const [r, setR] = useState<Reading>(found0); const [asFound, setAsFound] = useState<Reading>(found0); const [hot, setHot] = useState<keyof Reading | "">("");
   const [rpm, setRpm] = useState(1500); const [cToF, setCtoF] = useState(150); const [fToR, setFtoR] = useState(300); const [phase, setPhase] = useState<"As Found" | "As Corrected">("As Found");
+  function glide(to: Reading) { const from = r; const t0 = performance.now(); const tick = (now: number) => { const k = Math.min(1, (now - t0) / 700); const e = 1 - (1 - k) ** 3; setR({ hAng: +(from.hAng + (to.hAng - from.hAng) * e).toFixed(3), hOff: +(from.hOff + (to.hOff - from.hOff) * e).toFixed(3), vAng: +(from.vAng + (to.vAng - from.vAng) * e).toFixed(3), vOff: +(from.vOff + (to.vOff - from.vOff) * e).toFixed(3) }); if (k < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
   const [ai, setAi] = useState<Rich | null>(null); const [busy, setBusy] = useState(false);
   const tol = tolFor(rpm); const c = useMemo(() => corrections(r, cToF, fToR), [r, cToF, fToR]);
   const ok = { hA: Math.abs(r.hAng) <= tol.ang, hO: Math.abs(r.hOff) <= tol.off, vA: Math.abs(r.vAng) <= tol.ang, vO: Math.abs(r.vOff) <= tol.off };
@@ -76,15 +79,18 @@ export function AlignmentPanel() {
     "Correct vertical first, then horizontal; tighten feet in a cross pattern and re-measure.",
   ];
   async function askAi() { setBusy(true); try { setAi(await post("/api/copilot", { session: `align-${Date.now()}`, question: `Shaft laser alignment ${phase} at ${rpm} rpm. Horizontal angularity ${r.hAng} mm/100mm, offset ${r.hOff} mm; vertical angularity ${r.vAng} mm/100mm, offset ${r.vOff} mm. Coupling to front feet ${cToF} mm, front to rear ${fToR} mm. Tell me exactly which shims and moves to make, soft-foot checks, and thermal growth considerations.`, lang: prefs().lang, region: prefs().region })); } catch { /* shown via rules */ } finally { setBusy(false); } }
-  const N = (k: keyof Reading, l: string) => <Field label={l}><input type="number" step={0.01} value={r[k]} onChange={(e) => setR({ ...r, [k]: Number(e.target.value) || 0 })} onInput={(e) => setR({ ...r, [k]: Number((e.target as HTMLInputElement).value) || 0 })} /></Field>;
+  const COL: Record<keyof Reading, string> = { hAng: "#4da3ff", hOff: "#c39bff", vAng: "#ffb020", vOff: "#39FF14" };
+  const N = (k: keyof Reading, l: string) => <Field label={l}><input type="number" step={0.01} value={r[k]} aria-label={l} style={{ borderColor: COL[k], boxShadow: hot === k ? `0 0 12px ${COL[k]}` : undefined }} onFocus={() => setHot(k)} onBlur={() => setHot("")} onChange={(e) => setR({ ...r, [k]: Number(e.target.value) || 0 })} onInput={(e) => setR({ ...r, [k]: Number((e.target as HTMLInputElement).value) || 0 })} /></Field>;
   return <Card title="Shaft laser alignment — insight panel" sub={`Result: ${phase} · tolerance @${rpm} rpm: offset ±${tol.off} mm, angularity ±${tol.ang} mm/100mm`} className="lg:col-span-2"
     right={<div className="row"><span className="pill" style={{ color: all ? "#39FF14" : "#ff4d6d", borderColor: all ? "#39FF14" : "#ff4d6d" }}>{all ? "IN TOLERANCE" : "CORRECTION NEEDED"}</span><Btn tip="Toggle As Found / As Corrected" onClick={() => setPhase(phase === "As Found" ? "As Corrected" : "As Found")}>⇄ {phase}</Btn></div>}>
     <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
-      <div className="flex flex-col gap-2 rounded-3xl p-3" style={{ background: "linear-gradient(180deg,rgba(57,255,20,.06),transparent)", border: "1px solid rgba(57,255,20,.25)" }}><View title="Horizontal · top view" off={r.hOff} ang={r.hAng} kind="top" tol={tol} cToF={cToF} fToR={fToR} front={c.hFront} rear={c.hRear} /><View title="Vertical · side view" off={r.vOff} ang={r.vAng} kind="side" tol={tol} cToF={cToF} fToR={fToR} front={c.vFront} rear={c.vRear} /></div>
+      <div className="flex flex-col gap-2 rounded-3xl p-3" style={{ background: "linear-gradient(180deg,rgba(57,255,20,.06),transparent)", border: "1px solid rgba(57,255,20,.25)" }}><View title="Horizontal · top view" off={r.hOff} ang={r.hAng} kind="top" tol={tol} cToF={cToF} fToR={fToR} front={c.hFront} rear={c.hRear} onAdjust={(off, ang) => setR({ ...r, hOff: off, hAng: ang })} /><View title="Vertical · side view" off={r.vOff} ang={r.vAng} kind="side" tol={tol} cToF={cToF} fToR={fToR} front={c.vFront} rear={c.vRear} onAdjust={(off, ang) => setR({ ...r, vOff: off, vAng: ang })} /></div>
       <div className="flex flex-col gap-3">
         <section className="glass flex flex-col gap-2 rounded-3xl p-3"><b className="text-sm">Horizontal: Top view</b><Row sym="⊣⊢∠" v={r.hAng} unit="mm/100mm" good={ok.hA} /><Row sym="⊣⊢" v={r.hOff} unit="mm" good={ok.hO} /></section>
         <section className="glass flex flex-col gap-2 rounded-3xl p-3"><b className="text-sm">Vertical: Side view</b><Row sym="⊣⊢∠" v={r.vAng} unit="mm/100mm" good={ok.vA} /><Row sym="⊣⊢" v={r.vOff} unit="mm" good={ok.vO} /></section>
       </div></div>
+    <div className="row text-xs">{([["hAng", "H angularity", "#4da3ff", "top · tilt"], ["hOff", "H offset", "#c39bff", "top · shift"], ["vAng", "V angularity", "#ffb020", "side · tilt"], ["vOff", "V offset", "#39FF14", "side · lift"]] as const).map(([k, l, col, w]) => <motion.span key={k} animate={{ scale: hot === k ? 1.06 : 1 }} className="pill" style={{ borderColor: col, color: col, boxShadow: hot === k ? `0 0 12px ${col}` : undefined }}>{l} · {w}</motion.span>)}</div>
+    <div className="row"><Btn tip="Show the captured wrong alignment" onClick={() => { setPhase("As Found"); glide(asFound); }}>Wrong (as found)</Btn><Btn tip="Animate the machine into tolerance" className="btn-primary" onClick={() => { setPhase("As Corrected"); glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); }}>Correct</Btn><Btn tip="Drag released near zero already snaps. This finishes the move." onClick={() => glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 })}>Snap to alignment</Btn><Btn tip="Capture the live readings as the wrong example" onClick={() => setAsFound(r)}>Capture as found</Btn><Btn tip="Glide to alignment and ask the model to explain the moves" className="btn-primary" onClick={() => { glide({ hAng: 0, hOff: 0, vAng: 0, vOff: 0 }); void askAi(); }}>✦ AI auto-align</Btn></div>
     <div className="grid gap-3 grid-cols-2 md:grid-cols-4">{N("hAng", "H angularity (mm/100mm)")}{N("hOff", "H offset (mm)")}{N("vAng", "V angularity (mm/100mm)")}{N("vOff", "V offset (mm)")}
       <Field label="Speed (rpm)" tip="Tolerance tightens with speed"><input type="number" value={rpm} onChange={(e) => setRpm(Number(e.target.value))} /></Field>
       <Field label="Coupling → front feet (mm)"><input type="number" value={cToF} onChange={(e) => setCtoF(Number(e.target.value))} /></Field>

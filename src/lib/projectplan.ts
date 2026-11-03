@@ -1,3 +1,4 @@
+import { ccgtShowcase } from "./schedule";
 export type PlanTask = { name: string; phase: string; offset: number; days: number; owner: string; cost: number; dep: number };
 export type Plan = { name: string; summary: string; method: Method; tasks: PlanTask[]; stages: { name: string; gate: string; deliverables: string[] }[]; risks: { risk: string; owner: string; response: string }[]; raci: [string, string][]; contingency: number };
 export const METHODS = ["PMP", "PRINCE2", "Agile", "Waterfall", "CPM", "LSS"] as const;
@@ -13,6 +14,12 @@ export const STAGES: Record<Method, { name: string; gate: string; deliverables: 
 };
 /** Deterministic plan when no AI provider answers — still complete and editable. */
 export function fallbackPlan(brief: string, method: Method): Plan {
+  if (/\b(ccgt|combined[-\s]?cycle|\d+\s*mw|power plant)\b/i.test(brief)) {
+    const s = ccgtShowcase();
+    const start = Date.parse(s.startISO + "T00:00:00Z");
+    const tasks = s.tasks.map((t) => ({ name: t.name, phase: t.phase || "Execute", offset: Math.round((Date.parse(t.start + "T00:00:00Z") - start) / 86400000), days: Math.round((Date.parse(t.end + "T00:00:00Z") - Date.parse(t.start + "T00:00:00Z")) / 86400000) + 1, owner: t.owner, cost: t.cost, dep: t.dep ? Number(t.dep.slice(1)) - 1 : -1 }));
+    return { name: s.name, summary: s.summary, method, tasks, stages: STAGES[method], contingency: 12, risks: [{ risk: "Gas supply or pipeline permit delay", owner: "Pipeline", response: "Start the right-of-way early and keep a second gas spec" }, { risk: "OEM turbine slot slips", owner: "Procurement", response: "Liquidated damages and a factory-test hold point" }, { risk: "Grid connection late", owner: "E&I", response: "Build the switchyard in parallel with the turbine hall" }, { risk: "Community and land access", owner: "PM", response: "Weekly community forum in Oguta LGA" }, { risk: "Commissioning vibration or spread trip", owner: "Commissioning", response: "OEM rep on site, performance test procedure agreed before fuel-in" }], raci: [["Project Manager", "Accountable for the baseline and the stage gates"], ["OEM", "Turbine, HRSG and steam turbine supply"], ["HSE", "Permits, PTW and community safety"], ["Grid owner", "Interconnection and protection settings"], ["Client", "Accepts first power"]] };
+  }
   const T: [string, string, number, string, number][] = [["Scope, stakeholders & charter", "Initiate", 2, "PM", 1200], ["Site survey & risk assessment (HAZOP/JSA)", "Initiate", 2, "HSE", 1500], ["Detailed design & WBS", "Plan", 4, "Engineering", 4800], ["Procurement of long-lead items", "Plan", 10, "Procurement", 18000], ["Permit to work & LOTO plan", "Plan", 1, "HSE", 600], ["Mobilize crew & equipment", "Execute", 2, "Construction", 3500], ["Mechanical installation", "Execute", 6, "Mechanical", 14000], ["Electrical & instrumentation", "Execute", 5, "E&I", 9000], ["QA/QC inspection & NDT", "Control", 2, "QA/QC", 2500], ["Pre-commissioning & loop checks", "Control", 2, "Commissioning", 2200], ["Commissioning & performance test", "Control", 2, "Commissioning", 3000], ["Handover, dossier & lessons learned", "Close", 2, "PM", 1000]];
   let off = 0; const tasks = T.map(([name, phase, days, owner, cost], k) => { const t = { name, phase, offset: k === 4 ? off - 1 : off, days, owner, cost, dep: k - 1 }; if (k !== 3) off += days; else off += 3; return t; });
   return { name: brief.split(/[.\n]/)[0].slice(0, 80) || "New project", summary: brief, method, tasks, stages: STAGES[method], contingency: 10,
