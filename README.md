@@ -2,7 +2,7 @@
 
 *Meta Global AI Developer Hackathon 2026 · Indie Dev Track · Push the Frontier*
 
-**Live demo (no login):** https://fixline-meta-cerebralvalley.vercel.app · **Glasses HUD:** [/glasses](https://fixline-meta-cerebralvalley.vercel.app/glasses) · **Status:** [/api/status](https://fixline-meta-cerebralvalley.vercel.app/api/status)
+**Live demo (no login):** https://fixline-meta-cerebralvalley.vercel.app · **Official walkthrough:** https://www.youtube.com/watch?v=Zc3FuSNBxUg · **Glasses HUD:** [/glasses](https://fixline-meta-cerebralvalley.vercel.app/glasses) · **Status:** [/api/status](https://fixline-meta-cerebralvalley.vercel.app/api/status)
 
 FixLine is a plant assistant for a technician who is alone on shift. It runs **perceive → reason → confirm → enforce**:
 
@@ -37,4 +37,4 @@ npm run build
 
 Optional connectors (read-only until `SCADA_ALLOW_WRITES=1`, and even then every write needs a logged-in operator): `MQTT_URL`, `OPCUA_GATEWAY_URL`, `MODBUS_HOST`. Never put those secrets in client code.
 
-See [SUBMISSION.md](SUBMISSION.md) for the hackathon write-up. No new video was uploaded for this upgrade — use the live app.
+See [SUBMISSION.md](SUBMISSION.md) for the hackathon write-up. The official walkthrough is https://www.youtube.com/watch?v=Zc3FuSNBxUg (Indie Dev Track, Push the Frontier: Muse Spark, SAM 3.1, NVIDIA Nemotron as fallback). Click through the same build at https://fixline-meta-cerebralvalley.vercel.app.
