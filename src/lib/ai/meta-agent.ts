@@ -4,6 +4,7 @@ import { langName } from "../langs";
 import { chat } from "./router";
 import type { AiRequest } from "../security";
 import { formatShiftReport } from "../qualitydocs";
+import { formatStepLine, guideFor } from "../repair-guide";
 const BASE = process.env.META_MODEL_API_BASE ?? "https://api.meta.ai/v1";
 const KEY = process.env.MODEL_API_KEY;
 export const live = () => !!KEY;
@@ -26,15 +27,17 @@ async function segment(image?: string, prompt?: string) {
   try { const boxes = await samBoxes(image, prompt ?? "machine part"); if (boxes.length) return { mock: false, model: "sam-3.1", mask: boxes[0], boxes, confidence: 0.9 }; } catch { /* fallback */ }
   return { mock: true, model: "sam-3.1 (fallback mock)", mask: { x: 0.3, y: 0.3, w: 0.4, h: 0.4 }, confidence: 0 };
 }
-const MOCK_STEPS = (p: string) => [`Isolate & lock out the ${p} (OSHA 1910.147).`, `Remove the access cover; photograph fasteners.`, `Inspect the ${p} for wear, cracks or scoring.`, `Replace the worn component per manual torque spec.`, `Reassemble, remove lock, test-run and verify.`];
 export async function runAi(req: AiRequest) {
   switch (req.mode) {
     case "repair": {
       const seg = await segment(req.image, req.part);
-      let steps = MOCK_STEPS(req.part); let mock = true; let usedModel = "muse-spark-1.3";
-      try { const { text: t, model: m0 } = await chat([{ role: "system", content: SYS }, { role: "user", content: `Part: ${req.part}\n<manual>${req.manual ?? ""}</manual>\n<history>${req.history ?? ""}</history>\nGive 5 numbered repair steps, one per line, starting with lockout/isolation.` }]); usedModel = m0; const s = t.split(/\n+/).map((l) => l.replace(/^\d+[.)]\s*/, "").trim()).filter(Boolean); if (s.length) { steps = s.filter((l) => l.length > 8).slice(0, 8); mock = false; } } catch { /* fallback */ }
-      const i = Math.min(req.step, steps.length - 1);
-      return { mock, model: mock ? "muse-spark-1.3 (mock)" : usedModel, segmentation: seg, steps, current: i, instruction: steps[i], verify: `Show the ${req.part} to the camera to verify step ${i + 1}.`, done: i === steps.length - 1 };
+      const catalog = guideFor(`${req.part}\n${req.history ?? ""}`);
+      let steps = catalog.steps.map(formatStepLine);
+      let verify = catalog.steps.map((s) => s.verify);
+      let mock = true; let usedModel = "catalog (mock)";
+      try { const { text: t, model: m0 } = await chat([{ role: "system", content: SYS }, { role: "user", content: `Part: ${req.part}\n<manual>${req.manual ?? ""}</manual>\n<history>${req.history ?? ""}</history>\nGive 5 numbered repair steps, one per line, starting with lockout/isolation.` }]); const s = t.split(/\n+/).map((l) => l.replace(/^\d+[.)]\s*/, "").trim()).filter((l) => l.length > 8).slice(0, 8); if (s.length) { steps = s; verify = s.map((_, n) => `Show the ${req.part} to the camera to verify step ${n + 1}.`); mock = false; usedModel = m0; } } catch { /* catalog */ }
+      const i = Math.min(Math.max(0, req.step), steps.length - 1);
+      return { mock, model: usedModel, segmentation: seg, steps, current: i, instruction: steps[i], verify: verify[i], done: i === steps.length - 1 };
     }
     case "quality": {
       const { temp, vibration, rpm } = req.telemetry;
