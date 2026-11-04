@@ -37,7 +37,7 @@ export default function Dashboard({ user }: { user: { name: string; role: string
   // Usage-time heartbeat (1/min while the tab is visible) → Admin analytics.
   useEffect(() => { const beat = () => { if (document.visibilityState !== "visible") return; let d = localStorage.getItem("fixline.device"); if (!d) { d = crypto.randomUUID(); localStorage.setItem("fixline.device", d); } fetch("/api/track", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode, device: d }), keepalive: true }).catch(() => {}); }; const t = setInterval(beat, 60_000); return () => clearInterval(t); }, [mode]);
   useEffect(() => { document.documentElement.lang = loc; document.documentElement.dir = isRtl(loc) ? "rtl" : "ltr"; }, [loc]);
-  useEffect(() => { const on = (e: Event) => { const m = (e as CustomEvent).detail as Mode; if (TABS.some(([k]) => k === m)) { setMode(m); window.scrollTo({ top: 0, behavior: "smooth" }); } }; window.addEventListener("fixline:go", on); return () => window.removeEventListener("fixline:go", on); }, []);
+  useEffect(() => { const open = (m: string) => { if (TABS.some(([k]) => k === m)) { setMode(m as Mode); window.scrollTo({ top: 0, behavior: "smooth" }); } }; const on = (e: Event) => open(String((e as CustomEvent).detail ?? "")); const fromHash = () => open(location.hash.replace(/^#/, "")); window.addEventListener("fixline:go", on); window.addEventListener("hashchange", fromHash); fromHash(); return () => { window.removeEventListener("fixline:go", on); window.removeEventListener("hashchange", fromHash); }; }, []);
   useEffect(() => { setMini(localStorage.getItem("fixline.sidebar") === "mini"); }, []);
   useEffect(() => { const pre = () => { [() => import("./sections/Copilot"), () => import("./sections/Machines"), () => import("./sections/Tuning"), () => import("./sections/AskAI"), () => import("./sections/Scada"), () => import("./sections/Voice"), () => import("./sections/Engineering"), () => import("./sections/Settings"), () => import("./sections/Inspector"), () => import("./next/Projects"), () => import("./next/EngineeringNL")].forEach((f) => f().catch(() => {})); }; const w = window as unknown as { requestIdleCallback?: (f: () => void) => void }; if (w.requestIdleCallback) w.requestIdleCallback(pre); else setTimeout(pre, 1500); }, []);
   useEffect(() => { localStorage.setItem("fixline.sidebar", mini ? "mini" : "full"); }, [mini]);
@@ -46,7 +46,7 @@ export default function Dashboard({ user }: { user: { name: string; role: string
   return <TipProvider><div id="app-root" className="mx-auto flex max-w-[1440px] flex-col gap-4 p-4 pt-3 md:p-6 md:pt-3 lg:p-8 lg:pt-3">
     <GeoLocale /><PageTranslator />
     <motion.header initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="topbar">
-      <div className="min-w-0 flex items-center gap-3"><span className="logo-dot" aria-hidden /><div className="min-w-0"><h1 className="neon m-0 text-lg font-extrabold leading-tight md:text-xl">FixLine Guardian</h1><p className="muted m-0 truncate text-[11px] leading-tight">A hands-free AI repair, safety, quality & project management agent for plant workers · {user.role === "guest" ? "guest demo" : user.name}</p></div></div>
+      <div className="min-w-0 flex items-center gap-3"><span className="logo-dot" aria-hidden /><div className="min-w-0"><h1 className="neon m-0 text-lg font-extrabold leading-tight md:text-xl">FixLine Guardian</h1><p className="muted m-0 truncate text-[11px] leading-tight">Hands-free repair, safety, quality and projects for industrial field crews · {user.role === "guest" ? "guest demo" : user.name}</p></div></div>
       <nav className="row" style={{ gap: 6 }} aria-label="Account">
         <LangSwitch />
         <Tip label="Open the mixed-reality view (headset browser)" side="bottom"><motion.a whileHover={{ scale: 1.05 }} className="btn btn-primary btn-sm" href="/xr">{tr(loc, "enterAr")}</motion.a></Tip>
@@ -68,6 +68,7 @@ export default function Dashboard({ user }: { user: { name: string; role: string
       </motion.div></AnimatePresence></main>
     </div><VoiceDock /><ScrollFabs /></div></TipProvider>;
 }
+const INDUSTRIES = ["Oil & gas", "Power & utilities", "Manufacturing", "Mining", "Water & wastewater", "Food & beverage", "Pharma & life sciences", "Chemicals", "Pulp & paper", "Ports & terminals", "Data-center facilities", "Building & plant maintenance"];
 const BENEFITS: [string, string, string][] = [
   ["Downtime", "$10k–$250k / hour", "Typical cost of unplanned downtime in process plants (industry surveys). FixLine targets 1–3 h faster first-time fixes per event."],
   ["Callouts", "20–40% fewer", "Guided how-to steps let junior staff fix routine faults instead of flying in a consultant ($1.5k–$5k per visit incl. travel)."],
@@ -84,8 +85,9 @@ function Benefits() {
 function Overview({ go }: { go: (m: Mode) => void }) {
   const [t, setT] = useState(0); useEffect(() => { const id = setInterval(() => setT((x) => x + 1), 1200); return () => clearInterval(id); }, []);
   return <><section className="glass relative overflow-hidden"><Particles /><div className="relative grid items-center gap-6 p-6 md:grid-cols-2 md:p-8">
-    <div className="flex flex-col gap-4"><span className="pill" style={{ alignSelf: "flex-start" }}>Meta Global AI Hackathon 2026 · Push the Frontier</span><h1 className="m-0 text-3xl font-extrabold md:text-4xl">A hands-free AI repair, safety, quality &amp; project management agent <span className="neon">for plant workers.</span></h1>
-      <p className="muted m-0">FixLine runs a <b className="neon">perceive → reason → confirm → enforce</b> loop on the factory floor: SAM 3.1 segments the part, Muse Spark 1.3 plans the fix, SAM re-checks each step on camera before it counts, and LOTO, quality and project gates keep the job honest.</p>
+    <div className="flex flex-col gap-4"><span className="pill" style={{ alignSelf: "flex-start" }}>Meta Global AI Hackathon 2026 · Push the Frontier</span><h1 className="m-0 text-3xl font-extrabold md:text-4xl">A hands-free AI repair, safety, quality and project agent <span className="neon">for industrial field crews.</span></h1>
+      <p className="muted m-0">FixLine runs <b className="neon">perceive → reason → confirm → enforce</b> on the job: SAM 3.1 finds the part, Muse Spark 1.3 plans the fix, the camera re-check has to pass before the step counts, and lockout, quality and project gates keep the work honest. The walkthrough is a plant in Lagos and Port Harcourt. The same loop is for every site below.</p>
+      <ul className="m-0 flex flex-wrap gap-2 p-0" aria-label="Industries" style={{ listStyle: "none" }}>{INDUSTRIES.map((name) => <li key={name} className="pill text-xs">{name}</li>)}</ul>
       <p className="muted m-0 text-sm">Meta models: muse-spark-1.3 · sam-3.1 · muse-voice-transcribe · SeamlessM4T (open weights) · Ray-Ban Meta via Mock Device Kit. Live demo, no login needed.</p>
       <div className="row"><a className="btn btn-primary" href="/glasses" style={{ minHeight: 56, fontSize: "1.1rem", padding: "0 24px" }}>👓 Glasses HUD</a><Btn tip="Guided repair with SAM confirm-gate" onClick={() => go("repair")}>🔧 Repair</Btn><Btn tip="Hazards, LOTO, permits" onClick={() => go("safety")}>⛑ Safety LOTO</Btn><Btn tip="Autonomous visual inspector" onClick={() => go("quality")}>✔ Quality</Btn><Btn tip="Hands-free voice + translation" onClick={() => go("voice")}>🎙 Voice</Btn><a className="btn" href="/xr">Enter AR</a></div></div>
     <HeroArt /></div></section>

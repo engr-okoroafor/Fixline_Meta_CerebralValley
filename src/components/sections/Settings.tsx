@@ -37,7 +37,7 @@ function Profiles() {
   return <Card title="Plant profiles" sub="Projects, repair sessions and connection notes are stored in PGlite (or Postgres when DATABASE_URL is set). No secrets in the browser.">
     <form className="grid gap-2 md:grid-cols-2" onSubmit={save}><Field label="Label"><input value={label} onChange={(e) => setLabel(e.target.value)} /></Field>
       <Field label="Protocol"><NeonSelect value={kind} onChange={(e) => setKind(e.target.value)}><option value="demo">Demo simulator</option><option value="mqtt">MQTT</option><option value="opcua">OPC UA</option><option value="modbus">Modbus TCP</option><option value="mcp">MCP</option></NeonSelect></Field>
-      <Field label="Industry"><NeonSelect value={industry} onChange={(e) => setIndustry(e.target.value)}><option value="oil-gas">Oil & gas</option><option value="electrical">Electrical</option><option value="manufacturing">Manufacturing</option><option value="factory">Other factory</option></NeonSelect></Field>
+      <Field label="Industry"><NeonSelect value={industry} onChange={(e) => setIndustry(e.target.value)}><option value="oil-gas">Oil & gas</option><option value="electrical">Electrical</option><option value="manufacturing">Manufacturing</option><option value="factory">Plant utilities</option></NeonSelect></Field>
       <Field label="Endpoint reference"><input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} placeholder="host only — no passwords" /></Field>
       <button className="btn btn-primary" type="submit">Save profile</button></form>
     {note && <p className="m-0 text-sm neon">{note}</p>}

@@ -1,10 +1,10 @@
-# FixLine — a hands-free AI repair, safety, quality & project management agent for plant workers
+# FixLine — a hands-free AI repair, safety, quality and project agent for industrial field crews
 
 *Meta Global AI Developer Hackathon 2026 · Indie Dev Track · Push the Frontier*
 
 **Live demo (no login):** https://fixline-meta-cerebralvalley.vercel.app · **Official walkthrough:** https://www.youtube.com/watch?v=Zc3FuSNBxUg · **Glasses HUD:** [/glasses](https://fixline-meta-cerebralvalley.vercel.app/glasses) · **Status:** [/api/status](https://fixline-meta-cerebralvalley.vercel.app/api/status)
 
-FixLine is a plant assistant for a technician who is alone on shift. It runs **perceive → reason → confirm → enforce**:
+FixLine is for a technician who is alone on shift. The walkthrough is a plant in Lagos and Port Harcourt. The same loop is for oil and gas, power and utilities, manufacturing, mining, water and wastewater, food and beverage, pharma and life sciences, chemicals, pulp and paper, ports and terminals, data-center facilities, and building and plant maintenance. It runs **perceive → reason → confirm → enforce**:
 
 1. **Perceive** — SAM 3.1 segments the part in the camera or glasses view.
 2. **Reason** — Muse Spark 1.3 plans the repair from the manual, the fault and the live trends. With no key, a labeled catalog mock answers so the demo still runs.
@@ -19,7 +19,7 @@ FixLine is a plant assistant for a technician who is alone on shift. It runs **p
 | --- | --- |
 | **Repair** | Ask “how do I fix a leaking seal on a centrifugal pump” by text or the mic. Steps are numbered, with tools and a “done when”. Open the camera, **Re-check on camera**, then **Verified → next**. The next step stays disabled until the gate passes. |
 | **Tuning** | The seven alignment values sit in one row: H angularity, H offset, V angularity, V offset, speed, coupling→front feet, front→rear feet. Drag the motor (it snaps near zero). **Wrong (as found)** / **Correct** / **Snap** / **AI auto-align** animate which reading moves which view. |
-| **SCADA** | Oil & gas P&ID, plus demo boards for electrical, manufacturing and other factories (labeled simulators, not live plants). Open/close a valve or change a setpoint only after **I approve this write**. MQTT, OPC UA, Modbus and MCP stay read-first; credentials stay in server env. |
+| **SCADA** | Oil and gas flow-station P&ID, plus demo boards for electrical, manufacturing and plant utilities (labeled simulators, not live plants). The approve-before-write loop is the pattern for the other industries above. Open/close a valve or change a setpoint only after **I approve this write**. MQTT, OPC UA, Modbus and MCP stay read-first; credentials stay in server env. |
 | **Safety** | Every document type, including the fire plan (class, agent, aim at the base). Pick a class on the fire card to see which extinguisher and how to quench. |
 | **Quality** | Inspect a photo. Download an ITP, NCR, visual report or dimensional report. The shift report is a structured quality note. |
 | **Voice & Vision** | “open projects”, “open alignment”, “which extinguisher for an oil fire”. Hands-free listen → answer → speak. |
