@@ -34,7 +34,7 @@ Live, no login: https://fixline-meta-cerebralvalley.vercel.app
 
 **Project Description:**
 ```text
-FixLine is a hands-free AI agent for industrial field crews. It covers repair, safety, quality, SCADA, shaft alignment, voice and vision, and PMP projects.
+FixLine is a hands-free AI agent for industrial field crews. It covers repair, safety, quality, SCADA, shaft alignment, voice and vision, and project management capabilities across frameworks such as PMP, PRINCE2, and similar methods.
 
 THE PROBLEM
 A conveyor bearing fails at 2 a.m. in a plant in Lagos or Port Harcourt. The technician on shift is alone. The senior engineer is asleep. The manual is a PDF on someone's laptop. He does his best. Nobody checks that each step was actually done. Sometimes he skips lockout/tagout to save time. Lockout/tagout means locking the machine so it cannot start while someone is working on it. The machine runs again. It fails again a week later. The line loses hours of output, or someone gets hurt. The same site is also trying to run a 30-month power project in a spreadsheet.
@@ -63,7 +63,7 @@ WHAT YOU CAN CLICK
 - SCADA. The flow-station diagram is the oil & gas demo (pipes, valves, instruments). Labeled boards cover electrical, manufacturing, and plant utilities. MQTT, OPC UA, Modbus, and MCP stay available. A valve, or the target that controls it, changes only after “I approve this write.”
 - Safety. Every permit type, including the fire plan (class, agent, aim at the base). If the key is missing, an offline template does it.
 - Quality. Photo inspection, plus an inspection plan, a defect report, visual and size reports, and a structured shift report.
-- Projects. PMP is the default. You can switch to PRINCE2, Agile, Waterfall, CPM, or Lean Six Sigma, and the stages and document list rebuild. It writes the charter, stakeholder register, WBS, schedule baseline, cost baseline, risk register, change log, status report, earned value report, A3 summary, closure report, and lessons learned. The Gantt shows total cost, duration, full activity names, a month grid, task links, a Today line, and the critical path. Download an A3 PDF, a photo, or the folder as a zip. Say “mark gas pipeline 55%” or “switch to the pump project.” Plans stay in PGlite, or in Postgres when that is connected.
+- Projects. FixLine has project management capabilities across frameworks such as PMP, PRINCE2, and similar methods (Agile, Waterfall, CPM, or Lean Six Sigma). Switching rebuilds the stages and the document list. It writes project-management stage deliverables (PMP, PRINCE2, …) + Gantt: the charter, stakeholder register, WBS, schedule baseline, cost baseline, risk register, change log, status report, earned value report, A3 summary, closure report, and lessons learned. The Gantt shows total cost, duration, full activity names, a month grid, task links, a Today line, and the critical path. Download an A3 PDF, a photo, or the folder as a zip. Say “mark gas pipeline 55%” or “switch to the pump project.” Plans stay in PGlite, or in Postgres when that is connected.
 - Voice & Vision. “Open projects”, “open alignment”, English-to-French translation, live camera boxes.
 - Engineering. “Shaft alignment” or “size cable for 60 A” updates the widgets. “Why” questions go to Muse Spark.
 - Chat. The panel at the bottom right shows a typing animation while Muse Spark answers, and it closes when you click outside.

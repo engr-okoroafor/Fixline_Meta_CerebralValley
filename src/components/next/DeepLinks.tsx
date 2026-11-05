@@ -8,7 +8,7 @@ const LINKS: [string, string, string, RegExp][] = [
   ["scada", "📟 SCADA", "Live tags, alarms, AI advisor", /scada|alarm|pressure|level|flow|plc|tag|trip/i],
   ["quality", "✔ Quality", "Visual inspector and shift report", /quality|inspect|defect|weld|crack|ncr/i],
   ["tuning", "🎛 Tuning", "Alignment, PID, megger, vibration", /align|vibration|pid|megger|tune|shim|coupling/i],
-  ["projects", "📊 Projects", "Gantt, costing, PMP/PRINCE2 board", /project|plan|schedule|cost|install|layout/i],
+  ["projects", "📊 Projects", "Project-management stage deliverables (PMP, PRINCE2, …) + Gantt", /project|plan|schedule|cost|install|layout/i],
 ];
 export const go = (m: string) => window.dispatchEvent(new CustomEvent("fixline:go", { detail: m }));
 /** Deep-link chips into the structured pages that hold the accurate data for this answer. */
