@@ -24,7 +24,7 @@ FixLine is for a technician who is alone on shift. The walkthrough is a plant in
 | **Quality** | Inspect a photo. Download an ITP, NCR, visual report or dimensional report. The shift report is a structured quality note. |
 | **Voice & Vision** | “open projects”, “open alignment”, “which extinguisher for an oil fire”. Hands-free listen → answer → speak. |
 | **Engineering** | Say “shaft alignment” or “size cable for 60 A”. Widgets update; “why” questions go to Muse Spark. |
-| **Projects** | Open the **150 MW CCGT** plan (Oguta). The Gantt keeps full activity names, a month grid, dashed dependency connectors, a Today line, critical path and the footer (deliverables, impact, legend). Download **A3 PDF**, a **photo**, or the **project folder (zip)**. Say “mark gas pipeline 55%” or “switch to the pump project”. Plans persist in the database. |
+| **Projects** | Project-management stage deliverables (PMP, PRINCE2, …) + Gantt, across frameworks such as PMP, PRINCE2, and similar methods. Open the **150 MW CCGT** plan (Oguta). The Gantt keeps full activity names, a month grid, dashed dependency connectors, a Today line, critical path and the footer (deliverables, impact, legend). Download **A3 PDF**, a **photo**, or the **project folder (zip)**. Say “mark gas pipeline 55%” or “switch to the pump project”. Plans persist in the database. |
 | **Settings** | Meta → NVIDIA order, and plant profiles (demo / MQTT / OPC UA / Modbus / MCP) with no secrets stored in the browser. |
 
 ## Run locally
