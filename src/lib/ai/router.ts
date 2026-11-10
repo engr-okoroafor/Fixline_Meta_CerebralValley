@@ -4,7 +4,7 @@ import { readUsage, type TokenUsage } from "./usage";
 import { appSettings } from "../settings";
 const BASE = process.env.META_MODEL_API_BASE ?? "https://api.meta.ai/v1";
 type Msg = { role: "system" | "user" | "assistant"; content: unknown };
-export type ChatResult = { text: string; model: string; fallback: boolean; provider: "meta" | "nvidia"; usage: TokenUsage | null };
+export type ChatResult = { text: string; model: string; fallback: boolean; provider: "meta" | "nvidia"; usage: TokenUsage | null; note?: string };
 /**
  * Dual-API routing policy:
  *  - PRIMARY: Meta muse-spark-1.3 for every latency-critical / conversational path (voice, vision, Ask AI, safety, SCADA diagnosis).
@@ -15,12 +15,13 @@ export async function chat(messages: Msg[], max = 1500, metaTimeoutMs = 20000, p
   // An admin "NVIDIA first" setting still falls back to Meta. Keys stay in server env (MODEL_API_KEY, NVIDIA_API_KEY).
   const cfg = await appSettings().catch(() => null);
   if (cfg) { if (cfg.ai.primary === "nvidia") prefer = "nvidia"; metaTimeoutMs = Math.min(metaTimeoutMs, cfg.ai.timeoutMs); }
-  const nvidia = async (fallback: boolean): Promise<ChatResult> => {
+  const nvidia = async (fallback: boolean, note?: string): Promise<ChatResult> => {
     const r = await nvChatDetailed(messages as never, Math.min(max, 2500));
-    return { text: r.text, model: NV_MODEL, fallback, provider: "nvidia", usage: r.usage };
+    return { text: r.text, model: NV_MODEL, fallback, provider: "nvidia", usage: r.usage, note };
   };
   if (prefer === "nvidia" && nvLive()) { try { return await nvidia(false); } catch { /* fall back to Meta */ } }
   const key = process.env.MODEL_API_KEY;
+  let metaNote = key ? "Meta returned no completion" : "MODEL_API_KEY is not set";
   if (key) {
     try {
       const r = await fetch(`${BASE}/chat/completions`, { method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" }, body: JSON.stringify({ model: "muse-spark-1.3", messages, max_tokens: max, reasoning_effort: "low" }), signal: AbortSignal.timeout(metaTimeoutMs) });
@@ -29,9 +30,10 @@ export async function chat(messages: Msg[], max = 1500, metaTimeoutMs = 20000, p
         const t = String(j.choices?.[0]?.message?.content ?? "").trim();
         const model = String(j.model ?? "muse-spark-1.3");
         if (t) return { text: t, model, fallback: false, provider: "meta", usage: readUsage(j) };
-      }
-    } catch { /* fall through to NVIDIA */ }
+        metaNote = "Meta returned an empty completion";
+      } else metaNote = `Meta HTTP ${r.status}`;
+    } catch (e) { metaNote = `Meta ${(e as Error).name === "TimeoutError" ? "timed out" : (e as Error).message}`.slice(0, 140); }
   }
-  if (nvLive() && cfg?.ai.fallback !== "none") return nvidia(true);
+  if (nvLive() && cfg?.ai.fallback !== "none") return nvidia(true, metaNote);
   throw new Error("no AI provider available");
 }

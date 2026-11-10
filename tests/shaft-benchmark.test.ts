@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { SHAFT_SAMPLE, SHAFT_STEPS, inTolerance, shaftReport } from "@/lib/shaft-job";
-import { FAULT_CASES, catalogDiagnosis, scoreText, summarize, type BenchRow } from "@/lib/benchmark/score";
+import { FAULT_CASES, catalogDiagnosis, parseDiag, scoreText, summarize, type BenchRow } from "@/lib/benchmark/score";
 import { estimateReportCost, readUsage } from "@/lib/ai/usage";
 
 describe("shaft job", () => {
@@ -28,6 +28,11 @@ describe("shaft job", () => {
 });
 
 describe("benchmark score", () => {
+  it("reads a diagnosis that was cut off mid-JSON", () => {
+    const p = parseDiag('{"equipment":"Centrifugal pump","diagnosis":"seal leak","firstAction":"Lock out');
+    expect(p.equipment).toBe("Centrifugal pump");
+    expect(p.diagnosis).toMatch(/seal leak/);
+  });
   it("matches equipment and failure words, and misses a wrong fault", () => {
     expect(scoreText("Centrifugal pump seal leak at the weep hole", "Centrifugal pump", "Seal leak").correct).toBe(true);
     expect(scoreText("Centrifugal pump cavitation on the suction", "Centrifugal pump", "Seal leak").correct).toBe(false);

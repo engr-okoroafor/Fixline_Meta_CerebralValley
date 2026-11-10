@@ -24,16 +24,17 @@ export function scoreText(text: string, expectedEquipment: string, expectedFailu
   return { equipmentHit, failureHit, correct: equipmentHit && failureHit };
 }
 
+const field = (text: string, key: string) => text.match(new RegExp(`"${key}"\\s*:\\s*"([^"\\\\]{0,400})`))?.[1]?.trim() ?? "";
 export function parseDiag(text: string) {
-  const empty = { equipment: "", diagnosis: text.slice(0, 500), firstAction: "", report: text.slice(0, 1000) };
+  const loose = { equipment: field(text, "equipment"), diagnosis: field(text, "diagnosis"), firstAction: field(text, "firstAction"), report: field(text, "report") };
   const m = text.match(/\{[\s\S]*\}/);
-  if (!m) return empty;
+  if (!m) return { equipment: loose.equipment, diagnosis: loose.diagnosis || text.slice(0, 500), firstAction: loose.firstAction, report: loose.report || text.slice(0, 1000) };
   try {
     const j = JSON.parse(m[0]) as Record<string, unknown>;
     const s = (k: string, max: number) => String(j[k] ?? "").slice(0, max);
-    return { equipment: s("equipment", 200), diagnosis: s("diagnosis", 500) || empty.diagnosis, firstAction: s("firstAction", 500), report: s("report", 1200) || empty.report };
+    return { equipment: s("equipment", 200) || loose.equipment, diagnosis: s("diagnosis", 500) || loose.diagnosis || text.slice(0, 500), firstAction: s("firstAction", 500) || loose.firstAction, report: s("report", 1200) || loose.report || text.slice(0, 1000) };
   } catch {
-    return empty;
+    return { equipment: loose.equipment, diagnosis: loose.diagnosis || text.slice(0, 500), firstAction: loose.firstAction, report: loose.report || text.slice(0, 1000) };
   }
 }
 
