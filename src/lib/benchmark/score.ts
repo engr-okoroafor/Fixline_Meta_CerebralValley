@@ -121,6 +121,7 @@ export type BenchRow = {
   failureHit: boolean;
   catalogId: string;
   confidence: number | null;
+  abstained: boolean;
   ms: number;
   provider: "meta" | "nvidia" | "catalog";
   model: string;
@@ -143,6 +144,8 @@ export type BenchPayload = {
   catalogSummary: BenchSummary;
   hybridRows: BenchRow[];
   hybridSummary: BenchSummary;
+  twoStageRows: BenchRow[];
+  twoStageSummary: BenchSummary;
   note?: string;
 };
 
@@ -155,6 +158,7 @@ export type BenchSummary = {
   heldOut: number;
   heldOutCorrect: number;
   heldOutNear: number;
+  abstained: number;
   meanMs: number;
   medianMs: number;
   totalPromptTokens: number;
@@ -178,6 +182,7 @@ export function summarize(rows: BenchRow[]): BenchSummary {
   const correct = rows.filter((r) => r.correct).length;
   const nearMisses = rows.filter((r) => r.nearMiss).length;
   const held = rows.filter((r) => r.heldOut);
+  const abstained = rows.filter((r) => r.abstained).length;
   const ms = rows.map((r) => r.ms);
   const priced = rows.filter((r) => r.estimatedUsd != null);
   const estimatedUsd = priced.length ? priced.reduce((a, r) => a + (r.estimatedUsd ?? 0), 0) : null;
@@ -192,6 +197,7 @@ export function summarize(rows: BenchRow[]): BenchSummary {
     heldOut: held.length,
     heldOutCorrect: held.filter((r) => r.correct).length,
     heldOutNear: held.filter((r) => r.nearMiss).length,
+    abstained,
     meanMs: n ? ms.reduce((a, b) => a + b, 0) / n : 0,
     medianMs: median(ms),
     totalPromptTokens: rows.reduce((a, r) => a + (r.usage?.promptTokens ?? 0), 0),

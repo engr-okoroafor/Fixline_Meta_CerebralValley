@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { SHAFT_SAMPLE, SHAFT_STEPS, inTolerance, shaftReport } from "@/lib/shaft-job";
 import { FAULT_CASES, catalogDiagnosis, hybridPacket, nearMissScore, parseChoice, parseDiag, scoreText, summarize, type BenchRow } from "@/lib/benchmark/score";
+import { REVIEW, compactCatalog, stageOnePrompt } from "@/lib/benchmark/plant-retrieve";
 import { estimateReportCost, readUsage } from "@/lib/ai/usage";
 
 describe("shaft job", () => {
@@ -52,6 +53,15 @@ describe("benchmark score", () => {
     expect(nearMissScore(text, "Shell & tube heat exchanger", "Tube leak").nearMiss).toBe(true);
     expect(nearMissScore("pump starter\nshorted winding", "MCC panel", "Breaker trip").nearMiss).toBe(false);
   });
+  it("offers every plant class and no clothes dryer", () => {
+    const ids = new Set(compactCatalog().map((e) => e.id));
+    for (const id of ["pump-centrifugal", "motor", "conveyor", "compressor", "control-valve", "heat-exchanger", "boiler", "mcc"]) expect(ids.has(id)).toBe(true);
+    expect(compactCatalog().some((e) => /dryer|clothes/i.test(e.name))).toBe(false);
+    const prompt = stageOnePrompt("The troughed rubber band rubs the stringer").prompt;
+    expect(prompt).toContain("pump-centrifugal");
+    expect(prompt).not.toContain("Clothes dryer");
+    expect(scoreText(REVIEW, "Centrifugal pump", "Seal leak").correct).toBe(false);
+  });
   it("asks the model to copy a catalog failure, not to invent one", () => {
     const packet = hybridPacket("Centrifugal pump mechanical seal is leaking");
     expect(packet.candidates.some((c) => c.id === "pump-centrifugal")).toBe(true);
@@ -64,7 +74,7 @@ describe("benchmark score", () => {
   it("averages cost only from rows that have a figure", () => {
     const row = (estimatedUsd: number | null, provider: BenchRow["provider"]): BenchRow => ({
       id: "x", asset: "A", symptom: "s", expectedEquipment: "E", expectedFailure: "F", equipment: "E", diagnosis: "F", firstAction: "lockout",
-      heldOut: false, correct: true, nearMiss: true, equipmentCoverage: 1, failureCoverage: 1, equipmentHit: true, failureHit: true, catalogId: "", confidence: null,
+      heldOut: false, correct: true, nearMiss: true, equipmentCoverage: 1, failureCoverage: 1, equipmentHit: true, failureHit: true, catalogId: "", confidence: null, abstained: false,
       ms: 10, provider, model: "m", fallback: false, usage: estimatedUsd == null ? null : { promptTokens: 10, cachedPromptTokens: 0, completionTokens: 5, totalTokens: 15 },
       estimatedUsd, rateNote: "", report: "", sample: true,
     });
