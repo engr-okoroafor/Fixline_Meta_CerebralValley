@@ -1,4 +1,5 @@
 // Pure, headset-free XR logic (unit-tested with emulator-style fixtures).
+import { SHAFT_STEPS } from "./shaft-job";
 export const SEATED_REACH_M = 0.6;
 export const FOV = { h: 30, v: 20 }; // comfortable half-angles (deg)
 export type V3 = { x: number; y: number; z: number };
@@ -39,6 +40,7 @@ export function promptsFromLabels(labels: (string | undefined)[]) { return [...n
 // --- Guided scenarios (complete in < 10 min) ---
 export type Scenario = { id: string; title: string; hazard: string; steps: { text: string; seconds: number }[] };
 export const SCENARIOS: Scenario[] = [
+  { id: "shaft-align", title: "Laser-align pump P-101", hazard: "mechanical", steps: SHAFT_STEPS.map((s) => ({ text: s.text, seconds: s.seconds })) },
   { id: "loto", title: "Lockout/Tagout a conveyor motor", hazard: "electrical", steps: [
     { text: "Notify affected workers that the conveyor is shutting down.", seconds: 30 }, { text: "Stop the conveyor with its normal stop control.", seconds: 15 },
     { text: "Open the disconnect and isolate all energy sources.", seconds: 45 }, { text: "Apply your personal lock and tag to the isolation point.", seconds: 45 },
@@ -52,8 +54,49 @@ export const SCENARIOS: Scenario[] = [
 ];
 export const scenarioSeconds = (s: Scenario) => s.steps.reduce((a, b) => a + b.seconds, 0);
 // --- pause/resume persistence ---
-export type Progress = { scenario: string; step: number; paused: boolean; updated: number };
+export type Attempt = { step: number; decision: "approved" | "rejected"; at: string };
+export type Progress = { scenario: string; step: number; paused: boolean; phase: "doing" | "checkpoint"; attempts: Attempt[]; updated: number };
 export const PROGRESS_KEY = "fixline.progress.v1";
-export function saveProgress(store: Pick<Storage, "setItem">, p: Omit<Progress, "updated">) { store.setItem(PROGRESS_KEY, JSON.stringify({ ...p, updated: Date.now() })); }
-export function loadProgress(store: Pick<Storage, "getItem">): Progress | null { try { const p = JSON.parse(store.getItem(PROGRESS_KEY) ?? "null"); return p && typeof p.step === "number" && SCENARIOS.some((s) => s.id === p.scenario) ? p : null; } catch { return null; } }
+export function startFlow(scenario = "shaft-align"): Progress {
+  return { scenario, step: 0, paused: false, phase: "doing", attempts: [], updated: Date.now() };
+}
+/** Opens the human checkpoint. Saying "done" does not mark the step complete. */
+export function requestCheckpoint(p: Progress): Progress {
+  const sc = SCENARIOS.find((s) => s.id === p.scenario);
+  if (!sc || p.phase === "checkpoint" || p.step >= sc.steps.length) return p;
+  return { ...p, phase: "checkpoint" };
+}
+/** Approve advances. Reject stays on the step. Both are ignored until a checkpoint is open. */
+export function resolveCheckpoint(p: Progress, decision: "approved" | "rejected", at: string): Progress {
+  if (p.phase !== "checkpoint") return p;
+  const attempts = [...(p.attempts ?? []), { step: p.step, decision, at }];
+  if (decision === "rejected") return { ...p, phase: "doing", attempts };
+  return { ...p, step: p.step + 1, phase: "doing", attempts };
+}
+export function saveProgress(store: Pick<Storage, "setItem">, p: Omit<Progress, "updated" | "phase" | "attempts"> & Partial<Pick<Progress, "phase" | "attempts">>) {
+  store.setItem(PROGRESS_KEY, JSON.stringify({ ...p, phase: p.phase ?? "doing", attempts: p.attempts ?? [], updated: Date.now() }));
+}
+export function loadProgress(store: Pick<Storage, "getItem">): Progress | null {
+  try {
+    const p = JSON.parse(store.getItem(PROGRESS_KEY) ?? "null");
+    if (!p || typeof p.step !== "number" || !SCENARIOS.some((s) => s.id === p.scenario)) return null;
+    return { ...startFlow(p.scenario), ...p, phase: p.phase === "checkpoint" ? "checkpoint" : "doing", attempts: Array.isArray(p.attempts) ? p.attempts : [] };
+  } catch { return null; }
+}
+/** Quest browser renders at 1×. Other screens cap at 1.5 so a 3× phone does not triple the fill rate. */
+export function adaptiveDpr(devicePixelRatio: number, userAgent = "") {
+  const quest = /Quest|OculusBrowser/i.test(userAgent);
+  const dpr = Number.isFinite(devicePixelRatio) && devicePixelRatio > 0 ? devicePixelRatio : 1;
+  return Math.min(dpr, quest ? 1 : 1.5);
+}
+/** "done" asks for a checkpoint. "approve" and "reject" apply only while that checkpoint is open. */
+export function voiceIntent(text: string): "checkpoint" | "approve" | "reject" | "read" | "report" | null {
+  const s = text.toLowerCase();
+  if (/\b(reject|nope|not yet|hold on)\b/.test(s)) return "reject";
+  if (/\b(approve|approved|accept|i approve)\b/.test(s)) return "approve";
+  if (/\b(done|next|finished)\b/.test(s)) return "checkpoint";
+  if (/\b(read|repeat)\b/.test(s)) return "read";
+  if (/\breport\b/.test(s)) return "report";
+  return null;
+}
 export const XR_FEATURES = { optionalFeatures: ["hand-tracking", "plane-detection", "mesh-detection", "hit-test", "anchors", "depth-sensing", "local-floor"], forbidden: ["controller-required"] };

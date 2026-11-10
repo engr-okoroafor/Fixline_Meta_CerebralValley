@@ -7,9 +7,9 @@ test("security headers", async ({ request }) => { const r = await request.get("/
 test("/xr cold start → checklist anonymously < 30 s, resume keeps place", async ({ page }) => {
   const t0 = Date.now(); await page.goto("/xr"); await expect(page.getByTestId("checklist")).toBeVisible(); expect(Date.now() - t0).toBeLessThan(30000);
   await page.getByRole("button", { name: /Generator/ }).click();
-  for (let i = 0; i < 6; i++) await page.getByRole("button", { name: "Done ✓" }).first().click();
+  for (let i = 0; i < 6; i++) { await page.getByTestId("step-ask").click(); await page.getByTestId("step-approve").click(); }
   await expect(page.getByText("Checklist complete ✓")).toBeVisible();
-  await page.getByRole("button", { name: "Restart" }).first().click(); await page.getByRole("button", { name: "Done ✓" }).first().click();
+  await page.getByTestId("step-restart").click(); await page.getByTestId("step-ask").click(); await page.getByTestId("step-approve").click();
   await page.reload(); await expect(page.getByText(/Step 2\/6/)).toBeVisible();
 });
 test("anonymous Safety demo + grounded ask + refusal", async ({ page }) => {

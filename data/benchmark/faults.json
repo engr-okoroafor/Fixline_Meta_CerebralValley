@@ -1,0 +1,185 @@
+{
+  "label": "Seeded sample faults. These are written for the benchmark. They are not measurements from a plant. heldOut true means the symptom was written so the catalog word-match does not already land on the expected equipment and failure. Those labels were set before the model run.",
+  "cases": [
+    {
+      "id": "p101-seal",
+      "asset": "P-101",
+      "heldOut": false,
+      "symptom": "Centrifugal pump mechanical seal is leaking at the weep hole. Product is on the baseplate and the seal faces look scored. Vibration is steady.",
+      "expectedEquipmentId": "pump-centrifugal",
+      "expectedEquipment": "Centrifugal pump",
+      "expectedFailure": "Seal leak"
+    },
+    {
+      "id": "m101-bearing",
+      "asset": "M-101",
+      "heldOut": false,
+      "symptom": "Induction motor bearing noise started after the last grease round was skipped. The housing is warm and the noise tracks shaft speed.",
+      "expectedEquipmentId": "motor",
+      "expectedEquipment": "Induction motor",
+      "expectedFailure": "Bearing noise"
+    },
+    {
+      "id": "cv12-track",
+      "asset": "CV-12",
+      "heldOut": false,
+      "symptom": "Belt conveyor is mistracking. The belt walks off the tail pulley toward the structure within a minute of start.",
+      "expectedEquipmentId": "conveyor",
+      "expectedEquipment": "Belt conveyor",
+      "expectedFailure": "Belt mistracking"
+    },
+    {
+      "id": "k201-temp",
+      "asset": "K-201",
+      "heldOut": false,
+      "symptom": "Compressor high discharge temp alarm. The intercooler face is fouled and the discharge temperature climbs under load.",
+      "expectedEquipmentId": "compressor",
+      "expectedEquipment": "Compressor",
+      "expectedFailure": "High discharge temp"
+    },
+    {
+      "id": "lv220-stick",
+      "asset": "LV-220",
+      "heldOut": false,
+      "symptom": "Control valve stiction. The stem sticks between 40% and 60% while the positioner output keeps moving.",
+      "expectedEquipmentId": "control-valve",
+      "expectedEquipment": "Control valve",
+      "expectedFailure": "Stiction"
+    },
+    {
+      "id": "e301-tube",
+      "asset": "E-301",
+      "heldOut": false,
+      "symptom": "Shell and tube heat exchanger tube leak. Process product is showing up in the cooling-water return.",
+      "expectedEquipmentId": "heat-exchanger",
+      "expectedEquipment": "Shell & tube heat exchanger",
+      "expectedFailure": "Tube leak"
+    },
+    {
+      "id": "b401-water",
+      "asset": "B-401",
+      "heldOut": false,
+      "symptom": "Boiler low water alarm. The sight glass is empty and the burner has tripped.",
+      "expectedEquipmentId": "boiler",
+      "expectedEquipment": "Boiler",
+      "expectedFailure": "Low water"
+    },
+    {
+      "id": "mcc-trip",
+      "asset": "MCC-2",
+      "heldOut": false,
+      "symptom": "MCC panel breaker trip on the pump starter. The cubicle smells hot and the breaker will not stay closed.",
+      "expectedEquipmentId": "mcc",
+      "expectedEquipment": "MCC panel",
+      "expectedFailure": "Breaker trip"
+    },
+    {
+      "id": "gb-mesh",
+      "asset": "GB-7",
+      "heldOut": false,
+      "symptom": "Gearbox mesh howl at tooth-pass on the output set.",
+      "expectedEquipmentId": "gearbox",
+      "expectedEquipment": "Gearbox",
+      "expectedFailure": "Gear mesh noise"
+    },
+    {
+      "id": "pt-frozen",
+      "asset": "PT-14",
+      "heldOut": false,
+      "symptom": "Pressure transmitter frozen reading. The value has not moved for an hour while the local gauge beside it still swings.",
+      "expectedEquipmentId": "tx-pressure",
+      "expectedEquipment": "Pressure transmitter",
+      "expectedFailure": "Frozen reading"
+    },
+    {
+      "id": "hv-seized",
+      "asset": "HV-9",
+      "heldOut": false,
+      "symptom": "Isolation valve seized shut. Operations cannot get it off the seat.",
+      "expectedEquipmentId": "valve-manual",
+      "expectedEquipment": "Isolation valve",
+      "expectedFailure": "Seized"
+    },
+    {
+      "id": "fg-false",
+      "asset": "FG-3",
+      "heldOut": false,
+      "symptom": "Fire and gas detector false alarm overnight. A bump with air did not repeat the horn.",
+      "expectedEquipmentId": "fg-detector",
+      "expectedEquipment": "Fire & gas detector",
+      "expectedFailure": "False alarm"
+    },
+    {
+      "id": "ho-pump-drip",
+      "asset": "P-220",
+      "heldOut": true,
+      "symptom": "Product is dripping off the shaft end of the process machine onto the skid. The faces look glazed. Suction sounds normal and flow is steady.",
+      "expectedEquipmentId": "pump-centrifugal",
+      "expectedEquipment": "Centrifugal pump",
+      "expectedFailure": "Seal leak"
+    },
+    {
+      "id": "ho-drive-growl",
+      "asset": "M-88",
+      "heldOut": true,
+      "symptom": "The 75 kW driver growls once per revolution and the housing is too hot to hold after a missed grease round.",
+      "expectedEquipmentId": "motor",
+      "expectedEquipment": "Induction motor",
+      "expectedFailure": "Bearing noise"
+    },
+    {
+      "id": "ho-band-rub",
+      "asset": "CV-4",
+      "heldOut": true,
+      "symptom": "The troughed rubber band climbs the side frame a minute after start and rubs the steel stringer.",
+      "expectedEquipmentId": "conveyor",
+      "expectedEquipment": "Belt conveyor",
+      "expectedFailure": "Belt mistracking"
+    },
+    {
+      "id": "ho-airend-dust",
+      "asset": "K-14",
+      "heldOut": true,
+      "symptom": "The air-end outlet climbs past the alarm and the cooler fins are packed with dust. It is not swinging into surge.",
+      "expectedEquipmentId": "compressor",
+      "expectedEquipment": "Compressor",
+      "expectedFailure": "High discharge temp"
+    },
+    {
+      "id": "ho-globe-jump",
+      "asset": "LV-8",
+      "heldOut": true,
+      "symptom": "The pneumatic globe on the level loop moves in jumps. The air signal keeps changing but the stem waits, then jumps.",
+      "expectedEquipmentId": "control-valve",
+      "expectedEquipment": "Control valve",
+      "expectedFailure": "Stiction"
+    },
+    {
+      "id": "ho-cw-product",
+      "asset": "E-12",
+      "heldOut": true,
+      "symptom": "Cooling water returning to the tower has product in it. The bundle was cleaned last year and the approach has opened up.",
+      "expectedEquipmentId": "heat-exchanger",
+      "expectedEquipment": "Shell & tube heat exchanger",
+      "expectedFailure": "Tube leak"
+    },
+    {
+      "id": "ho-drum-empty",
+      "asset": "B-2",
+      "heldOut": true,
+      "symptom": "The sight on the steam raiser reads empty and firing has dropped out while the feed set keeps pushing.",
+      "expectedEquipmentId": "boiler",
+      "expectedEquipment": "Boiler",
+      "expectedFailure": "Low water"
+    },
+    {
+      "id": "ho-cubicle-pop",
+      "asset": "SW-2",
+      "heldOut": true,
+      "symptom": "The starter cubicle for the charge machine popped and will not reset. There is a burnt smell and a brown mark on one lug.",
+      "expectedEquipmentId": "mcc",
+      "expectedEquipment": "MCC panel",
+      "expectedFailure": "Breaker trip"
+    }
+  ]
+}
