@@ -1,0 +1,69 @@
+{
+  "label": "Seeded sample faults. These are written for the benchmark. They are not measurements from a plant.",
+  "cases": [
+    {
+      "id": "p101-seal",
+      "asset": "P-101",
+      "symptom": "Centrifugal pump mechanical seal is leaking at the weep hole. Product is on the baseplate and the seal faces look scored. Vibration is steady.",
+      "expectedEquipmentId": "pump-centrifugal",
+      "expectedEquipment": "Centrifugal pump",
+      "expectedFailure": "Seal leak"
+    },
+    {
+      "id": "m101-bearing",
+      "asset": "M-101",
+      "symptom": "Induction motor bearing noise started after the last grease round was skipped. The housing is warm and the noise tracks shaft speed.",
+      "expectedEquipmentId": "motor",
+      "expectedEquipment": "Induction motor",
+      "expectedFailure": "Bearing noise"
+    },
+    {
+      "id": "cv12-track",
+      "asset": "CV-12",
+      "symptom": "Belt conveyor is mistracking. The belt walks off the tail pulley toward the structure within a minute of start.",
+      "expectedEquipmentId": "conveyor",
+      "expectedEquipment": "Belt conveyor",
+      "expectedFailure": "Belt mistracking"
+    },
+    {
+      "id": "k201-temp",
+      "asset": "K-201",
+      "symptom": "Compressor high discharge temp alarm. The intercooler face is fouled and the discharge temperature climbs under load.",
+      "expectedEquipmentId": "compressor",
+      "expectedEquipment": "Compressor",
+      "expectedFailure": "High discharge temp"
+    },
+    {
+      "id": "lv220-stick",
+      "asset": "LV-220",
+      "symptom": "Control valve stiction. The stem sticks between 40% and 60% while the positioner output keeps moving.",
+      "expectedEquipmentId": "control-valve",
+      "expectedEquipment": "Control valve",
+      "expectedFailure": "Stiction"
+    },
+    {
+      "id": "e301-tube",
+      "asset": "E-301",
+      "symptom": "Shell and tube heat exchanger tube leak. Process product is showing up in the cooling-water return.",
+      "expectedEquipmentId": "heat-exchanger",
+      "expectedEquipment": "Shell & tube heat exchanger",
+      "expectedFailure": "Tube leak"
+    },
+    {
+      "id": "b401-water",
+      "asset": "B-401",
+      "symptom": "Boiler low water alarm. The sight glass is empty and the burner has tripped.",
+      "expectedEquipmentId": "boiler",
+      "expectedEquipment": "Boiler",
+      "expectedFailure": "Low water"
+    },
+    {
+      "id": "mcc-trip",
+      "asset": "MCC-2",
+      "symptom": "MCC panel breaker trip on the pump starter. The cubicle smells hot and the breaker will not stay closed.",
+      "expectedEquipmentId": "mcc",
+      "expectedEquipment": "MCC panel",
+      "expectedFailure": "Breaker trip"
+    }
+  ]
+}

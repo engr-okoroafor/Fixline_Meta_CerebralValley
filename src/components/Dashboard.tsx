@@ -25,6 +25,7 @@ import { Insights } from "./next/Insights";
 import { FireGuidance } from "./next/SafetyVisuals";
 import { ModelBadge } from "./next/ModelBadge";
 import { gateAllowsNext } from "@/lib/repair-guide";
+import { WowHero } from "./next/WowHero";
 const Projects = load(() => import("./next/Projects").then((m) => ({ default: m.Projects })));
 const EngineeringNL = load(() => import("./next/EngineeringNL").then((m) => ({ default: m.EngineeringNL })));
 type Mode = "projects" | "voice" | "eng" | "settings" | "overview" | "repair" | "tuning" | "ask" | "scada" | "safety" | "quality";
@@ -49,7 +50,8 @@ export default function Dashboard({ user }: { user: { name: string; role: string
       <div className="min-w-0 flex items-center gap-3"><span className="logo-dot" aria-hidden /><div className="min-w-0"><h1 className="neon m-0 text-lg font-extrabold leading-tight md:text-xl">FixLine Guardian</h1><p className="muted m-0 truncate text-[11px] leading-tight">Hands-free repair, safety, quality and projects for industrial field crews · {user.role === "guest" ? "guest demo" : user.name}</p></div></div>
       <nav className="row" style={{ gap: 6 }} aria-label="Account">
         <LangSwitch />
-        <Tip label="Open the mixed-reality view (headset browser)" side="bottom"><motion.a whileHover={{ scale: 1.05 }} className="btn btn-primary btn-sm" href="/xr">{tr(loc, "enterAr")}</motion.a></Tip>
+        <Tip label="Open the laser-alignment flow on Quest or in the browser" side="bottom"><motion.a whileHover={{ scale: 1.05 }} className="btn btn-primary btn-sm" href="/xr?job=shaft">{tr(loc, "enterAr")}</motion.a></Tip>
+        <Tip label="Sample-fault accuracy, time, and cost" side="bottom"><a className="btn btn-sm" href="/benchmark">Benchmark</a></Tip>
         {user.role === "admin" ? <Tip label="Admin console: users, sessions, settings, audit, integrations, vendors, catalog"><a className="btn btn-sm" href="/admin">Admin</a></Tip> : <Tip label="Read-only Admin console demo (masked data)"><a className="btn btn-sm" href="/admin/demo">Admin demo</a></Tip>}
         <Btn tip={dark ? "Switch to light theme" : "Switch to dark theme"} className="btn-sm" onClick={() => setDark(!dark)}>{dark ? "☀" : "☾"}</Btn>
         {user.role === "guest" ? <Tip label="Sign in for control writes and admin"><a className="btn btn-sm" href="/login">Sign in</a></Tip> : <Btn tip="Sign out" className="btn-sm" onClick={async () => { await authClient.signOut(); location.href = "/login"; }}>Sign out</Btn>}
@@ -83,14 +85,20 @@ function Benefits() {
     <div className="grid-auto" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))" }}>{BENEFITS.map(([k, v, d]) => <div key={k} className="rounded-3xl p-4" style={{ border: "1px solid color-mix(in oklab, #39FF14 30%, transparent)" }}><div className="text-xs muted">{k}</div><div className="neon text-xl font-extrabold">{v}</div><p className="m-0 text-xs muted">{d}</p></div>)}</div></section>;
 }
 function Overview({ go }: { go: (m: Mode) => void }) {
-  const [t, setT] = useState(0); useEffect(() => { const id = setInterval(() => setT((x) => x + 1), 1200); return () => clearInterval(id); }, []);
-  return <><section className="glass relative overflow-hidden"><Particles /><div className="relative grid items-center gap-6 p-6 md:grid-cols-2 md:p-8">
-    <div className="flex flex-col gap-4"><span className="pill" style={{ alignSelf: "flex-start" }}>Meta Global AI Hackathon 2026 · Push the Frontier</span><h1 className="m-0 text-3xl font-extrabold md:text-4xl">A hands-free AI repair, safety, quality and project agent <span className="neon">for industrial field crews.</span></h1>
-      <p className="muted m-0">FixLine runs <b className="neon">perceive → reason → confirm → enforce</b> on the job: SAM 3.1 finds the part, Muse Spark 1.3 plans the fix, the camera re-check has to pass before the step counts, and lockout, quality and project gates keep the work honest. The walkthrough is a plant in Lagos and Port Harcourt. The same loop is for every site below.</p>
+  const [t, setT] = useState(0); const [lite, setLite] = useState(true);
+  useEffect(() => { const id = setInterval(() => setT((x) => x + 1), 1200); return () => clearInterval(id); }, []);
+  useEffect(() => {
+    const save = (navigator as { connection?: { saveData?: boolean } }).connection?.saveData;
+    const quest = /Quest|OculusBrowser/i.test(navigator.userAgent);
+    setLite(quest || save || matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+  return <><div className="relative">{!lite && <Particles />}<WowHero /></div>
+    <section className="glass card"><h2 className="m-0 text-lg">Same loop, more than one site</h2>
+      <p className="muted m-0 text-sm">The walkthrough is a plant in Lagos and Port Harcourt. Perceive, reason, confirm, enforce — SAM 3.1, Muse Spark 1.3, then a person. Project management uses frameworks such as PMP and PRINCE2. The figures below are illustrative ranges, not this build’s measurements. The measured numbers are on the benchmark.</p>
       <ul className="m-0 flex flex-wrap gap-2 p-0" aria-label="Industries" style={{ listStyle: "none" }}>{INDUSTRIES.map((name) => <li key={name} className="pill text-xs">{name}</li>)}</ul>
-      <p className="muted m-0 text-sm">Meta models: muse-spark-1.3 · sam-3.1 · muse-voice-transcribe · SeamlessM4T (open weights) · Ray-Ban Meta via Mock Device Kit. Live demo, no login needed.</p>
-      <div className="row"><a className="btn btn-primary" href="/glasses" style={{ minHeight: 56, fontSize: "1.1rem", padding: "0 24px" }}>👓 Glasses HUD</a><Btn tip="Guided repair with SAM confirm-gate" onClick={() => go("repair")}>🔧 Repair</Btn><Btn tip="Hazards, LOTO, permits" onClick={() => go("safety")}>⛑ Safety LOTO</Btn><Btn tip="Autonomous visual inspector" onClick={() => go("quality")}>✔ Quality</Btn><Btn tip="Hands-free voice + translation" onClick={() => go("voice")}>🎙 Voice</Btn><a className="btn" href="/xr">Enter AR</a></div></div>
-    <HeroArt /></div></section>
+      <div className="row"><Btn tip="Guided repair with SAM confirm-gate" onClick={() => go("repair")}>Repair</Btn><Btn tip="Shaft alignment readings" onClick={() => go("tuning")}>Alignment</Btn><Btn tip="Project management with frameworks such as PMP and PRINCE2" onClick={() => go("projects")}>Projects</Btn></div>
+    </section>
+    <div className="glass card"><HeroArt /></div>
     <Insights />
     <Benefits />
     <div className="grid-auto">{[["Vibration", 2.4 + Math.sin(t) * 0.6, 12, "mm/s"], ["Separator P", 12 + Math.sin(t / 2), 20, "barg"], ["Tank level", 40 + Math.cos(t / 3) * 6, 100, "%"], ["Bearing temp", 58 + Math.sin(t / 4) * 4, 120, "°C"]].map(([l, v, m, u]) => <div key={l as string} className="glass card"><Gauge label={l as string} value={v as number} max={m as number} unit={u as string} /></div>)}</div>

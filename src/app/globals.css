@@ -160,3 +160,6 @@ html:not(.dark) .lang-menu{background:rgba(255,255,255,.96)}html:not(.dark) .lan
 .fgantt-nba{margin:0;padding:2px 2px 0;color:#d8ffe4;font-size:.9rem}
 .fgantt[data-done="custom"] .fgantt-bar i,.fgantt[data-done="custom"] .fgantt-bar.st-completed i{background:linear-gradient(90deg,color-mix(in srgb,var(--gantt-done) 32%,#f4f7c2),var(--gantt-done))}
 @media(max-width:800px){.fgantt-head,.fgantt-foot,.fgantt-chart{grid-template-columns:1fr}.fgantt-photo{min-height:100px}}
+.wow-step{animation:wowStep 10s ease-in-out infinite}
+@keyframes wowStep{0%,18%{opacity:.4}28%,62%{opacity:1}74%,100%{opacity:.4}}
+@media (prefers-reduced-motion: reduce){.wow-step{animation:none;opacity:1}}

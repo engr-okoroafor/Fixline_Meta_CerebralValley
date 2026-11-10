@@ -31,6 +31,32 @@ describe("P3 seated", () => {
     L.saveProgress(st, { scenario: "loto", step: 4, paused: true }); expect(L.loadProgress(st)).toMatchObject({ scenario: "loto", step: 4, paused: true });
     m.set(L.PROGRESS_KEY, "{bad"); expect(L.loadProgress(st)).toBeNull(); });
 });
+describe("checkpoint", () => {
+  it("does not advance until a person approves, and reject stays put", () => {
+    let p = L.startFlow("loto");
+    expect(L.resolveCheckpoint(p, "approved", "t0")).toBe(p);
+    p = L.requestCheckpoint(p);
+    expect(p.phase).toBe("checkpoint");
+    expect(p.step).toBe(0);
+    const rejected = L.resolveCheckpoint(p, "rejected", "t1");
+    expect(rejected.step).toBe(0);
+    expect(rejected.phase).toBe("doing");
+    const again = L.requestCheckpoint(rejected);
+    const ok = L.resolveCheckpoint(again, "approved", "t2");
+    expect(ok.step).toBe(1);
+    expect(ok.attempts.map((a) => a.decision)).toEqual(["rejected", "approved"]);
+  });
+  it("voice done asks, approve does not skip the checkpoint", () => {
+    expect(L.voiceIntent("done")).toBe("checkpoint");
+    expect(L.voiceIntent("approve")).toBe("approve");
+    expect(L.voiceIntent("reject that")).toBe("reject");
+  });
+  it("caps Quest pixel ratio at 1 and other screens at 1.5", () => {
+    expect(L.adaptiveDpr(3, "Mozilla/5.0 (Linux; Android 10; Quest 3)")).toBe(1);
+    expect(L.adaptiveDpr(3, "Chrome")).toBe(1.5);
+    expect(L.adaptiveDpr(1, "Chrome")).toBe(1);
+  });
+});
 describe("P4/P6", () => {
   it("outlet label triggers LOTO reminder", () => expect(L.promptsFromLabels(["electrical-outlet", "table", undefined])).toEqual(["electrical"]));
   it("FoV from projection never exceeds comfort cap", () => { const f = L.fovFromProjection([1, 0, 0, 0, 0, 1.2]); expect(f.h).toBeLessThanOrEqual(30); expect(f.v).toBeLessThanOrEqual(20); });
