@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { SHAFT_SAMPLE, SHAFT_STEPS, inTolerance, shaftReport } from "@/lib/shaft-job";
-import { FAULT_CASES, catalogDiagnosis, parseDiag, scoreText, summarize, type BenchRow } from "@/lib/benchmark/score";
+import { FAULT_CASES, catalogDiagnosis, hybridPacket, nearMissScore, parseChoice, parseDiag, scoreText, summarize, type BenchRow } from "@/lib/benchmark/score";
 import { estimateReportCost, readUsage } from "@/lib/ai/usage";
 
 describe("shaft job", () => {
@@ -37,15 +37,35 @@ describe("benchmark score", () => {
     expect(scoreText("Centrifugal pump seal leak at the weep hole", "Centrifugal pump", "Seal leak").correct).toBe(true);
     expect(scoreText("Centrifugal pump cavitation on the suction", "Centrifugal pump", "Seal leak").correct).toBe(false);
   });
-  it("scores the seeded catalog without calling a model", () => {
-    const rows = FAULT_CASES.map((c) => ({ id: c.id, ...catalogDiagnosis(c.symptom, c.expectedEquipmentId, c.expectedEquipment, c.expectedFailure) }));
-    const misses = rows.filter((r) => !r.correct).map((r) => `${r.id} top=${r.topId} matched=${r.matched.join("|")} eq=${r.equipmentHit} fail=${r.failureHit}`);
-    expect(misses, misses.join("\n")).toEqual([]);
+  it("locks direct cases as catalog hits and held-out cases as catalog misses", () => {
+    const rows = FAULT_CASES.map((c) => ({ id: c.id, heldOut: c.heldOut, ...catalogDiagnosis(c.symptom, c.expectedEquipmentId, c.expectedEquipment, c.expectedFailure), top4: hybridPacket(c.symptom).candidates.map((x) => x.id).join(",") }));
+    const directMiss = rows.filter((r) => !r.heldOut && !r.correct).map((r) => `${r.id} top=${r.topId} matched=${r.matched.join("|")} top4=${r.top4}`);
+    const heldHit = rows.filter((r) => r.heldOut && r.correct).map((r) => `${r.id} top=${r.topId} matched=${r.matched.join("|")}`);
+    expect(directMiss, directMiss.join("\n")).toEqual([]);
+    expect(heldHit, heldHit.join("\n")).toEqual([]);
+    expect(rows.filter((r) => r.heldOut).length).toBeGreaterThanOrEqual(6);
+    expect(FAULT_CASES.length).toBeGreaterThanOrEqual(18);
+  });
+  it("scores a near miss without calling it exact", () => {
+    const text = "Shell and tube exchanger\nLeaking exchanger tube";
+    expect(scoreText(text, "Shell & tube heat exchanger", "Tube leak").correct).toBe(false);
+    expect(nearMissScore(text, "Shell & tube heat exchanger", "Tube leak").nearMiss).toBe(true);
+    expect(nearMissScore("pump starter\nshorted winding", "MCC panel", "Breaker trip").nearMiss).toBe(false);
+  });
+  it("asks the model to copy a catalog failure, not to invent one", () => {
+    const packet = hybridPacket("Centrifugal pump mechanical seal is leaking");
+    expect(packet.candidates.some((c) => c.id === "pump-centrifugal")).toBe(true);
+    expect(packet.prompt).toContain("Seal leak");
+    const choice = parseChoice('{"equipment":"Centrifugal pump","failure":"Seal leak","catalogId":"pump-centrifugal","confidence":0.8,"nextStep":"Lock out the driver"}');
+    expect(choice.failure).toBe("Seal leak");
+    expect(choice.catalogId).toBe("pump-centrifugal");
+    expect(choice.confidence).toBeCloseTo(0.8);
   });
   it("averages cost only from rows that have a figure", () => {
     const row = (estimatedUsd: number | null, provider: BenchRow["provider"]): BenchRow => ({
       id: "x", asset: "A", symptom: "s", expectedEquipment: "E", expectedFailure: "F", equipment: "E", diagnosis: "F", firstAction: "lockout",
-      correct: true, equipmentHit: true, failureHit: true, ms: 10, provider, model: "m", fallback: false, usage: estimatedUsd == null ? null : { promptTokens: 10, cachedPromptTokens: 0, completionTokens: 5, totalTokens: 15 },
+      heldOut: false, correct: true, nearMiss: true, equipmentCoverage: 1, failureCoverage: 1, equipmentHit: true, failureHit: true, catalogId: "", confidence: null,
+      ms: 10, provider, model: "m", fallback: false, usage: estimatedUsd == null ? null : { promptTokens: 10, cachedPromptTokens: 0, completionTokens: 5, totalTokens: 15 },
       estimatedUsd, rateNote: "", report: "", sample: true,
     });
     const s = summarize([row(0.002, "meta"), row(null, "nvidia")]);
